@@ -1,0 +1,77 @@
+* {
+    -fx-text-base-color: #1f1f1f;
+}
+
+.lesson-shortcut {
+    -fx-padding: 20;
+    -fx-spacing: 15;
+    -fx-background-color: white;
+    -fx-background-radius: 25;
+    -fx-effect: dropshadow(three-pass-box, #b7b7b7, 24, 0, 0, 0);
+    -fx-min-width: 650;
+    -fx-max-width: 680;
+    -fx-cursor: hand;
+}
+
+.lesson-shortcut > .vbox {
+    -fx-padding: 0 20 0 0;
+}
+
+.consolas {
+    -fx-font-family: Consolas;
+}
+
+.label {
+    -fx-text-fill: #5d5d5d;
+    -fx-font-size: 16;
+}
+
+.title {
+    -fx-font-size: 26;
+    -fx-font-weight: bold;
+    -fx-text-fill: #343434;
+}
+
+.separator {
+    -fx-min-width: 4;
+}
+
+/*
+    Indicator stuff
+*/
+
+.circleindicator-container  {
+    circleindicator-color: #a41750;
+    -fx-background-color: transparent;
+}
+.circleindicator-container > .circleindicator-label {
+    -fx-font-weight: bold;
+    -fx-font-size: 12;
+    -fx-text-fill: circleindicator-color;
+}
+
+.ringindicator {
+    -fx-ring-width: 4.5;
+    -fx-inner-radius: 20.5;
+}
+.ringindicator-inner-circle {
+    -fx-opacity: 0.55;
+    -fx-stroke: circleindicator-color;
+    -fx-stroke-width: 3.5;
+    -fx-fill: -fx-background;
+}
+.ringindicator-filler {
+    -fx-stroke: circleindicator-color;
+    -fx-fill: -fx-background;
+    -fx-stroke-line-cap: butt;
+}
+.ringindicator-outer-circle-secondary {
+    -fx-opacity: 0.1;
+    -fx-stroke: circleindicator-color;
+    -fx-stroke-width: 2.0px;
+    -fx-fill: -fx-background;
+}
+.indeterminate {
+    -fx-opacity: 0.55;
+    -fx-stroke: linear-gradient(from 0.0% 0.0% to 70.0% 70.0%, circleindicator-color 70.0%, white 75.0%, white);
+}

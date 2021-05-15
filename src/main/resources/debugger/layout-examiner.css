@@ -1,0 +1,45 @@
+.examinable:examined {
+    -fx-background-color: rgba(0, 161, 255, 0.8) !important;
+    -fx-border-color: #be0059 !important;
+    -fx-border-width: 1.5 !important;
+    -fx-border-style: dashed !important;
+}
+
+.info-popup {
+    -fx-border-width: 1;
+    -fx-border-color: #545454;
+    -fx-background-color: white;
+    -fx-border-radius: 18;
+    -fx-background-radius: 18;
+    -fx-min-height: 50;
+    -fx-min-width: 200;
+    -fx-padding: 10 20;
+    -fx-spacing: 10;
+    -fx-alignment: center;
+}
+
+.css-property {
+    -fx-font-weight: bold;
+    -fx-font-size: 16;
+}
+.style-classes {
+    -fx-fill: #c405c4;
+}
+.pseudo-states {
+    -fx-fill: #28ac08;
+}
+.id {
+    -fx-fill: #0c2bdb;
+}
+
+.dimensions {
+    -fx-text-fill: #414141;
+    -fx-font-size: 14;
+}
+
+.class-name {
+    -fx-text-fill: #242424;
+    -fx-font-weight: bold;
+    -fx-font-family: Consolas;
+    -fx-font-size: 20;
+}

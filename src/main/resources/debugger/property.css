@@ -1,0 +1,15 @@
+* {
+    -main-color: white;
+}
+
+.popup-scene {
+    -fx-background-color: -main-color;
+    -fx-effect: dropshadow(three-pass-box, derive(-main-color, -8%), 24, 0, 0, 0);
+    -fx-border-color: #242424;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-min-height: 50;
+    -fx-padding: 7.5 75;
+}
+
