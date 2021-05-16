@@ -1,0 +1,76 @@
+
+
+.property-name {
+    -fx-text-fill: #1d704a;
+}
+
+.css-property {
+    -fx-padding: 0 !important;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0 !important;
+    -fx-font-family: Consolas;
+    -fx-font-size: 14;
+}
+
+.property-type {
+    -fx-text-fill: rgba(10, 19, 38, 0.8);
+    -fx-background-color: rgba(214, 214, 214, 0.23);
+    -fx-background-insets: -3;
+    -fx-font-size: 1em;
+}
+
+.property-value {
+    -fx-border-width: 1;
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    -fx-text-fill: #994702;
+    -fx-font-weight: bold;
+}
+.property-value:hover {
+    -fx-border-color: gray;
+}
+.property-value:focused {
+    -fx-border-color: #161616;
+}
+
+.string {
+    -fx-text-fill: green;
+}
+
+.enum-property {
+    -fx-background-color: rgba(0, 0, 0, 0.05);
+    -fx-background-insets: 2.35;
+}
+
+.enum-property .list-view .list-cell {
+    -fx-background-color: rgba(0, 0, 0, 0.05);
+}
+
+.enum-property .list-view .list-cell:hover {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
+
+.enum-property .list-view .list-cell:selected {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
+
+.color-property {
+    -fx-border-color: #161616;
+    -fx-cursor: hand;
+}
+
+.color-property:hover {
+    -fx-border-width: 1.5;
+}
+
+.property-expander {
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+    -fx-background-radius: 100;
+    -fx-background-color: lightgray;
+    -fx-padding: 0 5;
+    -fx-cursor: hand;
+    -fx-alignment: top-center;
+}

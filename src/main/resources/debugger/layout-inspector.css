@@ -1,19 +1,21 @@
-.examinable:examined {
+*:examined {
     -fx-background-color: rgba(0, 161, 255, 0.8) !important;
     -fx-border-color: #be0059 !important;
     -fx-border-width: 1.5 !important;
     -fx-border-style: dashed !important;
 }
 
-.info-popup {
+#popup-content {
     -fx-border-width: 1;
     -fx-border-color: #545454;
     -fx-background-color: white;
-    -fx-border-radius: 18;
-    -fx-background-radius: 18;
-    -fx-min-height: 50;
+    -fx-border-radius: 12.5;
+    -fx-background-radius: 12.5;
     -fx-min-width: 200;
-    -fx-padding: 10 20;
+    -fx-padding: 5 20;
+}
+
+.info-popup {
     -fx-spacing: 10;
     -fx-alignment: center;
 }

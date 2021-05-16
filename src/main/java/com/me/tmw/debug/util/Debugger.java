@@ -1,5 +1,7 @@
 package com.me.tmw.debug.util;
 
+import com.me.tmw.debug.devtools.inspectors.InspectorBase;
+import com.me.tmw.debug.devtools.inspectors.SimpleInspector;
 import com.me.tmw.nodes.util.Layout;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -7,16 +9,11 @@ import javafx.beans.value.ObservableValue;
 import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
-import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.stage.Popup;
 
 import java.util.Objects;
@@ -24,7 +21,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public final class Debugger {
 
@@ -87,77 +83,22 @@ public final class Debugger {
     }
 
     public static void examineLayout(Parent parent) {
-        String styleSheet = Objects.requireNonNull(Debugger.class.getClassLoader().getResource("debugger/layout-examiner.css")).toExternalForm();
+        String styleSheet = InspectorBase.DEFAULT_STYLE_SHEET;
         parent.getStylesheets().add(styleSheet);
 
-        Popup infoPopup = new Popup();
-        infoPopup.hide();
-        Label dimensions = new Label();
-        Text id = new Text();
-        Text styleClasses = new Text();
-        Text pseudoStates = new Text();
-        TextFlow cssInfo = new TextFlow(id, styleClasses, pseudoStates);
-        Label className = new Label();
-        HBox info = new HBox(className, new Separator(Orientation.VERTICAL), cssInfo, dimensions);
-        info.getStyleClass().add("info-popup");
-        info.getStylesheets().add(styleSheet);
-        styleClasses.getStyleClass().addAll("style-classes", "css-property");
-        id.getStyleClass().addAll("id", "css-property");
-        pseudoStates.getStyleClass().addAll("pseudo-states", "css-property");
-        dimensions.getStyleClass().add("dimensions");
-        className.getStyleClass().add("class-name");
-        infoPopup.getContent().add(info);
+        SimpleInspector inspector = new SimpleInspector();
 
-        info.setOnMouseEntered(event -> infoPopup.hide());
-
-        AtomicReference<Node> lastNode = new AtomicReference<>();
         EventHandler<MouseEvent> mouseEventEventHandler = event -> {
-            if (lastNode.get() != event.getPickResult().getIntersectedNode()) {
-                if (lastNode.get() != null) {
-                    lastNode.get().pseudoClassStateChanged(EXAMINED, false);
-                }
-                if (event.getPickResult().getIntersectedNode() != null) {
-                    Node intersectedTemp = event.getPickResult().getIntersectedNode();
-                    Parent intersected;
-                    if (!(intersectedTemp instanceof Parent)) {
-                        intersected = intersectedTemp.getParent();
-                    } else {
-                        intersected = (Parent) intersectedTemp;
-                    }
-                    if (intersected.getScene() != null && intersected.getScene().getWindow() != null) {
-                        styleClasses.textProperty().unbind();
-                        pseudoStates.textProperty().unbind();
-                        styleClasses.textProperty().unbind();
-                        styleClasses.textProperty().bind(Bindings.createStringBinding(() ->
-                                intersected.getStyleClass().stream().map(s -> "." + s).collect(Collectors.joining(", ")),
-                                styleClasses.getStyleClass()
-                        ));
-                        pseudoStates.textProperty().bind(Bindings.createStringBinding(() ->
-                                intersected.getPseudoClassStates().stream().map(s -> ":" + s.getPseudoClassName()).collect(Collectors.joining("")),
-                                intersected.getPseudoClassStates()
-                        ));
-                        id.textProperty().bind(Bindings.createStringBinding(() -> intersected.getId() != null ? ("#" + intersected.getId()) : "", intersected.idProperty()));
-                        className.setText(intersected.getClass().getSimpleName());
-                        Bounds bounds = intersected.getBoundsInLocal();
-                        dimensions.setText((int) bounds.getWidth() + " x " + (int) bounds.getHeight());
-                        Bounds boundsInScreen = Layout.nodeOnScreen(intersected);
-                        infoPopup.setX(boundsInScreen.getMinX());
-                        infoPopup.setY(boundsInScreen.getMaxY());
-                        infoPopup.show(intersected.getScene().getWindow());
-                    }
-                    if (!intersected.getStyleClass().contains("examinable")) {
-                        intersected.getStyleClass().add("examinable");
-                    }
-                    lastNode.set(intersected);
-                    intersected.pseudoClassStateChanged(EXAMINED, true);
-                } else {
-                    infoPopup.hide();
-                    lastNode.set(null);
-                }
+            Node intersected = event.getPickResult().getIntersectedNode();
+            if (intersected != null && !(intersected instanceof Parent)) {
+                intersected = intersected.getParent();
             }
+            inspector.setExamined(intersected);
         };
         parent.addEventFilter(MouseEvent.MOUSE_MOVED, mouseEventEventHandler);
         parent.addEventFilter(MouseEvent.MOUSE_EXITED, mouseEventEventHandler);
     }
+
+
 
 }

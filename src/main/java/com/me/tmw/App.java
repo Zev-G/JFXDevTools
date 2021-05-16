@@ -1,29 +1,21 @@
 package com.me.tmw;
 
-import com.me.tmw.animations.Animations;
-import com.me.tmw.animations.builder.grouping.AnimationGroupBuilder;
-import com.me.tmw.examples.magis.Magis;
+import com.me.tmw.debug.devtools.nodeinfo.css.NodeCss;
 import com.me.tmw.nodes.util.Dragging;
-import com.me.tmw.nodes.util.Layout;
 import javafx.application.Application;
-import javafx.beans.binding.Bindings;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Magis.run(primaryStage);
+        Button button = new Button("button");
+        Dragging.draggable(button, button.translateXProperty(), button.translateYProperty());
+        primaryStage.setScene(new Scene(new VBox(button, new NodeCss(button))));
+        primaryStage.show();
 //        VBox box = new VBox();
 //        box.setPadding(new Insets(45));
 //        box.setAlignment(Pos.CENTER);
