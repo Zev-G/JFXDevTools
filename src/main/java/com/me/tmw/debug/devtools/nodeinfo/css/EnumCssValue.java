@@ -3,12 +3,12 @@ package com.me.tmw.debug.devtools.nodeinfo.css;
 import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 
-public class EnumCssValue<T extends Enum<T>> extends CssValue<Class<T>> {
+public class EnumCssValue<T extends Enum<T>> extends CssValue<T> {
 
     protected final ComboBox<T> comboBox = new ComboBox<>();
 
     EnumCssValue(Class<T> enumClass, T initialValue, Runnable update) {
-        super(enumClass, update);
+        super(initialValue, update);
         comboBox.getItems().addAll(enumClass.getEnumConstants());
         comboBox.getSelectionModel().select(initialValue);
 
@@ -27,4 +27,8 @@ public class EnumCssValue<T extends Enum<T>> extends CssValue<Class<T>> {
         return comboBox;
     }
 
+    @Override
+    public T genAlt() {
+        return comboBox.getValue();
+    }
 }

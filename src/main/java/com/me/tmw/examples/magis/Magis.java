@@ -1,6 +1,7 @@
 package com.me.tmw.examples.magis;
 
 import com.me.tmw.animations.Animations;
+import com.me.tmw.debug.devtools.DevScene;
 import com.me.tmw.debug.util.Debugger;
 import com.me.tmw.examples.magis.home.LessonShortcut;
 import com.me.tmw.nodes.util.Dragging;
@@ -8,8 +9,8 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Magis {
@@ -26,7 +27,7 @@ public class Magis {
             loadOntoVBox(lessons);
         });
 
-        primaryStage.setScene(new Scene(lessons));
+        primaryStage.setScene(DevScene.getInstance(lessons));
         loadOntoVBox(lessons);
         primaryStage.show();
         primaryStage.setMaximized(true);
@@ -42,11 +43,9 @@ public class Magis {
             shortcut.setScaleX(0.95);
             shortcut.setScaleY(0.95);
             shortcut.setMouseTransparent(true);
+            shortcut.setBorder(new Border(new BorderStroke(Color.ORANGE, BorderStrokeStyle.DASHED, CornerRadii.EMPTY, new BorderWidths(4))));
             lessons.getChildren().add(shortcut);
             Dragging.draggable(shortcut, shortcut.translateXProperty(), shortcut.translateYProperty());
-            shortcut.setOnMousePressed(event -> {
-                Debugger.liveViewCss(shortcut).show();
-            });
             shortcut.setOnMouseReleased(event -> {
                 Animations.animatePropertyChange(shortcut.translateXProperty(), 0, 100);
                 Animations.animatePropertyChange(shortcut.translateYProperty(), 0, 100);

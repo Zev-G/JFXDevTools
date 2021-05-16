@@ -39,7 +39,7 @@
 
 .enum-property {
     -fx-background-color: rgba(0, 0, 0, 0.05);
-    -fx-background-insets: 2.35;
+    -fx-padding: -4;
 }
 
 .enum-property .list-view .list-cell {

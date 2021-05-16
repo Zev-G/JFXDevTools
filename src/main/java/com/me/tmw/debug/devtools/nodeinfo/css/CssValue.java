@@ -3,6 +3,7 @@ package com.me.tmw.debug.devtools.nodeinfo.css;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 
 abstract class CssValue<T> {
@@ -31,4 +32,11 @@ abstract class CssValue<T> {
         return Pos.CENTER_LEFT;
     }
 
+    public Node belowName() {
+        return null;
+    }
+
+    public Node belowValue() {
+        return null;
+    }
 }

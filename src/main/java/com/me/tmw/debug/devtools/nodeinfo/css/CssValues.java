@@ -15,7 +15,7 @@ public abstract class CssValues<T> extends CssValue<T> {
     private final Label expand = new Label("+");
     private final VBox layout = new VBox(expand);
 
-    private final BooleanProperty expanded;
+    protected final BooleanProperty expanded;
 
     CssValues(T initialValue, Runnable updateNode, BooleanProperty expanded) {
         super(initialValue, updateNode);

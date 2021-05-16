@@ -2,6 +2,7 @@ package com.me.tmw.debug.devtools.nodeinfo.css;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -14,10 +15,11 @@ import java.util.List;
 public class BackgroundCssValues extends CssValues<Background> {
 
     private final Label backgroundFill = new Label("-fx-background-fill: ");
-    private final Label cornerRadii = new Label("-fx-corner-radius: ");
+    private final Label cornerRadii = new Label("-fx-background-radius: ");
     private final Label insets = new Label("-fx-background-insets: ");
 
-    private final GridPane view = new GridPane();
+    private final GridPane values = new GridPane();
+    private final VBox names = new VBox();
 
     private final List<ColorCssValue> fillPreviews = new ArrayList<>();
     private final List<InsetsCssValue> radiiPreviews = new ArrayList<>();
@@ -30,32 +32,35 @@ public class BackgroundCssValues extends CssValues<Background> {
 
         strokes = initialValue != null ? initialValue.getFills() : Collections.emptyList();
 
-        view.add(backgroundFill, 0, 0);
-        view.add(cornerRadii,    0, 1);
-        view.add(insets,         0, 2);
+        names.getChildren().addAll(
+                backgroundFill, cornerRadii, insets
+        );
 
         int i = 0;
         for (BackgroundFill fill : strokes) {
             ColorCssValue colorCssValue = new ColorCssValue(fill.getFill()
                     , updateNode);
             fillPreviews.add(colorCssValue);
-            view.add(colorCssValue.node(), 1 + i, 0);
+            values.add(colorCssValue.node(), i, 0);
 
             CornerRadii fillRadii = fill.getRadii();
             InsetsCssValue radii = new InsetsCssValue(new Insets(fillRadii.getTopLeftHorizontalRadius(), fillRadii.getTopRightHorizontalRadius(), fillRadii.getBottomRightHorizontalRadius(), fillRadii.getBottomLeftHorizontalRadius())
                     , updateNode);
             radiiPreviews.add(radii);
-            view.add(radii.node(), 1 + i, 1);
+            values.add(radii.node(), i, 1);
 
             InsetsCssValue insets = new InsetsCssValue(fill.getInsets(),
                     updateNode);
             insetsPreviews.add(insets);
-            view.add(insets.node(), 1 + i, 2);
+            values.add(insets.node(), i, 2);
             i++;
         }
 
-        view.setHgap(2);
-        view.setVgap(5);
+        values.setHgap(2);
+        values.setVgap(5);
+        names.setSpacing(5);
+        names.setPadding(new Insets(3, 3, 3, 30));
+        values.setPadding(new Insets(3, 0, 3, 0));
         init();
     }
 
@@ -89,10 +94,17 @@ public class BackgroundCssValues extends CssValues<Background> {
 
     @Override
     public void addNodes(VBox vBox) {
-        view.setTranslateX(-50);
-        vBox.getChildren().add(
-                view
-        );
+        // not used
+    }
+
+    @Override
+    public Node belowName() {
+        return names;
+    }
+
+    @Override
+    public Node belowValue() {
+        return values;
     }
 
 }

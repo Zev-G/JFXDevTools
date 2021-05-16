@@ -9,24 +9,29 @@ import javafx.css.Stylesheet;
 import javafx.css.converter.CursorConverter;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 import java.net.URL;
 
-public class CssPropertyView extends HBox {
+public class CssPropertyView {
 
     private final CssParser parser = new CssParser();
 
     private final Label name = new Label();
+    private final VBox nameSubItems = new VBox();
+    private final VBox left = new VBox(name);
+
     private final StackPane value = new StackPane();
     private final Label type = new Label(" } Type");
+    private final HBox valueTypeBox = new HBox(value, type);
+    private final VBox valueSubItems = new VBox();
+    private final VBox right = new VBox(valueTypeBox);
 
     private CssValue<?> cssValue;
 
@@ -37,34 +42,67 @@ public class CssPropertyView extends HBox {
 
     public CssPropertyView(ObservableStyleableProperty<?> property, Parent node) {
         super();
-        getChildren().addAll(name, value, type);
         this.property = property;
+
+        expanded.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                if (!left.getChildren().contains(nameSubItems)) {
+                    left.getChildren().add(nameSubItems);
+                }
+                if (!right.getChildren().contains(valueSubItems)) {
+                    right.getChildren().add(valueSubItems);
+                }
+            } else {
+                left.getChildren().remove(nameSubItems);
+                right.getChildren().remove(valueSubItems);
+            }
+        });
+        if (expanded.get()) {
+            left.getChildren().add(nameSubItems);
+            right.getChildren().add(valueSubItems);
+        }
 
         name.setText(property.getCssMetaData().getProperty() + ": ");
 
-        property.addListener(observable -> {
-            cssValue = cssNode(property.getValue(), property.getCssMetaData().getConverter(), this);
-            value.getChildren().setAll(cssValue.node());
-            setAlignment(cssValue.alignment());
-        });
-        cssValue = cssNode(property.getValue(), property.getCssMetaData().getConverter(), this);
-        value.getChildren().setAll(cssValue.node());
-        setAlignment(cssValue.alignment());
+        property.addListener(observable -> propertyChanged());
+        propertyChanged();
 
         String typeString = property.getCssMetaData().getConverter().getClass().getSimpleName().replaceAll("Converter", "");
         type.setText(": " + (
                 typeString.isEmpty() ? "Unspecified" : typeString
         ));
 
-        this.getStyleClass().add("property-view");
+        nameSubItems.getStyleClass().add("css-property");
         name.getStyleClass().addAll("property-name", "css-property");
         value.getStyleClass().addAll("css-property");
         type.getStyleClass().addAll("property-type", "css-property");
     }
 
+    private void propertyChanged() {
+        cssValue = cssNode(property.getValue(), property.getCssMetaData().getConverter(), this);
+        value.getChildren().setAll(cssValue.node());
+        valueTypeBox.setAlignment(cssValue.alignment());
+        nameSubItems.getChildren().clear();
+        Node belowName = cssValue.belowName();
+        if (belowName != null) {
+            nameSubItems.getChildren().setAll(belowName);
+        }
+        Node belowValue = cssValue.belowValue();
+        if (belowValue != null) {
+            valueSubItems.getChildren().setAll(belowValue);
+        }
+    }
+
+    public Parent left() {
+        return left;
+    }
+    public Parent right() {
+        return right;
+    }
+
     @SuppressWarnings("unchecked")
     private void updateNode() {
-        this.requestFocus();
+//        this.requestFocus();
         if (cssValue.isUsingAltGen()) {
             property.setValueObj(cssValue.genAlt());
         } else {
@@ -90,6 +128,9 @@ public class CssPropertyView extends HBox {
         }
         if (converter.getClass().getSimpleName().equals("BackgroundConverter")) {
             return new BackgroundCssValues((Background) obj, updateNode, expanded);
+        }
+        if (converter.getClass().getSimpleName().equals("BorderConverter")) {
+            return new BorderCssValues((Border) obj, updateNode, expanded);
         }
         if (obj == null) {
             return new StringCssValue("null", updateNode);
