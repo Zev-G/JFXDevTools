@@ -49,7 +49,7 @@ public class BackgroundCssValues extends CssValues<Background> {
 
             InsetsCssValue insets = new InsetsCssValue(fill.getInsets(),
                     updateNode);
-            insetsPreviews.add(radii);
+            insetsPreviews.add(insets);
             view.add(insets.node(), 1 + i, 2);
             i++;
         }

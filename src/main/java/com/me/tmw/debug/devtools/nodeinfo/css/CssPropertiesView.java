@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class CssPropertiesView extends VBox {
 
-    private static final List<String> BANNED_PROPERTIES = Arrays.asList("-fx-region-border", "visibility");
+    private static final List<String> BANNED_PROPERTIES = Arrays.asList("-fx-region-border", "visibility", "-fx-effect");
 
     private final List<ObservableStyleableProperty<?>> properties = new ArrayList<>();
 

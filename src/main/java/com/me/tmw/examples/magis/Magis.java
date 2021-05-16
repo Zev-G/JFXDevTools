@@ -33,7 +33,6 @@ public class Magis {
     }
 
     public static void loadOntoVBox(VBox lessons) {
-        Debugger.examineLayout(lessons);
         for (int i = 0; i < 5; i++) {
             LessonShortcut shortcut = new LessonShortcut("Comments", "Become familiar with the three types of Java comments", 100);
 //            Debugger.showProperty(shortcut.translateXProperty(), shortcut);
@@ -45,6 +44,9 @@ public class Magis {
             shortcut.setMouseTransparent(true);
             lessons.getChildren().add(shortcut);
             Dragging.draggable(shortcut, shortcut.translateXProperty(), shortcut.translateYProperty());
+            shortcut.setOnMousePressed(event -> {
+                Debugger.liveViewCss(shortcut).show();
+            });
             shortcut.setOnMouseReleased(event -> {
                 Animations.animatePropertyChange(shortcut.translateXProperty(), 0, 100);
                 Animations.animatePropertyChange(shortcut.translateYProperty(), 0, 100);

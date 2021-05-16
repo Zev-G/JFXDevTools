@@ -1,7 +1,6 @@
 package com.me.tmw.debug.devtools.nodeinfo.css;
 
 import com.me.tmw.debug.devtools.nodeinfo.css.CssPropertiesView.ObservableStyleableProperty;
-import com.me.tmw.nodes.control.FillWidthTextField;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.css.CssParser;
@@ -12,8 +11,6 @@ import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -92,7 +89,7 @@ public class CssPropertyView extends HBox {
             return new CursorCssValue((Cursor) obj, updateNode);
         }
         if (converter.getClass().getSimpleName().equals("BackgroundConverter")) {
-            return new BackgroundCssValues((Background) obj, () -> System.out.println("asdf"), expanded);
+            return new BackgroundCssValues((Background) obj, updateNode, expanded);
         }
         if (obj == null) {
             return new StringCssValue("null", updateNode);

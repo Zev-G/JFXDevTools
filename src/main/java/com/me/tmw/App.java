@@ -1,6 +1,7 @@
 package com.me.tmw;
 
 import com.me.tmw.debug.devtools.nodeinfo.css.NodeCss;
+import com.me.tmw.examples.magis.Magis;
 import com.me.tmw.nodes.util.Dragging;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -12,10 +13,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Button button = new Button("button");
-        Dragging.draggable(button, button.translateXProperty(), button.translateYProperty());
-        primaryStage.setScene(new Scene(new VBox(button, new NodeCss(button))));
-        primaryStage.show();
+        Magis.run(primaryStage);
 //        VBox box = new VBox();
 //        box.setPadding(new Insets(45));
 //        box.setAlignment(Pos.CENTER);
