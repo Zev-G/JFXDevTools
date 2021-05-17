@@ -1,0 +1,11 @@
+
+.color-picker-mini-view {
+    -fx-border-color: #1a1a1a;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+}
+
+.color-picker-mini-view:hover {
+    -fx-border-color: #1a1a1a;
+    -fx-border-width: 2;
+}

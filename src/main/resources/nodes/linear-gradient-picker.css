@@ -1,0 +1,27 @@
+.linear-gradient-picker {
+    -fx-alignment: top-center;
+    -fx-padding: 10;
+    -fx-spacing: 5;
+}
+
+.result-preview {
+    -fx-border-width: 1;
+    -fx-border-color: #1f1f1f;
+}
+
+.stops {
+    -fx-alignment: center;
+}
+
+.stops {
+    -fx-hgap: 5;
+    -fx-vgap: 5;
+}
+.stop-line {
+    -fx-alignment: center;
+    -fx-spacing: 5;
+}
+
+.top-layout-hbox {
+    -fx-spacing: 5;
+}

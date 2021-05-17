@@ -1,4 +1,4 @@
-package com.me.tmw.nodes.control;
+package com.me.tmw.nodes.control.paint;
 
 import com.me.tmw.resource.Resources;
 import javafx.beans.binding.Bindings;
@@ -197,7 +197,7 @@ public class ColorPicker extends VBox {
         }
         updateValues();
 
-        getStylesheets().add(Resources.DEBUGGER.getCss("color-picker"));
+        getStylesheets().add(Resources.NODES.getCss("color-picker"));
 
     }
 

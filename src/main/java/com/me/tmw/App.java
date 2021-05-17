@@ -1,19 +1,17 @@
 package com.me.tmw;
 
-import com.me.tmw.debug.devtools.nodeinfo.css.NodeCss;
-import com.me.tmw.examples.magis.Magis;
-import com.me.tmw.nodes.util.Dragging;
+import com.me.tmw.nodes.control.paint.LinearGradientPicker;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Magis.run(primaryStage);
+//        Magis.run(primaryStage);
+        primaryStage.setScene(new Scene(new LinearGradientPicker()));
+        primaryStage.show();
 //        VBox box = new VBox();
 //        box.setPadding(new Insets(45));
 //        box.setAlignment(Pos.CENTER);

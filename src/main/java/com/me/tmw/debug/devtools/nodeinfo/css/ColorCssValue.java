@@ -1,7 +1,9 @@
 package com.me.tmw.debug.devtools.nodeinfo.css;
 
-import com.me.tmw.nodes.control.ColorPicker;
+import com.me.tmw.nodes.control.paint.ColorPicker;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -22,12 +24,18 @@ public class ColorCssValue extends CssValue<Paint> {
 
     private final Pane pickerPreview = new Pane();
 
+    private final ObjectProperty<Paint> paintProperty = new SimpleObjectProperty<>();
+
     private String paintType = "not-set";
 
     ColorCssValue(Paint initialValue, Runnable updateNode) {
         super(initialValue, updateNode);
+        paintProperty.set(initialValue);
 
-        pickerPreview.setBackground(new Background(new BackgroundFill(initialValue, CornerRadii.EMPTY, Insets.EMPTY)));
+        pickerPreview.backgroundProperty().bind(Bindings.createObjectBinding(
+                () -> new Background(new BackgroundFill(paintProperty.get(), CornerRadii.EMPTY, Insets.EMPTY)),
+                paintProperty
+        ));
         pickerPreview.setPrefSize(15, 15);
         pickerPreview.getStyleClass().add("color-property");
         pickerPreview.setOnMousePressed(event -> {
@@ -52,12 +60,11 @@ public class ColorCssValue extends CssValue<Paint> {
         if (initialValue instanceof Color) {
             paintType = "color";
             picker.setCurrentColor((Color) initialValue);
-            pickerPreview.backgroundProperty().bind(Bindings.createObjectBinding(
-                    () -> new Background(new BackgroundFill(picker.getCustomColor(), CornerRadii.EMPTY, Insets.EMPTY)),
-                    picker.customColorProperty()
-            ));
             layout.getChildren().add(0, picker);
             layout.setPadding(new Insets(0, 0, 20, 0));
+            paintProperty.bind(picker.customColorProperty());
+        } else if (initialValue instanceof LinearGradient) {
+            paintType = "linear-gradient";
         } else {
             chooseColor.setDisable(true);
             Pane bigPreview = new Pane();
@@ -79,6 +86,8 @@ public class ColorCssValue extends CssValue<Paint> {
             int blue = (int) (color.getBlue() * 255);
             double opacity = color.getOpacity();
             return "rgba(" + red + ", " + green + ", " + blue + ", " + opacity + ")";
+        } else if (paintType.equals("linear-gradient")) {
+            return paintProperty.get().toString();
         } else {
             return "transparent";
         }

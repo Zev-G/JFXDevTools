@@ -34,7 +34,7 @@ public class FillWidthTextField extends TextField {
     }
 
     public double calculateWidth() {
-        return Utils.computeTextWidth(getFont(), getText(), 0D) + getFont().getSize();
+        return Utils.computeTextWidth(getFont(), getText() + " ", 0D);
     }
 
 }
