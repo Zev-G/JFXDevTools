@@ -1,6 +1,7 @@
 package com.me.tmw.debug.devtools;
 
 import com.me.tmw.debug.devtools.nodeinfo.css.NodeCss;
+import com.me.tmw.debug.devtools.scenetree.SceneTree;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -26,7 +27,8 @@ public class DevScene extends Scene {
             inspect.setOnAction(actionEvent -> {
                 Node intersectedTemp = event.getPickResult().getIntersectedNode();
                 Parent intersected = intersectedTemp instanceof Parent ? (Parent) intersectedTemp : intersectedTemp.getParent();
-                this.root.getItems().add(new NodeCss(intersected));
+                /*this.root.getItems().add(new NodeCss(intersected));*/
+                this.root.getItems().add(new SceneTree(this));
             });
             menu.show(getWindow(), event.getScreenX(), event.getScreenY());
         });

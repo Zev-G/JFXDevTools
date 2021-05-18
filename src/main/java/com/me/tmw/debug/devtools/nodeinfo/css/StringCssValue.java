@@ -1,6 +1,7 @@
 package com.me.tmw.debug.devtools.nodeinfo.css;
 
 import com.me.tmw.nodes.control.FillWidthTextField;
+import javafx.beans.binding.Bindings;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 
@@ -14,6 +15,7 @@ class StringCssValue extends CssValue<String> {
     public StringCssValue(String initialValue, Runnable updater) {
         super(initialValue, updater);
         value.getStyleClass().addAll("property-value", "css-property");
+        value.disableProperty().bind(Bindings.not(editable));
 
         value.textProperty().addListener((observable, oldValue, newValue) -> {
             value.getStyleClass().remove("string");

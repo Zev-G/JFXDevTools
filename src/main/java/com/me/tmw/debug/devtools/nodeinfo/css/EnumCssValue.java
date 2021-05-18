@@ -1,5 +1,6 @@
 package com.me.tmw.debug.devtools.nodeinfo.css;
 
+import javafx.beans.binding.Bindings;
 import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 
@@ -9,6 +10,8 @@ public class EnumCssValue<T extends Enum<T>> extends CssValue<T> {
 
     EnumCssValue(Class<T> enumClass, T initialValue, Runnable update) {
         super(initialValue, update);
+        comboBox.disableProperty().bind(Bindings.not(editable));
+
         comboBox.getItems().addAll(enumClass.getEnumConstants());
         comboBox.getSelectionModel().select(initialValue);
 

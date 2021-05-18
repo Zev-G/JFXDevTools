@@ -1,5 +1,6 @@
 package com.me.tmw.debug.devtools.nodeinfo.css;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -29,6 +30,8 @@ public class BackgroundCssValues extends CssValues<Background> {
 
     BackgroundCssValues(Background initialValue, Runnable updateNode, BooleanProperty expanded) {
         super(initialValue, updateNode, expanded);
+
+        values.disableProperty().bind(Bindings.not(editable));
 
         strokes = initialValue != null ? initialValue.getFills() : Collections.emptyList();
 

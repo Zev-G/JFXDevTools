@@ -32,6 +32,8 @@ public class ColorCssValue extends CssValue<Paint> {
         super(initialValue, updateNode);
         paintProperty.set(initialValue);
 
+        pickerPreview.disableProperty().bind(Bindings.not(editable));
+
         pickerPreview.backgroundProperty().bind(Bindings.createObjectBinding(
                 () -> new Background(new BackgroundFill(paintProperty.get(), CornerRadii.EMPTY, Insets.EMPTY)),
                 paintProperty
@@ -59,7 +61,7 @@ public class ColorCssValue extends CssValue<Paint> {
 
         if (initialValue instanceof Color) {
             paintType = "color";
-            picker.setCurrentColor((Color) initialValue);
+            picker.setCustomColor((Color) initialValue);
             layout.getChildren().add(0, picker);
             layout.setPadding(new Insets(0, 0, 20, 0));
             paintProperty.bind(picker.customColorProperty());

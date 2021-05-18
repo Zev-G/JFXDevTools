@@ -1,6 +1,7 @@
 package com.me.tmw.debug.devtools.nodeinfo.css;
 
 import com.me.tmw.nodes.control.FillWidthTextField;
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -13,6 +14,7 @@ public class InsetsCssValue extends CssValue<Insets> {
 
     InsetsCssValue(Insets initialValue, Runnable updateNode) {
         super(initialValue, updateNode);
+        value.disableProperty().bind(Bindings.not(editable));
         value.getStyleClass().addAll("property-value", "css-property");
 
         value.setText(insetsToString(initialValue));

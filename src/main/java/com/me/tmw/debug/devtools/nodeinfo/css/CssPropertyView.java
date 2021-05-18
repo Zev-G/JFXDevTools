@@ -2,16 +2,19 @@ package com.me.tmw.debug.devtools.nodeinfo.css;
 
 import com.me.tmw.debug.devtools.nodeinfo.css.CssPropertiesView.ObservableStyleableProperty;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.css.CssParser;
 import javafx.css.StyleConverter;
 import javafx.css.Stylesheet;
 import javafx.css.converter.CursorConverter;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -38,11 +41,19 @@ public class CssPropertyView {
     private final ObservableStyleableProperty<?> property;
     private final Runnable updateNode = this::updateNode;
 
-    private final BooleanProperty expanded = new SimpleBooleanProperty(false);
+    private final BooleanProperty expanded = new SimpleBooleanProperty(this, "expanded", false);
+    private final BooleanProperty editable = new SimpleBooleanProperty(this, "editable", false);
 
     public CssPropertyView(ObservableStyleableProperty<?> property, Parent node) {
         super();
         this.property = property;
+        
+        if (property.getBackingStyleableProperty() instanceof Property<?>) {
+            EventHandler<MouseEvent> hoverListener = event -> editable.set(!((Property<?>) property.getBackingStyleableProperty()).isBound());
+            hoverListener.handle(null);
+            left.setOnMouseEntered(hoverListener);
+            right.setOnMouseEntered(hoverListener);
+        }
 
         expanded.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -80,6 +91,8 @@ public class CssPropertyView {
 
     private void propertyChanged() {
         cssValue = cssNode(property.getValue(), property.getCssMetaData().getConverter(), this);
+        cssValue.editable.bind(editable);
+
         value.getChildren().setAll(cssValue.node());
         valueTypeBox.setAlignment(cssValue.alignment());
         nameSubItems.getChildren().clear();
@@ -102,6 +115,9 @@ public class CssPropertyView {
 
     @SuppressWarnings("unchecked")
     private void updateNode() {
+        if (property.getBackingStyleableProperty() instanceof Property<?> && ((Property<?>) property.getBackingStyleableProperty()).isBound()) {
+            return;
+        }
 //        this.requestFocus();
         if (cssValue.isUsingAltGen()) {
             property.setValueObj(cssValue.genAlt());

@@ -2,6 +2,7 @@
     -fx-background-color: rgba(0, 161, 255, 0.8) !important;
     -fx-border-color: #be0059 !important;
     -fx-border-width: 1.5 !important;
+    -fx-border-insets: -1.5;
     -fx-border-style: dashed !important;
 }
 

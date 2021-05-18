@@ -1,6 +1,7 @@
 package com.me.tmw.debug.devtools.nodeinfo.css;
 
 import com.me.tmw.nodes.util.NodeMisc;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Side;
@@ -34,7 +35,9 @@ public class BorderCssValues extends CssValues<Border> {
     BorderCssValues(Border initialValue, Runnable updateNode, BooleanProperty expanded) {
         super(initialValue, updateNode, expanded);
 
-        this.borderStrokes = initialValue.getStrokes();
+        values.disableProperty().bind(Bindings.not(editable));
+
+        this.borderStrokes = initialValue == null ? Collections.emptyList() : initialValue.getStrokes();
 
         if (!borderStrokes.isEmpty()) {
             names.getChildren().addAll(

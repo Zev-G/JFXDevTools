@@ -1,5 +1,6 @@
 package com.me.tmw.debug.devtools.nodeinfo.css;
 
+import javafx.beans.binding.Bindings;
 import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
@@ -20,6 +21,7 @@ class FontCssValue extends CssValue<Font> {
         family = new StringCssValue(initialValue.getFamily(), updater);
 
         items = new HBox(style.node(), size.node(), family.node());
+        items.disableProperty().bind(Bindings.not(editable));
     }
 
     @Override

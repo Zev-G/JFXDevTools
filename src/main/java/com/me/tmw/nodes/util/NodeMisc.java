@@ -7,7 +7,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.IntFunction;
 
 public final class NodeMisc {
@@ -58,4 +60,17 @@ public final class NodeMisc {
         svgPath.setContent(s);
         return svgPath;
     }
+
+    public static Background addToBackground(Background background, BackgroundFill fill) {
+        List<BackgroundFill> fills = new ArrayList<>(background.getFills());
+        fills.add(fill);
+        return new Background(fills, background.getImages());
+    }
+
+    public static Background removeFromBackground(Background background, BackgroundFill fill) {
+        List<BackgroundFill> fills = new ArrayList<>(background.getFills());
+        fills.remove(fill);
+        return new Background(fills, background.getImages());
+    }
+
 }

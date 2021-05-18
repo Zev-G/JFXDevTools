@@ -19,7 +19,7 @@ public final class Dragging {
         return manager;
     }
 
-    public DragManager dragAsPopup(Node node) {
+    public static DragManager dragAsPopup(Node node) {
         Popup popup = new Popup();
         DoubleProperty writableXProperty = new SimpleDoubleProperty(popup.getX());
         DoubleProperty writableYProperty = new SimpleDoubleProperty(popup.getY());

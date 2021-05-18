@@ -54,6 +54,14 @@ public class CssPropertiesView extends GridPane {
             }
         }
 
+        public ObservableValue<T> getObservable() {
+            return observable;
+        }
+
+        public StyleableProperty<T> getBackingStyleableProperty() {
+            return styleableProperty;
+        }
+
         @Override
         public void addListener(InvalidationListener listener) {
             if (observable != null) {
