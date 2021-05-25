@@ -1,7 +1,5 @@
 package com.me.tmw.debug.devtools;
 
-import com.me.tmw.debug.devtools.nodeinfo.css.NodeCss;
-import com.me.tmw.debug.devtools.scenetree.SceneTree;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -12,6 +10,8 @@ import javafx.scene.control.SplitPane;
 public class DevScene extends Scene {
 
     private final SplitPane root;
+
+    private DevTools tools;
 
     public static DevScene getInstance(Parent root) {
         return new DevScene(root, root(root));
@@ -25,10 +25,14 @@ public class DevScene extends Scene {
             MenuItem inspect = new MenuItem("Inspect");
             ContextMenu menu = new ContextMenu(inspect);
             inspect.setOnAction(actionEvent -> {
-                Node intersectedTemp = event.getPickResult().getIntersectedNode();
-                Parent intersected = intersectedTemp instanceof Parent ? (Parent) intersectedTemp : intersectedTemp.getParent();
-                /*this.root.getItems().add(new NodeCss(intersected));*/
-                this.root.getItems().add(new SceneTree(this));
+                if (tools == null) {
+                    tools = new DevTools(root);
+                }
+                Node intersected = event.getPickResult().getIntersectedNode();
+                tools.getStructureTab().getSceneTree().tryToFocus(intersected);
+                if (!this.root.getItems().contains(tools)) {
+                    this.root.getItems().add(tools);
+                }
             });
             menu.show(getWindow(), event.getScreenX(), event.getScreenY());
         });

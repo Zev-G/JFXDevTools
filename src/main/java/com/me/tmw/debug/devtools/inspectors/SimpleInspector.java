@@ -28,6 +28,8 @@ public class SimpleInspector extends InspectorBase {
 
     public SimpleInspector() {
         super();
+        usingCSS = false;
+        usingOverlay = true;
         getPopupContent().getChildren().add(layout);
 
         layout.getStyleClass().add("info-popup");
@@ -45,6 +47,9 @@ public class SimpleInspector extends InspectorBase {
         Bounds boundsOnScreen = Layout.nodeOnScreen(node);
         getPopup().setX(boundsOnScreen.getMinX());
         getPopup().setY(boundsOnScreen.getMaxY());
+
+        getOverlayPopup().setX(boundsOnScreen.getMinX());
+        getOverlayPopup().setY(boundsOnScreen.getMinY());
     }
 
     @Override
@@ -68,5 +73,8 @@ public class SimpleInspector extends InspectorBase {
         // Set text of dimensions
         Bounds bounds = node.getBoundsInLocal();
         dimensions.setText((int) bounds.getWidth() + " x " + (int) bounds.getHeight());
+
+        overlayPopupContent.minWidthProperty().bind(Bindings.createDoubleBinding(() -> node.getBoundsInParent().getWidth(), node.boundsInParentProperty()));
+        overlayPopupContent.minHeightProperty().bind(Bindings.createDoubleBinding(() -> node.getBoundsInParent().getHeight(), node.boundsInParentProperty()));
     }
 }

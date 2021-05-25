@@ -30,8 +30,12 @@ public class NodeTreeCell extends TreeCell<Node> {
         super.updateItem(item, empty);
         if (item != null) {
             setText(item.getClass().getSimpleName());
+            if (!getStyleClass().contains("real-tree-cell")) {
+                getStyleClass().add("real-tree-cell");
+            }
         } else {
             setText(null);
+            getStyleClass().remove("real-tree-cell");
         }
     }
 }

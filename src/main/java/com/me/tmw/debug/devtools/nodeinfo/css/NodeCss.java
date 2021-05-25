@@ -9,6 +9,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.css.CssMetaData;
 import javafx.css.Styleable;
 import javafx.css.StyleableProperty;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.TableColumn;
@@ -26,6 +27,7 @@ public class NodeCss extends NodeInfo implements Styleable {
         getChildren().add(new CssPropertiesView(
                 node.getCssMetaData().stream().map(s -> ((CssMetaData<Styleable, ?>) s).getStyleableProperty(node)).filter(property -> property instanceof Observable).collect(Collectors.toList())
         , node));
+        setPadding(new Insets(10));
     }
 
     private static class PropertiesTable extends TableView<StyleableProperty<?>> {

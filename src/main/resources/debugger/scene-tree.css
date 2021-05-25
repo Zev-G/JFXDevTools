@@ -1,0 +1,6 @@
+.real-tree-cell:hover {
+    -fx-background-color: rgba(83, 144, 208, 0.67);
+}
+.real-tree-cell:selected {
+    -fx-background-color: derive(-fx-accent, -5%);
+}

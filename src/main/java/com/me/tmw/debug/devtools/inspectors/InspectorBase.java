@@ -1,6 +1,7 @@
 package com.me.tmw.debug.devtools.inspectors;
 
 import com.me.tmw.resource.Resources;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -23,12 +24,23 @@ public abstract class InspectorBase {
     private final ObjectProperty<Node> examined = new SimpleObjectProperty<>();
 
     private final Popup popup = new Popup();
+    private final Popup overlayPopup = new Popup();
     protected final StackPane popupContent = new StackPane();
+    protected final StackPane overlayPopupContent = new StackPane();
+
+    protected boolean usingCSS = true;
+    protected boolean usingOverlay = false;
 
     public InspectorBase() {
         this.popup.getContent().add(popupContent);
         this.popupContent.getStylesheets().add(DEFAULT_STYLE_SHEET);
         this.popupContent.setId("popup-content");
+
+        this.overlayPopup.getContent().add(overlayPopupContent);
+        this.overlayPopup.setAutoFix(false);
+        this.overlayPopupContent.setMouseTransparent(true);
+        this.overlayPopupContent.getStylesheets().add(DEFAULT_STYLE_SHEET);
+        this.overlayPopupContent.setId("overlay-content");
 
         examined.addListener((observable, oldValue, newValue) -> {
             if (oldValue != null) {
@@ -40,9 +52,14 @@ public abstract class InspectorBase {
                     window.xProperty().removeListener(screenPosListener);
                     window.yProperty().removeListener(screenPosListener);
                 }
+
+                overlayPopupContent.minWidthProperty().unbind();
+                overlayPopupContent.minHeightProperty().unbind();
             }
             if (newValue != null) {
-                newValue.pseudoClassStateChanged(EXAMINED_PSEUDO_CLASS, true);
+                if (usingCSS) {
+                    newValue.pseudoClassStateChanged(EXAMINED_PSEUDO_CLASS, true);
+                }
                 newValue.localToSceneTransformProperty().addListener(boundsListener);
                 layoutPopup(newValue);
                 populatePopup(newValue);
@@ -65,15 +82,19 @@ public abstract class InspectorBase {
     protected boolean showPopup(Node node) {
         if (node != null && node.getScene() != null && node.getScene().getWindow() != null){
             popup.show(node.getScene().getWindow());
+            if (usingOverlay) {
+                overlayPopup.show(node.getScene().getWindow());
+            }
             return true;
         }
         return false;
     }
     protected void hidePopup() {
         popup.hide();
+        overlayPopup.hide();
     }
     protected boolean isPopupShowing() {
-        return popup.isShowing();
+        return popup.isShowing() && (!usingOverlay || overlayPopup.isShowing());
     }
 
     public Popup getPopup() {
@@ -92,5 +113,17 @@ public abstract class InspectorBase {
     }
     public void setExamined(Node node) {
         examinedProperty().set(node);
+    }
+
+    public boolean isUsingCSS() {
+        return usingCSS;
+    }
+
+    public Popup getOverlayPopup() {
+        return overlayPopup;
+    }
+
+    public StackPane getOverlayContent() {
+        return overlayPopupContent;
     }
 }
