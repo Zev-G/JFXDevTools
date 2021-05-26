@@ -2,12 +2,14 @@ package com.me.tmw.debug.devtools.scenetree;
 
 import com.me.tmw.debug.devtools.inspectors.SimpleInspector;
 import com.me.tmw.resource.Resources;
-import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.*;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.control.skin.TreeViewSkin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +21,14 @@ public class SceneTree extends TreeView<Node> {
 
     private final SimpleInspector inspector = new SimpleInspector();
 
+    private final DoubleProperty heightEstimation = new SimpleDoubleProperty(20);
+
     public SceneTree(Scene scene) {
         this(scene.rootProperty());
     }
     public SceneTree(ObjectProperty<Parent> root) {
         getStylesheets().add(STYLE_SHEET);
-
+        getStyleClass().add("scene-tree");
         rootProperty().addListener((observable, oldValue, newValue) -> {
             if (oldValue != null && oldValue.getValue() instanceof Parent) {
                 ((Parent) oldValue.getValue()).getStylesheets().remove(SimpleInspector.DEFAULT_STYLE_SHEET);
@@ -36,6 +40,14 @@ public class SceneTree extends TreeView<Node> {
 
         setCellFactory(param -> new NodeTreeCell(this));
         setRoot(new NodeTreeItem(root.get()));
+    }
+
+    public DoubleProperty heightEstimationProperty() {
+        return heightEstimation;
+    }
+
+    public int count(TreeItem<?> root) {
+        return 1 + root.getChildren().stream().filter(child -> child.getValue() != null).mapToInt(this::count).sum();
     }
 
     public SimpleInspector getInspector() {
@@ -71,4 +83,8 @@ public class SceneTree extends TreeView<Node> {
         return true;
     }
 
+    @Override
+    public ObservableList<Node> getChildren() {
+        return super.getChildren();
+    }
 }

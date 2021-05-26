@@ -37,6 +37,7 @@ public class NodeTreeItem extends TreeItem<Node> {
     }
     public NodeTreeItem(Node node) {
         super(node);
+
         valueProperty().addListener((observable, oldValue, newValue) -> {
             update(newValue);
             if (oldValue instanceof Parent) {

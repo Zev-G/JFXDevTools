@@ -1,7 +1,10 @@
 package com.me.tmw.nodes.util;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -57,6 +60,7 @@ public final class NodeMisc {
 
     public static SVGPath svgPath(String s) {
         SVGPath svgPath = new SVGPath();
+        svgPath.getStyleClass().add("svg-path");
         svgPath.setContent(s);
         return svgPath;
     }
@@ -71,6 +75,22 @@ public final class NodeMisc {
         List<BackgroundFill> fills = new ArrayList<>(background.getFills());
         fills.remove(fill);
         return new Background(fills, background.getImages());
+    }
+
+    public static ImageView snapshot(Node node) {
+        return new ImageView(node.snapshot(TRANSPARENT_SNAPSHOT_PARAMETERS, null));
+    }
+
+    public static Node center(Node inputSVG) {
+        VBox wrapper = new VBox(inputSVG);
+        wrapper.setAlignment(Pos.CENTER);
+        return wrapper;
+    }
+
+    public static Node pad(Node node, Insets pad) {
+        VBox padder = new VBox(node);
+        padder.setPadding(pad);
+        return padder;
     }
 
 }

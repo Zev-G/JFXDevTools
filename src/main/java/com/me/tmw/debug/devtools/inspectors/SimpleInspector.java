@@ -45,11 +45,13 @@ public class SimpleInspector extends InspectorBase {
     @Override
     protected void layoutPopup(Node node) {
         Bounds boundsOnScreen = Layout.nodeOnScreen(node);
-        getPopup().setX(boundsOnScreen.getMinX());
-        getPopup().setY(boundsOnScreen.getMaxY());
+        if (boundsOnScreen != null) {
+            getPopup().setX(boundsOnScreen.getMinX());
+            getPopup().setY(boundsOnScreen.getMaxY());
 
-        getOverlayPopup().setX(boundsOnScreen.getMinX());
-        getOverlayPopup().setY(boundsOnScreen.getMinY());
+            getOverlayPopup().setX(boundsOnScreen.getMinX());
+            getOverlayPopup().setY(boundsOnScreen.getMinY());
+        }
     }
 
     @Override

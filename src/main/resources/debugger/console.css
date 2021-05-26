@@ -1,0 +1,45 @@
+* {
+    -fx-font-family: "Noto Mono" !important;
+    -fx-font-size: 15;
+}
+
+.console-log-line {
+    -fx-padding: 2;
+    -fx-spacing: 5;
+}
+
+.error-log-line .svg-path {
+    -fx-fill: #be3636;
+}
+.error-text {
+   -fx-text-fill: #b1193b;
+   -fx-padding: 1.5 0 0 0;
+}
+
+.svg-path {
+    -fx-fill: rgba(0, 0, 0, 0.5);
+}
+
+.input-svg {
+    -fx-fill: rgba(21, 83, 229, 0.7);
+}
+
+.console-input {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-label-padding: 0;
+}
+
+.console-log {}
+
+.titled-pane > .title {
+    -fx-background-color: transparent;
+    -fx-effect: none;
+    -fx-padding: 0;
+}
+
+.titled-pane > .content {
+    -fx-effect: none;
+    -fx-border-width: 0;
+}

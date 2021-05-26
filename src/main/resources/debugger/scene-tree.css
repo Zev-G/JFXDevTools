@@ -1,6 +1,35 @@
+* {
+    -fx-font-family: "Consolas";
+    -fx-font-size: 16;
+}
+
+.tree-cell {
+    -fx-background-color: transparent;
+}
 .real-tree-cell:hover {
     -fx-background-color: rgba(83, 144, 208, 0.67);
 }
 .real-tree-cell:selected {
     -fx-background-color: derive(-fx-accent, -5%);
 }
+
+.scene-tree {
+    -fx-fit-to-height: true;
+}
+
+.value-text {
+    -fx-fill: #d95c1a;
+    -fx-font-weight: bold;
+}
+.value-text:dark {
+    -fx-fill: #ffe3d3;
+}
+
+.text-indicator {
+    -fx-fill: #411ec1;
+    -fx-font-weight: bold;
+}
+.text-indicator:dark {
+    -fx-fill: #e6e2ff;
+}
+
