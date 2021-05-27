@@ -26,10 +26,12 @@ public class ConsoleLogLine extends HBox {
 
     public static final String ARROW = SVG.resizePath(SVG.ARROW, 0.45);
 
+    private final Node graphic;
     public ConsoleLogLine(Object log, String graphic) {
         this(log, NodeMisc.pad(NodeMisc.svgPath(graphic), new Insets(5)));
     }
     public ConsoleLogLine(Object log, Node graphic) {
+        this.graphic = graphic;
         getChildren().add(graphic);
         if (log != ERROR_MARKER) {
             if (log == null) {
@@ -50,6 +52,10 @@ public class ConsoleLogLine extends HBox {
             }
         }
         getStyleClass().add("console-log-line");
+    }
+
+    public Node getGraphic() {
+        return graphic;
     }
 
     private Node stringValue(Object log) {
