@@ -12,6 +12,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.css.Match;
 import javafx.geometry.Insets;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -33,11 +34,6 @@ public class Console extends StackPane {
 
     private static final String STYLE_SHEET = Resources.DEBUGGER.getCss("console");
     private static final boolean PRINT_CONSOLE_EXCEPTION = true;
-
-    private static final String initialScript =
-            "load(\"fx:base.js\");\n" +
-            "load(\"fx:controls.js\");\n" +
-            "load(\"fx:graphics.js\");";
 
     private ScriptEngineManager manager;
     private final ScriptContext context = new SimpleScriptContext();
@@ -87,39 +83,10 @@ public class Console extends StackPane {
             if (event.getCode() == KeyCode.ENTER) {
                 if (!event.isShiftDown()) {
                     event.consume();
-                    InlineCssTextArea uneditableArea = new InlineCssTextArea();
-                    makeInlineCssTextAreaJSCompatible(uneditableArea);
-                    String text = input.getText();
-//                    text = text.substring(0, input.getCaretPosition() - 1) + text.substring(input.getCaretPosition());
-                    uneditableArea.replaceText(text);
-                    uneditableArea.getStyleClass().add("console-input");
-                    uneditableArea.setEditable(false);
-
-                    uneditableArea.maxHeightProperty().bind(uneditableArea.totalHeightEstimateProperty());
-                    uneditableArea.prefHeightProperty().bind(uneditableArea.totalHeightEstimateProperty());
-                    uneditableArea.setMinHeight(-1);
-                    uneditableArea.maxWidthProperty().bind(uneditableArea.totalWidthEstimateProperty());
-                    uneditableArea.prefWidthProperty().bind(uneditableArea.totalWidthEstimateProperty());
-
-                    log.log(new ConsoleLogLine.Input(uneditableArea));
-                    try {
-                        log.log(new ConsoleLogLine.Output(
-                                getScriptEngine().eval(text, context)
-                        ));
-                    } catch (ScriptException e) {
-                        log.log(new ConsoleLogLine.Error(e));
-                    } catch (Exception e) {
-                        log.log(new ConsoleLogLine.Error(e));
-                        if (PRINT_CONSOLE_EXCEPTION) {
-                            e.printStackTrace();
-                        }
-                    } finally {
-                        history.add(history.size() - 1, new SimpleStringProperty(input.getText()));
-                        offset = 0;
-                        input.replaceText("");
-                        log.addSeparator();
-                        Platform.runLater(() -> scrollPane.setVvalue(1));
-                    }
+                    run(input.getText());
+                    history.add(history.size() - 1, new SimpleStringProperty(input.getText()));
+                    offset = 0;
+                    input.replaceText("");
                 } else {
                     input.insertText(input.getCaretPosition(), "\n");
                 }
@@ -144,6 +111,41 @@ public class Console extends StackPane {
         VBox.setVgrow(inputLine, Priority.ALWAYS);
     }
 
+    public void run(String text) {
+        InlineCssTextArea uneditableArea = new InlineCssTextArea();
+        makeInlineCssTextAreaJSCompatible(uneditableArea);
+
+        uneditableArea.replaceText(text);
+        uneditableArea.getStyleClass().add("console-input");
+        uneditableArea.setEditable(false);
+
+        uneditableArea.maxHeightProperty().bind(uneditableArea.totalHeightEstimateProperty());
+        uneditableArea.prefHeightProperty().bind(uneditableArea.totalHeightEstimateProperty());
+        uneditableArea.setMinHeight(-1);
+        uneditableArea.maxWidthProperty().bind(uneditableArea.totalWidthEstimateProperty());
+        uneditableArea.prefWidthProperty().bind(uneditableArea.totalWidthEstimateProperty());
+
+        ConsoleLogLine.Input input = new ConsoleLogLine.Input(uneditableArea);
+        input.getGraphic().setOnMousePressed(mouseEvent -> run(text));
+        input.getGraphic().setCursor(Cursor.HAND);
+        log.log(input);
+        try {
+            log.log(new ConsoleLogLine.Output(
+                    getScriptEngine().eval(text, context)
+            ));
+        } catch (ScriptException e) {
+            log.log(new ConsoleLogLine.Error(e));
+        } catch (Exception e) {
+            log.log(new ConsoleLogLine.Error(e));
+            if (PRINT_CONSOLE_EXCEPTION) {
+                e.printStackTrace();
+            }
+        } finally {
+            log.addSeparator();
+            Platform.runLater(() -> scrollPane.setVvalue(1));
+        }
+    }
+
     public ScriptEngineManager getManager() {
         if (manager == null) {
             manager = new ScriptEngineManager(getClass().getClassLoader());
@@ -153,6 +155,8 @@ public class Console extends StackPane {
 
     private static void makeInlineCssTextAreaJSCompatible(InlineCssTextArea input) {
         final HashMap<Pattern, String> regexCssMap  = new HashMap<>();
+        regexCssMap.put(Pattern.compile("\"[^\"]*+\""), "-fx-fill: green;");
+        regexCssMap.put(Pattern.compile("[0-9]+(\\.[0-9]+|)"), "-fx-fill: #c74418;");
         final String keywordCss = "-fx-fill: purple";
         String keywords = "abstract\targuments\tawait\tboolean\n" +
                 "break\tbyte\tcase\tcatch\n" +
@@ -169,7 +173,7 @@ public class Console extends StackPane {
                 "super\tswitch\tsynchronized\tthis\n" +
                 "throw\tthrows\ttransient\ttrue\n" +
                 "try\ttypeof\tvar\tvoid\n" +
-                "volatile\twhile\twith\tyield";
+                "volatile\twhile\twith\tyield\tlet\tconst";
         for (String keyword : keywords.split("\\s")) {
             if (!keyword.isEmpty())
                 regexCssMap.put(Pattern.compile("\\b" + Pattern.quote(keyword.replaceAll("\\s", "")) + "\\b"), keywordCss);
@@ -194,7 +198,10 @@ public class Console extends StackPane {
 
             input.setDisable(true);
 
-            new Thread(() -> {
+            Thread thread;
+            (thread = new Thread(() -> {
+
+                System.setProperty("nashorn.args", "--language=es6");
 
                 scriptEngine = getManager().getEngineByName(engineName);
                 context.setBindings(scriptEngine.createBindings(), ScriptContext.ENGINE_SCOPE);
@@ -225,7 +232,8 @@ public class Console extends StackPane {
                 });
 
 
-            }).start();
+            })).setDaemon(true);
+            thread.start();
 
         }
         return scriptEngine;
