@@ -13,6 +13,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.SVGPath;
 import jdk.dynalink.beans.StaticClass;
@@ -74,12 +75,15 @@ public class Console extends StackPane {
             }
         });
 
-        input.setOnKeyPressed(event -> {
+        input.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 if (!event.isShiftDown()) {
+                    event.consume();
                     InlineCssTextArea uneditableArea = new InlineCssTextArea();
                     makeInlineCssTextAreaJSCompatible(uneditableArea);
-                    uneditableArea.replaceText(input.getText().trim());
+                    String text = input.getText();
+//                    text = text.substring(0, input.getCaretPosition() - 1) + text.substring(input.getCaretPosition());
+                    uneditableArea.replaceText(text);
                     uneditableArea.getStyleClass().add("console-input");
                     uneditableArea.setEditable(false);
 
@@ -92,7 +96,7 @@ public class Console extends StackPane {
                     log.log(new ConsoleLogLine.Input(uneditableArea));
                     try {
                         log.log(new ConsoleLogLine.Output(
-                                getScriptEngine().eval(input.getText(), context)
+                                getScriptEngine().eval(text, context)
                         ));
                     } catch (ScriptException e) {
                         log.log(new ConsoleLogLine.Error(e));
@@ -159,7 +163,7 @@ public class Console extends StackPane {
                 "volatile\twhile\twith\tyield";
         for (String keyword : keywords.split("\\s")) {
             if (!keyword.isEmpty())
-                regexCssMap.put(Pattern.compile(Pattern.quote(keyword.replaceAll("\\s", ""))), keywordCss);
+                regexCssMap.put(Pattern.compile("\\b" + Pattern.quote(keyword.replaceAll("\\s", "")) + "\\b"), keywordCss);
         }
         input.plainTextChanges().filter(ch -> !ch.getInserted().equals(ch.getRemoved())).subscribe(change -> {
             String text = input.getText();
@@ -179,17 +183,20 @@ public class Console extends StackPane {
         if (scriptEngine == null) {
             log.log(new ConsoleLogLine.Input("Starting up JS engine..."));
 
-            scriptEngine = getManager().getEngineByName(engineName);
-            context.setBindings(scriptEngine.createBindings(), ScriptContext.ENGINE_SCOPE);
-            context.setAttribute("root", root, ScriptContext.ENGINE_SCOPE);
-            context.setAttribute("scene", root.getScene(), ScriptContext.ENGINE_SCOPE);
-
-            log.log(new ConsoleLogLine.Input("Successfully started JS engine."));
-            log.log(new ConsoleLogLine.Input("Initializing jfx classes..."));
-
             input.setDisable(true);
 
             new Thread(() -> {
+
+                scriptEngine = getManager().getEngineByName(engineName);
+                context.setBindings(scriptEngine.createBindings(), ScriptContext.ENGINE_SCOPE);
+                context.setAttribute("root", root, ScriptContext.ENGINE_SCOPE);
+                context.setAttribute("scene", root.getScene(), ScriptContext.ENGINE_SCOPE);
+
+                Platform.runLater(() -> {
+                    log.log(new ConsoleLogLine.Input("Successfully started JS engine."));
+                    log.log(new ConsoleLogLine.Input("Initializing jfx classes..."));
+                });
+
                 Reflections jfxSceneReflections = new Reflections("javafx.scene", new SubTypesScanner(false));
                 Reflections jfxStageReflections = new Reflections("javafx.stage", new SubTypesScanner(false));
 
