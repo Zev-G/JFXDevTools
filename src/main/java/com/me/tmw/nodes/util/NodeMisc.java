@@ -9,6 +9,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
+import org.fxmisc.richtext.InlineCssTextArea;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -93,4 +94,9 @@ public final class NodeMisc {
         return padder;
     }
 
+    public static Node vGrow(Node input, Priority priority) {
+        VBox box = new VBox(input);
+        VBox.setVgrow(input, priority);
+        return box;
+    }
 }

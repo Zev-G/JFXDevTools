@@ -1,6 +1,9 @@
 package com.me.tmw.resource;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ResourceFolder {
 
@@ -29,5 +32,11 @@ public class ResourceFolder {
             png = png + ".png";
         }
         return Objects.requireNonNull(getClass().getClassLoader().getResource(path + png)).toExternalForm();
+    }
+
+    public String read(String s) {
+        return new BufferedReader(
+                new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(path + s))))
+                .lines().collect(Collectors.joining("\n"));
     }
 }

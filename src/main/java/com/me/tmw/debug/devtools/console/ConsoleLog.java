@@ -9,11 +9,14 @@ public class ConsoleLog extends VBox {
 
     public ConsoleLog(Console console) {
         this.console = console;
+        getStyleClass().add("console-log");
     }
 
     public void log(ConsoleLogLine item) {
         getChildren().add(item);
-        getStyleClass().add("console-log");
+    }
+    public void log(String log) {
+        log(new ConsoleLogLine.Output(log));
     }
 
     @Override

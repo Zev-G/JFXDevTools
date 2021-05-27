@@ -18,6 +18,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
+import org.fxmisc.richtext.InlineCssTextArea;
 
 public class ConsoleLogLine extends HBox {
 
@@ -33,6 +34,8 @@ public class ConsoleLogLine extends HBox {
         if (log != ERROR_MARKER) {
             if (log == null) {
                 getChildren().add(undefined());
+            } else if (log instanceof InlineCssTextArea) {
+                getChildren().add((Node) log);
             } else if (log instanceof Parent) {
                 SceneTree tree = new SceneTree(new SimpleObjectProperty<>((Parent) log));
                 tree.setShowRoot(false);
@@ -91,5 +94,4 @@ public class ConsoleLogLine extends HBox {
         }
 
     }
-
 }
