@@ -4,6 +4,8 @@ import com.me.tmw.nodes.util.NodeMisc;
 import com.me.tmw.resource.Resources;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.DoubleBinding;
+import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -75,6 +77,12 @@ public class Console extends StackPane {
             }
         });
 
+        DoubleProperty totalHeightEstimateWrapper = new SimpleDoubleProperty();
+        totalHeightEstimateWrapper.bind(input.totalHeightEstimateProperty());
+        NumberBinding height = Bindings.add(totalHeightEstimateWrapper, 50);
+        input.maxHeightProperty().bind(height);
+        input.prefHeightProperty().bind(height);
+
         input.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 if (!event.isShiftDown()) {
@@ -110,11 +118,12 @@ public class Console extends StackPane {
                         offset = 0;
                         input.replaceText("");
                         log.addSeparator();
+                        Platform.runLater(() -> scrollPane.setVvalue(1));
                     }
                 } else {
                     input.insertText(input.getCaretPosition(), "\n");
                 }
-            } else if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) {
+            } else if ((event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) && !input.getText().replaceAll("\r", "\n").contains("\n")) {
                 int delta = event.getCode() == KeyCode.UP ? 1 : -1;
                 int newOffset = offset + delta;
                 if (newOffset >= 0 && newOffset < history.size()) {
