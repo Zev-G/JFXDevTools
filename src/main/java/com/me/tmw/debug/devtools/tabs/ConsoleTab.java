@@ -21,4 +21,7 @@ public class ConsoleTab extends Tab {
         });
     }
 
+    public Console getConsole() {
+        return console;
+    }
 }

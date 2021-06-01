@@ -19,7 +19,7 @@ public class DevTools extends StackPane {
     public DevTools(Parent root) {
         getStylesheets().add(TAB_STYLE_SHEET);
 
-        structureTab = new StructureTab(root);
+        structureTab = new StructureTab(root, this);
         consoleTab = new ConsoleTab(root);
         structureTab.setClosable(false);
         consoleTab.setClosable(false);
@@ -31,5 +31,9 @@ public class DevTools extends StackPane {
 
     public StructureTab getStructureTab() {
         return structureTab;
+    }
+
+    public ConsoleTab getConsoleTab() {
+        return consoleTab;
     }
 }

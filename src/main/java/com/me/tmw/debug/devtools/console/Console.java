@@ -13,12 +13,14 @@ import javafx.beans.property.StringProperty;
 import javafx.css.Match;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.SVGPath;
+import javafx.util.Pair;
 import jdk.dynalink.beans.StaticClass;
 import org.fxmisc.richtext.InlineCssTextArea;
 import org.reflections.Reflections;
@@ -26,6 +28,7 @@ import org.reflections.scanners.SubTypesScanner;
 
 import javax.script.*;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,10 +56,21 @@ public class Console extends StackPane {
     private final StringProperty current = new SimpleStringProperty();
     private int offset = 0;
 
+    private final List<Consumer<ScriptEngine>> engineCommandsQueue = new ArrayList<>();
+    private Map<String, Object> queuedBindings = new HashMap<>();
+    private final Consumer<ScriptEngine> loadQueuedBinding = scriptEngine1 -> {
+        for (Map.Entry<String, Object> entry : queuedBindings.entrySet()) {
+            context.setAttribute(entry.getKey(), entry.getValue(), ScriptContext.ENGINE_SCOPE);
+        }
+        queuedBindings.clear();
+    };
+
     private final Parent root;
 
     public Console(String engineName, Parent root) {
         this.root = root;
+
+        engineCommandsQueue.add(loadQueuedBinding);
 
         getStylesheets().add(STYLE_SHEET);
         emptyArea.setMinHeight(200);
@@ -230,8 +244,10 @@ public class Console extends StackPane {
                     log.log(new ConsoleLogLine.Input("Successfully initialized classes."));
                     log.addSeparator();
                     input.setDisable(false);
-                });
 
+                    engineCommandsQueue.forEach(consumer -> consumer.accept(scriptEngine));
+                    engineCommandsQueue.clear();
+                });
 
             })).setDaemon(true);
             thread.start();
@@ -243,4 +259,13 @@ public class Console extends StackPane {
     public ConsoleLog getLog() {
         return log;
     }
+
+    public void requestBinding(String variableName, Object value) {
+        if (scriptEngine == null) {
+            queuedBindings.put(variableName, value);
+        } else {
+            context.setAttribute(variableName, value, ScriptContext.ENGINE_SCOPE);
+        }
+    }
+
 }

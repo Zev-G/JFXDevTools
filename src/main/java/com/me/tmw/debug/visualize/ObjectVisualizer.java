@@ -37,7 +37,7 @@ public class ObjectVisualizer extends TitledPane {
         Text nameTextNode = name == null ? null : new Text(name);
         Text valueTextNode = new Text(object.toString());
         classNameTextNode.getStyleClass().add("class-name");
-        valueTextNode.getStyleClass().add("value");
+        valueTextNode.getStyleClass().add("value-label");
         TextFlow flow = new TextFlow();
         flow.getChildren().add(classNameTextNode);
         if (nameTextNode != null) {
