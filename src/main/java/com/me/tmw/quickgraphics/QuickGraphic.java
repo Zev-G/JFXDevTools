@@ -7,5 +7,6 @@ public interface QuickGraphic<T> {
     String mdSyntax();
     T duplicate();
     String getStringRepresentation();
+    String getRawText();
 
 }

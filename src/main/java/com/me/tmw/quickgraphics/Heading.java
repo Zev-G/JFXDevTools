@@ -6,16 +6,19 @@ public class Heading extends Label implements QuickGraphic<Heading> {
 
     private final int degree;
 
-    public Heading(String text, int degree) {
+    public Heading(int degree, String text) {
         super(text);
         this.degree = degree;
+        getStyleClass().add(htmlTag());
     }
 
+    // h1, h2, h3...
     @Override
     public String htmlTag() {
-        return "<h" + degree + ">";
+        return "h" + degree;
     }
 
+    // #, ##, ###...
     @Override
     public String mdSyntax() {
         return "#".repeat(degree);
@@ -23,14 +26,18 @@ public class Heading extends Label implements QuickGraphic<Heading> {
 
     @Override
     public Heading duplicate() {
-        return new Heading(getText(), degree);
+        return new Heading(degree, getText());
     }
 
+    // ## Text, # Title, ### Variables...
     @Override
     public String getStringRepresentation() {
         return mdSyntax() + " " + getText();
     }
 
-
-
+    // Text, Title, Variables...
+    @Override
+    public String getRawText() {
+        return getText();
+    }
 }
