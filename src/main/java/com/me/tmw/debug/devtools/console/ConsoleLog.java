@@ -27,4 +27,8 @@ public class ConsoleLog extends VBox {
     public void addSeparator() {
         getChildren().add(new Separator());
     }
+
+    public void clear() {
+        getChildren().clear();
+    }
 }

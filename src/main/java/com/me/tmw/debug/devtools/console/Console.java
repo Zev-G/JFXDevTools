@@ -28,7 +28,6 @@ import javax.script.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class Console extends StackPane {
 
@@ -204,9 +203,11 @@ public class Console extends StackPane {
                 System.setProperty("nashorn.args", "--language=es6");
 
                 scriptEngine = getManager().getEngineByName(engineName);
+
                 context.setBindings(scriptEngine.createBindings(), ScriptContext.ENGINE_SCOPE);
                 context.setAttribute("root", root, ScriptContext.ENGINE_SCOPE);
                 context.setAttribute("scene", root.getScene(), ScriptContext.ENGINE_SCOPE);
+                context.setAttribute("console", new ConsoleCommands(this), ScriptContext.ENGINE_SCOPE);
 
                 Platform.runLater(() -> {
                     log.log(new ConsoleLogLine.Input("Successfully started JS engine."));
@@ -239,4 +240,7 @@ public class Console extends StackPane {
         return scriptEngine;
     }
 
+    public ConsoleLog getLog() {
+        return log;
+    }
 }

@@ -3,6 +3,7 @@ package com.me.tmw.debug.devtools.console;
 import com.me.tmw.debug.devtools.DevUtils;
 import com.me.tmw.debug.devtools.scenetree.SceneTree;
 
+import com.me.tmw.debug.visualize.ObjectVisualizer;
 import com.me.tmw.nodes.control.svg.SVG;
 import com.me.tmw.nodes.util.NodeMisc;
 import javafx.beans.property.SimpleObjectProperty;
@@ -48,7 +49,11 @@ public class ConsoleLogLine extends HBox {
                 HBox.setHgrow(reveal, Priority.ALWAYS);
                 getChildren().add(reveal);
             } else {
-                getChildren().add(stringValue(log));
+                if (ObjectVisualizer.isPrimitiveOrPrimitiveWrapperOrString(log.getClass())) {
+                    getChildren().add(stringValue(log));
+                } else {
+                    getChildren().add(new ObjectVisualizer(log));
+                }
             }
         }
         getStyleClass().add("console-log-line");
