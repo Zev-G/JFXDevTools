@@ -9,21 +9,19 @@ import com.me.tmw.nodes.util.NodeMisc;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 import org.fxmisc.richtext.InlineCssTextArea;
 
 public class ConsoleLogLine extends HBox {
 
-    private static final Object ERROR_MARKER = new Object();
+    public static final Object IGNORE_MARKER = new Object();
 
     public static final String ARROW = SVG.resizePath(SVG.ARROW, 0.45);
 
@@ -34,7 +32,7 @@ public class ConsoleLogLine extends HBox {
     public ConsoleLogLine(Object log, Node graphic) {
         this.graphic = graphic;
         getChildren().add(graphic);
-        if (log != ERROR_MARKER) {
+        if (log != IGNORE_MARKER) {
             if (log == null) {
                 getChildren().add(undefined());
             } else if (log instanceof InlineCssTextArea) {
@@ -97,7 +95,7 @@ public class ConsoleLogLine extends HBox {
     public static class Error extends ConsoleLogLine {
 
         public Error(Exception log) {
-            super(ERROR_MARKER, SVG.resizePath(SVG.WARNING, 0.03));
+            super(IGNORE_MARKER, SVG.resizePath(SVG.WARNING, 0.03));
             Label errorText = new Label(log.getMessage());
             errorText.getStyleClass().add("error-text");
             getChildren().add(errorText);

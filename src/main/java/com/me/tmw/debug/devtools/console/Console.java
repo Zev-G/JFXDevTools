@@ -16,6 +16,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
@@ -27,7 +28,12 @@ import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 
 import javax.script.*;
+import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -242,6 +248,15 @@ public class Console extends StackPane {
 
                 Platform.runLater(() -> {
                     log.log(new ConsoleLogLine.Input("Successfully initialized classes."));
+                    Hyperlink openDocumentation = new Hyperlink("What is this?");
+                    openDocumentation.setOnAction(event -> {
+                        try {
+                            Desktop.getDesktop().browse(new URI("https://github.com/Zev-G/JFXPlus/wiki/Console"));
+                        } catch (IOException | URISyntaxException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    log.log(new ConsoleLogLine(ConsoleLogLine.IGNORE_MARKER, openDocumentation));
                     log.addSeparator();
                     input.setDisable(false);
 
