@@ -173,6 +173,7 @@ public class Console extends StackPane {
         final HashMap<Pattern, String> regexCssMap  = new HashMap<>();
         regexCssMap.put(Pattern.compile("\"[^\"]*+\""), "-fx-fill: green;");
         regexCssMap.put(Pattern.compile("[0-9]+(\\.[0-9]+|)"), "-fx-fill: #c74418;");
+        regexCssMap.put(Pattern.compile("[()]"), "-fx-fill: lightblue;");
         final String keywordCss = "-fx-fill: purple;";
         String keywords = "abstract\targuments\tawait\tboolean\n" +
                 "break\tbyte\tcase\tcatch\n" +
@@ -201,7 +202,7 @@ public class Console extends StackPane {
             Map<Pattern, String> mapCopy = new HashMap<>(regexCssMap);
             javax.script.Bindings globalBindings = context.getBindings(ScriptContext.GLOBAL_SCOPE);
             javax.script.Bindings engineBindings = context.getBindings(ScriptContext.ENGINE_SCOPE);
-            BiConsumer<String, Object> loop = (string, obj) -> mapCopy.put(Pattern.compile("\\b" + Pattern.quote(string) + "\\b"), variableCss);;
+            BiConsumer<String, Object> loop = (string, obj) -> mapCopy.put(Pattern.compile("\\b" + Pattern.quote(string) + "\\b"), variableCss);
             if (globalBindings != null) {
                 globalBindings.forEach(loop);
             }

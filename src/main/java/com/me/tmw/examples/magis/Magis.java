@@ -22,11 +22,6 @@ public class Magis {
         lessons.setSpacing(30);
         lessons.setAlignment(Pos.CENTER);
 
-        lessons.setOnKeyPressed(event -> {
-            lessons.getChildren().clear();
-            loadOntoVBox(lessons);
-        });
-
         primaryStage.setScene(DevScene.getInstance(lessons));
         loadOntoVBox(lessons);
         primaryStage.show();

@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 public class DevScene extends Scene {
 
@@ -35,6 +37,19 @@ public class DevScene extends Scene {
                 }
             });
             menu.show(getWindow(), event.getScreenX(), event.getScreenY());
+        });
+        addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.F12) {
+                if (tools == null) {
+                    tools = new DevTools(root);
+                    tools.getStructureTab().getSceneTree().tryToFocus(root);
+                }
+                if (!this.root.getItems().contains(tools)) {
+                    this.root.getItems().add(tools);
+                } else {
+                    this.root.getItems().remove(tools);
+                }
+            }
         });
     }
 
