@@ -4,16 +4,13 @@ import com.me.tmw.nodes.util.NodeMisc;
 import com.me.tmw.resource.Resources;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.css.Match;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.ScrollPane;
@@ -21,7 +18,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.SVGPath;
-import javafx.util.Pair;
 import jdk.dynalink.beans.StaticClass;
 import org.fxmisc.richtext.InlineCssTextArea;
 import org.reflections.Reflections;
@@ -34,6 +30,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -63,7 +60,7 @@ public class Console extends StackPane {
     private int offset = 0;
 
     private final List<Consumer<ScriptEngine>> engineCommandsQueue = new ArrayList<>();
-    private Map<String, Object> queuedBindings = new HashMap<>();
+    private final Map<String, Object> queuedBindings = new HashMap<>();
     private final Consumer<ScriptEngine> loadQueuedBinding = scriptEngine1 -> {
         for (Map.Entry<String, Object> entry : queuedBindings.entrySet()) {
             context.setAttribute(entry.getKey(), entry.getValue(), ScriptContext.ENGINE_SCOPE);
@@ -121,7 +118,7 @@ public class Console extends StackPane {
             }
         });
 
-        makeInlineCssTextAreaJSCompatible(input);
+        makeInlineCssTextAreaJSCompatible(input, context);
 
         input.getStyleClass().add("console-input");
         inputSVG.getStyleClass().add("input-svg");
@@ -132,7 +129,7 @@ public class Console extends StackPane {
 
     public void run(String text) {
         InlineCssTextArea uneditableArea = new InlineCssTextArea();
-        makeInlineCssTextAreaJSCompatible(uneditableArea);
+        makeInlineCssTextAreaJSCompatible(uneditableArea, context);
 
         uneditableArea.replaceText(text);
         uneditableArea.getStyleClass().add("console-input");
@@ -172,11 +169,11 @@ public class Console extends StackPane {
         return manager;
     }
 
-    private static void makeInlineCssTextAreaJSCompatible(InlineCssTextArea input) {
+    private static void makeInlineCssTextAreaJSCompatible(InlineCssTextArea input, ScriptContext context) {
         final HashMap<Pattern, String> regexCssMap  = new HashMap<>();
         regexCssMap.put(Pattern.compile("\"[^\"]*+\""), "-fx-fill: green;");
         regexCssMap.put(Pattern.compile("[0-9]+(\\.[0-9]+|)"), "-fx-fill: #c74418;");
-        final String keywordCss = "-fx-fill: purple";
+        final String keywordCss = "-fx-fill: purple;";
         String keywords = "abstract\targuments\tawait\tboolean\n" +
                 "break\tbyte\tcase\tcatch\n" +
                 "char\tclass\tcontinue\n" +
@@ -193,6 +190,7 @@ public class Console extends StackPane {
                 "throw\tthrows\ttransient\ttrue\n" +
                 "try\ttypeof\tvar\tvoid\n" +
                 "volatile\twhile\twith\tyield\tlet\tconst";
+        final String variableCss = "-fx-fill: #a43a11;";
         for (String keyword : keywords.split("\\s")) {
             if (!keyword.isEmpty())
                 regexCssMap.put(Pattern.compile("\\b" + Pattern.quote(keyword.replaceAll("\\s", "")) + "\\b"), keywordCss);
@@ -200,12 +198,22 @@ public class Console extends StackPane {
         input.plainTextChanges().filter(ch -> !ch.getInserted().equals(ch.getRemoved())).subscribe(change -> {
             String text = input.getText();
             input.setStyle(0, text.length(), "");
-            for (Pattern pattern : regexCssMap.keySet()) {
+            Map<Pattern, String> mapCopy = new HashMap<>(regexCssMap);
+            javax.script.Bindings globalBindings = context.getBindings(ScriptContext.GLOBAL_SCOPE);
+            javax.script.Bindings engineBindings = context.getBindings(ScriptContext.ENGINE_SCOPE);
+            BiConsumer<String, Object> loop = (string, obj) -> mapCopy.put(Pattern.compile("\\b" + Pattern.quote(string) + "\\b"), variableCss);;
+            if (globalBindings != null) {
+                globalBindings.forEach(loop);
+            }
+            if (engineBindings != null) {
+                engineBindings.forEach(loop);
+            }
+            for (Pattern pattern : mapCopy.keySet()) {
                 Matcher matcher = pattern.matcher(text);
                 while (matcher.find()) {
                     int start = matcher.start();
                     int end   = matcher.end();
-                    input.setStyle(start, end, regexCssMap.get(pattern));
+                    input.setStyle(start, end, mapCopy.get(pattern));
                 }
             }
         });
@@ -236,6 +244,7 @@ public class Console extends StackPane {
 
                 Reflections jfxSceneReflections = new Reflections("javafx.scene", new SubTypesScanner(false));
                 Reflections jfxStageReflections = new Reflections("javafx.stage", new SubTypesScanner(false));
+                Reflections applicationsReflections = new Reflections("javafx.applications", new SubTypesScanner(false));
 
                 Set<Class<?>> allClasses = new HashSet<>(jfxSceneReflections.getSubTypesOf(Object.class));
                 allClasses.addAll(jfxStageReflections.getSubTypesOf(Object.class));
