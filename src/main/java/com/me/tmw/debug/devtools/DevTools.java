@@ -4,6 +4,7 @@ import com.me.tmw.css.Sheets;
 import com.me.tmw.debug.devtools.tabs.ConsoleTab;
 import com.me.tmw.debug.devtools.tabs.StructureTab;
 import com.me.tmw.nodes.control.svg.SVG;
+import com.me.tmw.nodes.tooltips.SimpleTooltip;
 import com.me.tmw.nodes.util.NodeMisc;
 import com.me.tmw.resource.Resources;
 import javafx.geometry.Insets;
@@ -43,6 +44,8 @@ public class DevTools extends StackPane {
 
         close.getStyleClass().addAll(TRANSPARENT_BUTTON_CLASS, LIGHT_SVG_BUTTON_CLASS, HAND_CURSOR_CLASS);
         detach.getStyleClass().addAll(TRANSPARENT_BUTTON_CLASS, LIGHT_SVG_BUTTON_CLASS, HAND_CURSOR_CLASS);
+        SimpleTooltip.apply(close, "Closes dev tools.");
+        SimpleTooltip.apply(detach, "Opens dev tools in a new window.");
         close.setOnAction(event -> hide());
         detach.setOnAction(event -> {
             attachedToContainer = !attachedToContainer;
