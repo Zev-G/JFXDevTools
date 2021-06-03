@@ -30,23 +30,4 @@ public class NodeCss extends NodeInfo implements Styleable {
         setPadding(new Insets(10));
     }
 
-    private static class PropertiesTable extends TableView<StyleableProperty<?>> {
-
-        private final TableColumn<StyleableProperty<?>, String> nameColumn = new TableColumn<>("Name");
-        private final TableColumn<StyleableProperty<?>, String> valueColumn = new TableColumn<>("Value");
-
-        @SuppressWarnings("unchecked")
-        public PropertiesTable(Node node) {
-            super();
-            getItems().setAll(
-                    node.getCssMetaData().stream().map(s -> ((CssMetaData<Styleable, ?>) s).getStyleableProperty(node)).filter(property -> property instanceof Observable).collect(Collectors.toList())
-            );
-            getColumns().addAll(nameColumn, valueColumn);
-
-            nameColumn.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getCssMetaData().getProperty()));
-            valueColumn.setCellValueFactory(param -> Bindings.convert((ObservableValue<?>) param.getValue()));
-        }
-
-    }
-
 }

@@ -9,7 +9,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-public class DevScene extends Scene {
+public class DevScene extends Scene implements DevToolsContainer {
 
     private final SplitPane root;
 
@@ -28,12 +28,12 @@ public class DevScene extends Scene {
             ContextMenu menu = new ContextMenu(inspect);
             inspect.setOnAction(actionEvent -> {
                 if (tools == null) {
-                    tools = new DevTools(root);
+                    tools = new DevTools(root, this);
                 }
                 Node intersected = event.getPickResult().getIntersectedNode();
                 tools.getStructureTab().getSceneTree().tryToFocus(intersected);
-                if (!this.root.getItems().contains(tools)) {
-                    this.root.getItems().add(tools);
+                if (!tools.isShown()) {
+                    attach(tools);
                 }
             });
             menu.show(getWindow(), event.getScreenX(), event.getScreenY());
@@ -41,13 +41,13 @@ public class DevScene extends Scene {
         addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
             if (keyEvent.getCode() == KeyCode.F12) {
                 if (tools == null) {
-                    tools = new DevTools(root);
+                    tools = new DevTools(root, this);
                     tools.getStructureTab().getSceneTree().tryToFocus(root);
                 }
-                if (!this.root.getItems().contains(tools)) {
-                    this.root.getItems().add(tools);
+                if (!tools.isShown()) {
+                    attach(tools);
                 } else {
-                    this.root.getItems().remove(tools);
+                    tools.hide();
                 }
             }
         });
@@ -57,4 +57,20 @@ public class DevScene extends Scene {
         return new SplitPane(subRoot);
     }
 
+    @Override
+    public void attach(DevTools tools) {
+        if (!this.root.getItems().contains(tools)) {
+            this.root.getItems().add(tools);
+        }
+    }
+
+    @Override
+    public void remove(DevTools tools) {
+        this.root.getItems().remove(tools);
+    }
+
+    @Override
+    public boolean isShowing(DevTools tools) {
+        return this.root.getItems().contains(tools);
+    }
 }

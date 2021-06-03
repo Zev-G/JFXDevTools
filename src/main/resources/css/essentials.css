@@ -1,0 +1,16 @@
+.transparent-button {
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-background-color: transparent;
+}
+
+.light-svg-button > .svg {
+    -fx-fill: #626262;
+}
+.light-svg-button:hover > .svg {
+    -fx-fill: #343434;
+}
+
+.hand-cursor {
+    -fx-cursor: hand;
+}

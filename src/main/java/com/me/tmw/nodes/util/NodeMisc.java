@@ -1,5 +1,6 @@
 package com.me.tmw.nodes.util;
 
+import com.me.tmw.nodes.control.svg.SVG;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -59,9 +60,12 @@ public final class NodeMisc {
         return "rgba(" + red + ", " + green + ", " + blue + ", " + opacity + ")";
     }
 
+    public static SVGPath svgPath(String s, double multiplier) {
+        return svgPath(SVG.resizePath(s, multiplier));
+    }
     public static SVGPath svgPath(String s) {
         SVGPath svgPath = new SVGPath();
-        svgPath.getStyleClass().add("svg-path");
+        svgPath.getStyleClass().addAll("svg-path", "svg");
         svgPath.setContent(s);
         return svgPath;
     }
