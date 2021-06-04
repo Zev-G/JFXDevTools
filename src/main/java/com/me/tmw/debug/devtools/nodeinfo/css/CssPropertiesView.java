@@ -22,6 +22,8 @@ public class CssPropertiesView extends GridPane {
 
     private final List<ObservableStyleableProperty<?>> properties = new ArrayList<>();
 
+    private final List<CssPropertyView> propertyViews = new ArrayList<>();
+
     public CssPropertiesView(List<StyleableProperty<?>> list, Parent node) {
 
         properties.addAll(
@@ -37,6 +39,10 @@ public class CssPropertiesView extends GridPane {
             add(view.left(), 0, i);
             add(view.right(), 1, i);
         }
+    }
+
+    public List<CssPropertyView> getCssPropertyViews() {
+        return propertyViews;
     }
 
     static class ObservableStyleableProperty<T> implements ObservableValue<T>, StyleableProperty<T> {

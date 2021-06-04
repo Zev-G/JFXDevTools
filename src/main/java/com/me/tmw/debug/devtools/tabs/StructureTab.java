@@ -1,14 +1,19 @@
 package com.me.tmw.debug.devtools.tabs;
 
 import com.me.tmw.debug.devtools.DevTools;
+import com.me.tmw.debug.devtools.inspectors.SimpleInspector;
 import com.me.tmw.debug.devtools.nodeinfo.css.NodeCss;
 import com.me.tmw.debug.devtools.scenetree.SceneTree;
+import com.me.tmw.nodes.util.NodeMisc;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +42,10 @@ public class StructureTab extends Tab {
                 if (!cssPropertiesMap.containsKey(newValue.getValue())) {
                     cssPropertiesMap.put(newValue.getValue(), new NodeCss((Parent) newValue.getValue()));
                 }
-                cssTab.setContent(new ScrollPane(cssPropertiesMap.get(newValue.getValue())));
+                ScrollPane scrollPane = new ScrollPane(cssPropertiesMap.get(newValue.getValue()));
+                scrollPane.getStyleClass().add("node-css");
+                scrollPane.getStylesheets().add(NodeCss.STYLE_SHEET);
+                cssTab.setContent(scrollPane);
             } else {
                 cssTab.setContent(noCssProperties);
             }

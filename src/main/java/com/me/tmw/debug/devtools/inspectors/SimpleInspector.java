@@ -1,5 +1,6 @@
 package com.me.tmw.debug.devtools.inspectors;
 
+import com.me.tmw.debug.devtools.DevUtils;
 import com.me.tmw.nodes.util.Layout;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Bounds;
@@ -71,7 +72,7 @@ public class SimpleInspector extends InspectorBase {
         ));
         id.textProperty().bind(Bindings.createStringBinding(() -> node.getId() != null ? ("#" + node.getId()) : "", node.idProperty()));
         // Set class name
-        className.setText(node.getClass().getSimpleName());
+        className.setText(DevUtils.getSimpleClassName(node.getClass()));
         // Set text of dimensions
         Bounds bounds = node.getBoundsInLocal();
         dimensions.setText((int) bounds.getWidth() + " x " + (int) bounds.getHeight());

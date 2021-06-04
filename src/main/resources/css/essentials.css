@@ -5,12 +5,21 @@
 }
 
 .light-svg-button > .svg {
-    -fx-fill: #626262;
+    -fx-fill: derive(-fx-mid-text-color, 10%);
 }
 .light-svg-button:hover > .svg {
-    -fx-fill: #343434;
+    -fx-fill: -fx-mid-text-color;
 }
 
 .hand-cursor {
     -fx-cursor: hand;
+}
+
+.small-divider .split-pane-divider {
+    -fx-padding: 0 0.1em 0 0.1em;
+    -fx-background-color: transparent;
+}
+
+.silent-disable:disabled, .silent-disable * {
+    -fx-opacity: 1;
 }

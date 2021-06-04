@@ -7,6 +7,8 @@ import com.me.tmw.nodes.control.svg.SVG;
 import com.me.tmw.nodes.tooltips.SimpleTooltip;
 import com.me.tmw.nodes.util.NodeMisc;
 import com.me.tmw.resource.Resources;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -14,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -30,17 +33,50 @@ public class DevTools extends StackPane {
 
     private final Button close = new Button("", NodeMisc.svgPath(SVG.X, 0.5));
     private final Button detach = new Button("", NodeMisc.svgPath(SVG.OPEN, 0.8));
+    private final Pane closePlaceHolder = new Pane(close);
+    private final Pane detachPlaceHolder = new Pane(detach);
 
-    private final HBox buttons = new HBox();
+    private final HBox buttons = new HBox(detachPlaceHolder, closePlaceHolder);
 
     private final DevToolsContainer container;
     private boolean attachedToContainer = true;
 
     private Stage detachedStage;
 
+    /*
+         Properties
+     */
+    private final BooleanProperty closable = new SimpleBooleanProperty(true) {
+        @Override
+        protected void invalidated() {
+            boolean val = closable.get();
+            if (val) {
+                if (closePlaceHolder.getChildren().isEmpty()) {
+                    closePlaceHolder.getChildren().add(close);
+                }
+            } else {
+                closePlaceHolder.getChildren().clear();
+            }
+        }
+    };
+    private final BooleanProperty detachable = new SimpleBooleanProperty(true) {
+        @Override
+        protected void invalidated() {
+            boolean val = detachable.get();
+            if (val) {
+                if (detachPlaceHolder.getChildren().isEmpty()) {
+                    detachPlaceHolder.getChildren().add(detach);
+                }
+            } else {
+                detachPlaceHolder.getChildren().clear();
+            }
+        }
+    };
+
     public DevTools(Parent root, DevToolsContainer container) {
         this.container = container;
         getStylesheets().addAll(TAB_STYLE_SHEET, Sheets.Essentials.STYLE_SHEET);
+        getStyleClass().add(SMALL_DIVIDER_CLASS);
 
         close.getStyleClass().addAll(TRANSPARENT_BUTTON_CLASS, LIGHT_SVG_BUTTON_CLASS, HAND_CURSOR_CLASS);
         detach.getStyleClass().addAll(TRANSPARENT_BUTTON_CLASS, LIGHT_SVG_BUTTON_CLASS, HAND_CURSOR_CLASS);
@@ -67,7 +103,6 @@ public class DevTools extends StackPane {
         buttons.setPadding(new Insets(5, 7.5, 5, 0));
         buttons.setSpacing(5);
         buttons.setPickOnBounds(false);
-        buttons.getChildren().addAll(detach, close);
 
         structureTab = new StructureTab(root, this);
         consoleTab = new ConsoleTab(root);
@@ -85,6 +120,30 @@ public class DevTools extends StackPane {
 
     public ConsoleTab getConsoleTab() {
         return consoleTab;
+    }
+
+    public boolean isClosable() {
+        return closable.get();
+    }
+
+    public BooleanProperty closableProperty() {
+        return closable;
+    }
+
+    public void setClosable(boolean closable) {
+        this.closable.set(closable);
+    }
+
+    public boolean isDetachable() {
+        return detachable.get();
+    }
+
+    public BooleanProperty detachableProperty() {
+        return detachable;
+    }
+
+    public void setDetachable(boolean detachable) {
+        this.detachable.set(detachable);
     }
 
     public void hide() {

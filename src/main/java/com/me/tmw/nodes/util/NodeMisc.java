@@ -103,4 +103,8 @@ public final class NodeMisc {
         VBox.setVgrow(input, priority);
         return box;
     }
+
+    public static Background simpleBackground(Color red) {
+        return new Background(new BackgroundFill(red, CornerRadii.EMPTY, Insets.EMPTY));
+    }
 }

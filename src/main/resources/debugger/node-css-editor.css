@@ -1,7 +1,9 @@
-
+.node-css, .node-css > .viewport {
+    -fx-background-color: -fx-control-inner-background;
+}
 
 .property-name {
-    -fx-text-fill: #1d704a;
+    -fx-text-fill: derive(CHART_COLOR_3, -20%);
 }
 
 .css-property {
@@ -13,8 +15,8 @@
 }
 
 .property-type {
-    -fx-text-fill: rgba(10, 19, 38, 0.8);
-    -fx-background-color: rgba(214, 214, 214, 0.23);
+    -fx-text-fill: -fx-dark-text-color;
+    -fx-background-color: -fx-base;
     -fx-background-insets: -3;
     -fx-font-size: 1em;
 }
@@ -23,18 +25,18 @@
     -fx-border-width: 1;
     -fx-border-color: transparent;
     -fx-background-color: transparent;
-    -fx-text-fill: #994702;
+    -fx-text-fill: derive(CHART_COLOR_1, -25%);
     -fx-font-weight: bold;
 }
 .property-value:hover {
-    -fx-border-color: gray;
+    -fx-border-color: derive(-fx-text-box-border, 10%);
 }
 .property-value:focused {
-    -fx-border-color: #161616;
+    -fx-border-color: derive(-fx-text-box-border, -15%);
 }
 
 .string {
-    -fx-text-fill: green;
+    -fx-text-fill: derive(CHART_COLOR_3, -20%);
 }
 
 .enum-property {
@@ -47,17 +49,17 @@
 }
 
 .enum-property .list-view .list-cell:hover {
-    -fx-background-color: white;
-    -fx-text-fill: black;
+    -fx-background-color: -fx-background;
+    -fx-text-fill: -fx-dark-text-color;
 }
 
 .enum-property .list-view .list-cell:selected {
-    -fx-background-color: white;
-    -fx-text-fill: black;
+    -fx-background-color: -fx-background;
+    -fx-text-fill: -fx-dark-text-color;
 }
 
 .color-property {
-    -fx-border-color: #161616;
+    -fx-border-color: derive(-fx-text-box-border, -5%);
     -fx-cursor: hand;
 }
 
@@ -69,7 +71,7 @@
     -fx-font-size: 16;
     -fx-font-weight: bold;
     -fx-background-radius: 100;
-    -fx-background-color: lightgray;
+    -fx-background-color: derive(-fx-base, -10%);
     -fx-padding: 0 5;
     -fx-cursor: hand;
     -fx-alignment: top-center;

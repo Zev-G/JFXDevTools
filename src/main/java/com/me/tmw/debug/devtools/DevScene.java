@@ -11,7 +11,7 @@ import javafx.scene.input.KeyEvent;
 
 public class DevScene extends Scene implements DevToolsContainer {
 
-    private final SplitPane root;
+    private final SplitPane splitPane;
 
     private DevTools tools;
 
@@ -21,9 +21,9 @@ public class DevScene extends Scene implements DevToolsContainer {
 
     private DevScene(Parent root, SplitPane splitPane) {
         super(splitPane);
-        this.root = splitPane;
+        this.splitPane = splitPane;
 
-        this.root.setOnContextMenuRequested(event -> {
+        this.splitPane.setOnContextMenuRequested(event -> {
             MenuItem inspect = new MenuItem("Inspect");
             ContextMenu menu = new ContextMenu(inspect);
             inspect.setOnAction(actionEvent -> {
@@ -59,18 +59,18 @@ public class DevScene extends Scene implements DevToolsContainer {
 
     @Override
     public void attach(DevTools tools) {
-        if (!this.root.getItems().contains(tools)) {
-            this.root.getItems().add(tools);
+        if (!this.splitPane.getItems().contains(tools)) {
+            this.splitPane.getItems().add(tools);
         }
     }
 
     @Override
     public void remove(DevTools tools) {
-        this.root.getItems().remove(tools);
+        this.splitPane.getItems().remove(tools);
     }
 
     @Override
     public boolean isShowing(DevTools tools) {
-        return this.root.getItems().contains(tools);
+        return this.splitPane.getItems().contains(tools);
     }
 }

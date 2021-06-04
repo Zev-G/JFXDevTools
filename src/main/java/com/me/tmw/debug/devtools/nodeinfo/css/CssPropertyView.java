@@ -114,6 +114,34 @@ public class CssPropertyView {
         return right;
     }
 
+    public boolean isExpanded() {
+        return expanded.get();
+    }
+
+    public BooleanProperty expandedProperty() {
+        return expanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        this.expanded.set(expanded);
+    }
+
+    public boolean isEditable() {
+        return editable.get();
+    }
+
+    public BooleanProperty editableProperty() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable.set(editable);
+    }
+
+    public CssValue<?> getCssValue() {
+        return cssValue;
+    }
+
     @SuppressWarnings("unchecked")
     private void updateNode() {
         if (property.getBackingStyleableProperty() instanceof Property<?> && ((Property<?>) property.getBackingStyleableProperty()).isBound()) {
@@ -140,9 +168,10 @@ public class CssPropertyView {
         return name.getText() + cssValue.toCssString();
     }
 
-    private static <T> CssValue<?> cssNode(T obj, StyleConverter<?, ?> converter, CssPropertyView view) {
-        Runnable updateNode = view.updateNode;
-        BooleanProperty expanded = view.expanded;
+    public static <T> CssValue<?> cssNode(T obj, StyleConverter<?, ?> converter, CssPropertyView view) {
+        return cssNode(obj, converter, view.updateNode, view.expanded);
+    }
+    public static <T> CssValue<?> cssNode(T obj, StyleConverter<?, ?> converter, Runnable updateNode, BooleanProperty expanded) {
         if (converter instanceof CursorConverter) {
             return new CursorCssValue((Cursor) obj, updateNode);
         }

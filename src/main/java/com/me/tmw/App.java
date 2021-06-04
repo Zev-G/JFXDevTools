@@ -3,11 +3,15 @@ package com.me.tmw;
 import com.me.tmw.animations.Animations;
 import com.me.tmw.animations.builder.grouping.AnimationGroupBuilder;
 import com.me.tmw.debug.devtools.DevScene;
+import com.me.tmw.debug.devtools.nodeinfo.css.NodeCss;
+import com.me.tmw.debug.devtools.nodeinfo.css.sheets.SheetsInfo;
+import com.me.tmw.debug.devtools.scenetree.SceneTree;
 import com.me.tmw.examples.magis.Magis;
 import com.me.tmw.nodes.util.Dragging;
 import com.me.tmw.nodes.util.Layout;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -24,7 +28,10 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        Magis.run(primaryStage);
+//        Magis.run(primaryStage);
+
+        primaryStage.setScene(DevScene.getInstance(new SheetsInfo(new SceneTree(new SimpleObjectProperty<>(new Button())))));
+        primaryStage.show();
 
     }
 

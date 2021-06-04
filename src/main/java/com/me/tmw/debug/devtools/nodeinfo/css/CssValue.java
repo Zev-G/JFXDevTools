@@ -6,7 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 
-abstract class CssValue<T> {
+public abstract class CssValue<T> {
 
     protected final Runnable updateNode;
     protected final T initialValue;
@@ -38,5 +38,17 @@ abstract class CssValue<T> {
 
     public Node belowValue() {
         return null;
+    }
+
+    public boolean isEditable() {
+        return editable.get();
+    }
+
+    public BooleanProperty editableProperty() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable.set(editable);
     }
 }
