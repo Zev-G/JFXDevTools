@@ -5,6 +5,7 @@ import com.me.tmw.debug.devtools.nodeinfo.css.CssPropertiesView;
 import com.me.tmw.debug.devtools.nodeinfo.css.NodeCss;
 import javafx.collections.ObservableList;
 import javafx.css.*;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
@@ -29,6 +30,8 @@ public class SheetRule extends VBox {
         this.rule = rule;
 
         List<StyleableProperty<?>> styleableProperties = rule.getDeclarations().stream()
+                .filter(declaration -> declaration.getProperty() != null)
+                .filter(declaration -> declaration.getParsedValue().getConverter() != null)
                 .map(declaration -> new SimpleStyleableObjectProperty<>(new CssMetaData<Styleable, Object>(declaration.getProperty(), declaration.getParsedValue().getConverter()) {
                     @Override
                     public boolean isSettable(Styleable styleable) {
@@ -60,6 +63,8 @@ public class SheetRule extends VBox {
 
         Text closeBracket = new Text("}");
         bottom.getChildren().add(closeBracket);
+
+        declarations.setPadding(new Insets(0, 0, 0, 30));
 
         getChildren().addAll(selectors, declarations, bottom);
     }

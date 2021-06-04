@@ -2,6 +2,7 @@ package com.me.tmw.debug.devtools.nodeinfo.css.sheets;
 
 import com.me.tmw.css.Sheets;
 import javafx.css.Stylesheet;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;

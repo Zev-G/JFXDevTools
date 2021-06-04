@@ -28,10 +28,10 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-//        Magis.run(primaryStage);
+        Magis.run(primaryStage);
 
-        primaryStage.setScene(DevScene.getInstance(new SheetsInfo(new SceneTree(new SimpleObjectProperty<>(new Button())))));
-        primaryStage.show();
+//        primaryStage.setScene(DevScene.getInstance(new SheetsInfo(new SceneTree(new SimpleObjectProperty<>(new Button())))));
+//        primaryStage.show();
 
     }
 
