@@ -1,10 +1,17 @@
+.titled-pane {
+    -fx-font-size: 15;
+}
+
 .titled-pane > .title {
     -fx-background-color: transparent;
     -fx-effect: none;
-    -fx-padding: 0;
+    -fx-padding: 4;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
 }
 
 .titled-pane > .content {
     -fx-effect: none;
     -fx-border-width: 0;
+    -fx-padding: 5;
 }

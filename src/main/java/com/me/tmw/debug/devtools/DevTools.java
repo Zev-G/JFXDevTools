@@ -75,7 +75,7 @@ public class DevTools extends StackPane {
 
     public DevTools(Parent root, DevToolsContainer container) {
         this.container = container;
-        getStylesheets().addAll(TAB_STYLE_SHEET, Sheets.Essentials.STYLE_SHEET);
+        getStylesheets().addAll(TAB_STYLE_SHEET, Sheets.Essentials.STYLE_SHEET, STYLE_SHEET);
         getStyleClass().add(SMALL_DIVIDER_CLASS);
 
         close.getStyleClass().addAll(TRANSPARENT_BUTTON_CLASS, LIGHT_SVG_BUTTON_CLASS, HAND_CURSOR_CLASS);

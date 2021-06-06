@@ -64,6 +64,8 @@ public class SheetRule extends VBox {
         Text closeBracket = new Text("}");
         bottom.getChildren().add(closeBracket);
 
+        selectors.setStyle("-fx-font-size: 14;");
+
         declarations.setPadding(new Insets(0, 0, 0, 30));
 
         getChildren().addAll(selectors, declarations, bottom);
