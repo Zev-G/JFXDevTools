@@ -1,6 +1,8 @@
 package com.me.tmw.debug.devtools.nodeinfo.css;
 
 import com.me.tmw.debug.devtools.nodeinfo.css.CssPropertiesView.ObservableStyleableProperty;
+import com.me.tmw.nodes.util.NodeMisc;
+import com.sun.javafx.scene.layout.region.Margins;
 import com.sun.javafx.util.Logging;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
@@ -27,6 +29,7 @@ import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class CssPropertyView {
@@ -231,7 +234,34 @@ public class CssPropertyView {
             return getEnumCssValue(enumObj, updateNode);
         } else if (obj instanceof Paint) {
             return new ColorCssValue((Paint) obj, updateNode);
+        } else if (obj instanceof BorderStrokeStyle) {
+            if (obj == BorderStrokeStyle.DASHED) {
+                return new StringCssValue("dashed", updateNode);
+            } else if (obj == BorderStrokeStyle.DOTTED) {
+                return new StringCssValue("dotted", updateNode);
+            } else if (obj == BorderStrokeStyle.SOLID) {
+                return new StringCssValue("solid", updateNode);
+            } else if (obj == BorderStrokeStyle.NONE) {
+                return new StringCssValue("none", updateNode);
+            } else {
+                BorderStrokeStyle strokeStyle = (BorderStrokeStyle) obj;
+                String buffer = strokeStyle.getType() + " " +
+                        strokeStyle.getLineJoin() + " " +
+                        strokeStyle.getLineCap() + " " +
+                        strokeStyle.getMiterLimit() + " " +
+                        strokeStyle.getDashOffset() + ( strokeStyle.getDashArray() != null ?
+                           " " + strokeStyle.getDashArray()
+                        : "");
+                return new StringCssValue(buffer, updateNode);
+            }
+        } else if (obj.getClass().getSimpleName().equals("Margins")) {
+            return new StringCssValue(obj.toString(), updateNode);
+        } else if (obj instanceof CornerRadii) {
+            CornerRadii fillRadii = (CornerRadii) obj;
+            return new InsetsCssValue(new Insets(fillRadii.getTopLeftHorizontalRadius(), fillRadii.getTopRightHorizontalRadius(), fillRadii.getBottomRightHorizontalRadius(), fillRadii.getBottomLeftHorizontalRadius())
+                    , updateNode);
         }
+//        System.out.println("[CssPropertyView] no check for: {" + obj.getClass() + "} " + obj);
         return new StringCssValue(String.valueOf(obj).toLowerCase(), updateNode);
     }
 
