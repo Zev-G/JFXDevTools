@@ -121,8 +121,8 @@ public class CssPropertiesView extends GridPane {
             styleableProperty.setValue(value);
         }
 
+        @SuppressWarnings("unchecked")
         public void setValueObj(Object obj) {
-
             setValue((T) obj);
         }
 

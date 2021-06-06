@@ -18,10 +18,16 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+import java.lang.reflect.Array;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CssPropertyView {
 
@@ -184,13 +190,35 @@ public class CssPropertyView {
         if (obj == null) {
             return new StringCssValue("null", updateNode);
         }
+        if (obj.getClass().isArray()) {
+            Object[] array = (Object[]) obj;
+            HBox result = new HBox();
+            result.setSpacing(5);
+            List<CssValue<?>> values = Arrays.stream(array).map(o -> cssNode(o, converter, updateNode, expanded)).collect(Collectors.toList());
+            result.getChildren().addAll(values.stream().map(CssValue::node).collect(Collectors.toList()));
+            return new CssValue<>(array, updateNode) {
+                @Override
+                public String toCssString() {
+                    StringBuilder builder = new StringBuilder();
+                    for (CssValue<?> value : values) {
+                        builder.append(", ").append(value.toCssString());
+                    }
+                    return builder.toString().isEmpty() ? "" : builder.substring(2);
+                }
+
+                @Override
+                public Parent node() {
+                    return result;
+                }
+            };
+        }
         if (obj instanceof Number || obj instanceof Boolean) {
             return new StringCssValue(obj.toString(), updateNode);
         } else if (obj instanceof String || obj instanceof URL) {
             return new StringCssValue('"' + obj.toString() + '"', updateNode);
         } else if (obj instanceof Insets) {
             Insets insets = (Insets) obj;
-            return new StringCssValue(insets.getTop() + " " + insets.getRight() + " " + insets.getBottom() + " " + insets.getLeft(), updateNode);
+            return new InsetsCssValue(insets, updateNode);
         } else if (obj instanceof Duration) {
             return new StringCssValue(((Duration) obj).toMillis() + "ms", updateNode);
         } else if (obj instanceof Color) {
@@ -201,6 +229,8 @@ public class CssPropertyView {
         } else if (obj instanceof Enum<?>) {
             Enum<?> enumObj = (Enum<?>) obj;
             return getEnumCssValue(enumObj, updateNode);
+        } else if (obj instanceof Paint) {
+            return new ColorCssValue((Paint) obj, updateNode);
         }
         return new StringCssValue(String.valueOf(obj).toLowerCase(), updateNode);
     }

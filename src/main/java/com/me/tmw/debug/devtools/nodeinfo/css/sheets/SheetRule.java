@@ -15,6 +15,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SheetRule extends VBox {
@@ -32,17 +33,24 @@ public class SheetRule extends VBox {
         List<StyleableProperty<?>> styleableProperties = rule.getDeclarations().stream()
                 .filter(declaration -> declaration.getProperty() != null)
                 .filter(declaration -> declaration.getParsedValue().getConverter() != null)
-                .map(declaration -> new SimpleStyleableObjectProperty<>(new CssMetaData<Styleable, Object>(declaration.getProperty(), declaration.getParsedValue().getConverter()) {
-                    @Override
-                    public boolean isSettable(Styleable styleable) {
-                        return false;
-                    }
+                .map(declaration -> {
+                    try {
+                        return new SimpleStyleableObjectProperty<>(new CssMetaData<Styleable, Object>(declaration.getProperty(), declaration.getParsedValue().getConverter()) {
+                            @Override
+                            public boolean isSettable(Styleable styleable) {
+                                return false;
+                            }
 
-                    @Override
-                    public StyleableProperty<Object> getStyleableProperty(Styleable styleable) {
+                            @Override
+                            public StyleableProperty<Object> getStyleableProperty(Styleable styleable) {
+                                return null;
+                            }
+                        }, declaration.getParsedValue().convert(new Font(10)));
+                    } catch (ClassCastException error) {
                         return null;
                     }
-                }, declaration.getParsedValue().convert(new Font(10))))
+                })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         declarations = new CssPropertiesView(styleableProperties, node);
         declarations.setDisable(true);
