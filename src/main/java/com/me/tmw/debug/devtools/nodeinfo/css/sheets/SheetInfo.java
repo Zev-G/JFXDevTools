@@ -27,7 +27,7 @@ public class SheetInfo extends TitledPane {
         String[] urlPieces = stylesheet.getUrl().split("[/\\\\]");
         setText(urlPieces[urlPieces.length - 1]);
 
-        List<Rule> validRules = stylesheet.getRules().stream().filter(this::shouldAddRule).collect(Collectors.toList());
+        List<Rule> validRules = new ArrayList<>(stylesheet.getRules());
 
         List<Rule> shownRules = new ArrayList<>();
 
@@ -57,12 +57,6 @@ public class SheetInfo extends TitledPane {
         }
 
         setContent(layout);
-    }
-
-    private boolean shouldAddRule(Rule rule) {
-        return true;
-//        return rule.getDeclarations().stream()
-//                .anyMatch(declaration -> declaration.getParsedValue().getConverter() != null);
     }
 
 }

@@ -31,8 +31,6 @@ public class SheetRule extends VBox {
         this.rule = rule;
 
         List<StyleableProperty<?>> styleableProperties = rule.getDeclarations().stream()
-//                .filter(declaration -> declaration.getProperty() != null)
-//                .filter(declaration -> declaration.getParsedValue().getConverter() != null)
                 .map(declaration -> {
                     try {
                         return new SimpleStyleableObjectProperty<>(new CssMetaData<Styleable, Object>(
