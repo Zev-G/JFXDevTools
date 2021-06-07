@@ -6,7 +6,6 @@ import com.me.tmw.resource.Resources;
 import org.fxmisc.richtext.CodeArea;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -50,7 +49,6 @@ public class CSSLang extends EditorLanguageBase {
     @Override
     public List<SortableStyleSpan<Collection<String>>> highlight(CodeArea area, String text) {
         return highlighter.apply(text);
-//        return Collections.emptyList();
     }
 
 }

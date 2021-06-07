@@ -1,11 +1,9 @@
 package com.me.tmw.debug.devtools.nodeinfo.css.sheets;
 
 import com.me.tmw.css.Sheets;
-import com.me.tmw.nodes.tooltips.SimpleTooltip;
 import javafx.css.Rule;
 import javafx.css.Stylesheet;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
@@ -62,9 +60,9 @@ public class SheetInfo extends TitledPane {
     }
 
     private boolean shouldAddRule(Rule rule) {
-        return rule.getDeclarations().stream()
-                .filter(declaration -> declaration.getProperty() != null)
-                .anyMatch(declaration -> declaration.getParsedValue().getConverter() != null);
+        return true;
+//        return rule.getDeclarations().stream()
+//                .anyMatch(declaration -> declaration.getParsedValue().getConverter() != null);
     }
 
 }

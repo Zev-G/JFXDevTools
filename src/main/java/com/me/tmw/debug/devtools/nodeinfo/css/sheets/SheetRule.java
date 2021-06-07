@@ -31,11 +31,13 @@ public class SheetRule extends VBox {
         this.rule = rule;
 
         List<StyleableProperty<?>> styleableProperties = rule.getDeclarations().stream()
-                .filter(declaration -> declaration.getProperty() != null)
-                .filter(declaration -> declaration.getParsedValue().getConverter() != null)
+//                .filter(declaration -> declaration.getProperty() != null)
+//                .filter(declaration -> declaration.getParsedValue().getConverter() != null)
                 .map(declaration -> {
                     try {
-                        return new SimpleStyleableObjectProperty<>(new CssMetaData<Styleable, Object>(declaration.getProperty(), declaration.getParsedValue().getConverter()) {
+                        return new SimpleStyleableObjectProperty<>(new CssMetaData<Styleable, Object>(
+                                declaration.getProperty() == null ? "no-property" : declaration.getProperty(),
+                                declaration.getParsedValue().getConverter() == null ? new StyleConverter<>() : declaration.getParsedValue().getConverter()) {
                             @Override
                             public boolean isSettable(Styleable styleable) {
                                 return false;
