@@ -2,6 +2,8 @@ package com.me.tmw.debug.devtools.nodeinfo.css.sheets;
 
 import com.me.tmw.debug.devtools.nodeinfo.NodeInfo;
 import com.me.tmw.resource.Resources;
+import com.sun.javafx.css.StyleManager;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -11,7 +13,9 @@ import javafx.css.CssParser;
 import javafx.css.Stylesheet;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.SubScene;
 import javafx.scene.control.Accordion;
+import javafx.scene.control.Label;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -26,6 +30,8 @@ public class SheetsInfo extends NodeInfo {
     private Parent node;
 
     private final Accordion sheets = new Accordion();
+    private final Label nothingHere = new Label("No style sheets found for node.");
+
     private final List<String> viewedSheets = new ArrayList<>();
     private final Map<String, SheetInfo> viewedSheetsSheetInfoMap = new HashMap<>();
 
@@ -68,6 +74,11 @@ public class SheetsInfo extends NodeInfo {
             SheetInfo info = new SheetInfo(stylesheet, node);
             viewedSheetsSheetInfoMap.put(newSheet, info);
             sheets.getPanes().add(info);
+        }
+        if (stylesheets.isEmpty()) {
+            getChildren().add(nothingHere);
+        } else {
+            getChildren().remove(nothingHere);
         }
     };
 

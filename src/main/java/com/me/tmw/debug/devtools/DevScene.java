@@ -15,13 +15,9 @@ public class DevScene extends Scene implements DevToolsContainer {
 
     private DevTools tools;
 
-    public static DevScene getInstance(Parent root) {
-        return new DevScene(root, root(root));
-    }
-
-    private DevScene(Parent root, SplitPane splitPane) {
-        super(splitPane);
-        this.splitPane = splitPane;
+    public DevScene(Parent root) {
+        super(root(root));
+        this.splitPane = (SplitPane) getRoot();
 
         this.splitPane.setOnContextMenuRequested(event -> {
             MenuItem inspect = new MenuItem("Inspect");

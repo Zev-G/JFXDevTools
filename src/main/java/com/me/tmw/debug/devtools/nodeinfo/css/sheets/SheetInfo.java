@@ -1,9 +1,11 @@
 package com.me.tmw.debug.devtools.nodeinfo.css.sheets;
 
 import com.me.tmw.css.Sheets;
+import com.me.tmw.nodes.tooltips.SimpleTooltip;
 import javafx.css.Rule;
 import javafx.css.Stylesheet;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;

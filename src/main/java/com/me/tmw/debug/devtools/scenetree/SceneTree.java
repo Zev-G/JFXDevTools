@@ -29,14 +29,6 @@ public class SceneTree extends TreeView<Node> {
     public SceneTree(ObjectProperty<Parent> root) {
         getStylesheets().add(STYLE_SHEET);
         getStyleClass().add("scene-tree");
-        rootProperty().addListener((observable, oldValue, newValue) -> {
-            if (oldValue != null && oldValue.getValue() instanceof Parent) {
-                ((Parent) oldValue.getValue()).getStylesheets().remove(SimpleInspector.DEFAULT_STYLE_SHEET);
-            }
-            if (newValue != null && newValue.getValue() instanceof Parent) {
-                ((Parent) newValue.getValue()).getStylesheets().add(SimpleInspector.DEFAULT_STYLE_SHEET);
-            }
-        });
 
         setCellFactory(param -> new NodeTreeCell(this));
         setRoot(new NodeTreeItem(root.get()));

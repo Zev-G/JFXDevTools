@@ -1,0 +1,31 @@
+.paren, .semicolon, .brace {
+    -fx-fill: derive(turquoise, -30%);
+}
+
+.value {
+    -fx-fill: orangered;
+}
+
+.pseudo-class,.color-code {
+    -fx-fill: orchid ;
+}
+
+.number {
+    -fx-fill: chocolate;
+}
+
+.keyword {
+    -fx-fill: purple;
+}
+
+.style-class {
+    -fx-fill: derive(turquoise, -40%);
+}
+
+.string {
+    -fx-fill: green;
+}
+
+.comment {
+    -fx-fill: gray;
+}

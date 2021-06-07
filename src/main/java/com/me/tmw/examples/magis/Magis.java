@@ -22,7 +22,7 @@ public class Magis {
         lessons.setSpacing(30);
         lessons.setAlignment(Pos.CENTER);
 
-        primaryStage.setScene(DevScene.getInstance(lessons));
+        primaryStage.setScene(new DevScene(lessons));
         loadOntoVBox(lessons);
         primaryStage.show();
         primaryStage.setMaximized(true);

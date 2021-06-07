@@ -9,7 +9,19 @@ import java.util.function.Function;
 
 public final class RFXUtils {
 
-    public static <T> StyleSpansBuilder<T> joinSpans(Collection<SortableStyleSpan<T>> styleSpans, Function<Collection<SortableStyleSpan<T>>, T> combine) {
+    public static final Function<Collection<SortableStyleSpan<Collection<String>>>, Collection<String>> JOIN_STRINGS = spans -> {
+        if (spans.isEmpty())
+            return Collections.emptyList();
+        List<String> styles = new ArrayList<>();
+        for (SortableStyleSpan<Collection<String>> span : spans) {
+            styles.addAll(span.getStyle());
+        }
+        return styles;
+    };
+
+    public static final Collection<String> STRINGS_EMPTY = Collections.emptyList();
+
+    public static <T> StyleSpansBuilder<T> joinSpans(Collection<SortableStyleSpan<T>> styleSpans, Function<Collection<SortableStyleSpan<T>>, T> combine, T empty, int length) {
         StyleSpansBuilder<T> builder = new StyleSpansBuilder<>();
 
         List<SortableStyleSpan<T>> sortedByStartSpans = new ArrayList<>(styleSpans);
@@ -49,6 +61,10 @@ public final class RFXUtils {
                 sortedByEndSpans.remove(first);
                 withinSpans.remove(first);
             }
+        }
+
+        if (current < length || length == 0) {
+            builder.add(new StyleSpan<>(empty, length - current));
         }
 
         return builder;
