@@ -2,6 +2,7 @@ package com.me.tmw.debug.devtools;
 
 import com.me.tmw.css.Sheets;
 import com.me.tmw.debug.devtools.tabs.ConsoleTab;
+import com.me.tmw.debug.devtools.tabs.FilesTab;
 import com.me.tmw.debug.devtools.tabs.StructureTab;
 import com.me.tmw.nodes.control.svg.SVG;
 import com.me.tmw.nodes.tooltips.SimpleTooltip;
@@ -14,6 +15,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -29,6 +31,7 @@ public class DevTools extends StackPane {
 
     private final StructureTab structureTab;
     private final ConsoleTab consoleTab;
+    private final FilesTab filesTab;
     private final TabPane tabPane = new TabPane();
 
     private final Button close = new Button("", NodeMisc.svgPath(SVG.X, 0.5));
@@ -104,12 +107,13 @@ public class DevTools extends StackPane {
         buttons.setSpacing(5);
         buttons.setPickOnBounds(false);
 
+        filesTab = new FilesTab(root, this);
         structureTab = new StructureTab(root, this);
         consoleTab = new ConsoleTab(root);
         structureTab.setClosable(false);
         consoleTab.setClosable(false);
 
-        tabPane.getTabs().addAll(structureTab, consoleTab);
+        tabPane.getTabs().addAll(structureTab, consoleTab, filesTab);
 
         getChildren().addAll(tabPane, buttons);
     }
@@ -120,6 +124,14 @@ public class DevTools extends StackPane {
 
     public ConsoleTab getConsoleTab() {
         return consoleTab;
+    }
+
+    public FilesTab getFilesTab() {
+        return filesTab;
+    }
+
+    public void selectTab(Tab tab) {
+        tabPane.getSelectionModel().select(tab);
     }
 
     public boolean isClosable() {

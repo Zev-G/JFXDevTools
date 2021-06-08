@@ -64,14 +64,22 @@ public class LanguageCodeArea extends CodeArea {
 
         @Override
         public void run() {
-            StyleSpansBuilder<Collection<String>> styleSpans = RFXUtils.joinSpans(language.highlight(LanguageCodeArea.this, text), RFXUtils.JOIN_STRINGS, RFXUtils.STRINGS_EMPTY, text.length());
-            if (!isInterrupted()) {
+            if (language != null) {
+                StyleSpansBuilder<Collection<String>> styleSpans = RFXUtils.joinSpans(language.highlight(LanguageCodeArea.this, text), RFXUtils.JOIN_STRINGS, RFXUtils.STRINGS_EMPTY, text.length());
+                if (!isInterrupted()) {
+                    Platform.runLater(() -> {
+                        if (!isInterrupted()) {
+                            try {
+                                setStyleSpans(0, styleSpans.create());
+                            } catch (IndexOutOfBoundsException ignored) {
+                            }
+                        }
+                    });
+                }
+            } else {
                 Platform.runLater(() -> {
                     if (!isInterrupted()) {
-                        try {
-                            setStyleSpans(0, styleSpans.create());
-                        } catch (IndexOutOfBoundsException ignored) {
-                        }
+                        clearStyle(0, text.length());
                     }
                 });
             }

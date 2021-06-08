@@ -15,38 +15,42 @@ public class DevScene extends Scene implements DevToolsContainer {
 
     private DevTools tools;
 
+    private final Parent subRoot;
+
     public DevScene(Parent root) {
         super(root(root));
+        this.subRoot = root;
         this.splitPane = (SplitPane) getRoot();
 
         this.splitPane.setOnContextMenuRequested(event -> {
             MenuItem inspect = new MenuItem("Inspect");
             ContextMenu menu = new ContextMenu(inspect);
             inspect.setOnAction(actionEvent -> {
-                if (tools == null) {
-                    tools = new DevTools(root, this);
-                }
                 Node intersected = event.getPickResult().getIntersectedNode();
-                tools.getStructureTab().getSceneTree().tryToFocus(intersected);
-                if (!tools.isShown()) {
-                    attach(tools);
+                getDevTools().getStructureTab().getSceneTree().tryToFocus(intersected);
+                if (!getDevTools().isShown()) {
+                    attach(getDevTools());
                 }
             });
             menu.show(getWindow(), event.getScreenX(), event.getScreenY());
         });
         addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
             if (keyEvent.getCode() == KeyCode.F12) {
-                if (tools == null) {
-                    tools = new DevTools(root, this);
-                    tools.getStructureTab().getSceneTree().tryToFocus(root);
-                }
-                if (!tools.isShown()) {
-                    attach(tools);
+                if (!getDevTools().isShown()) {
+                    attach(getDevTools());
                 } else {
-                    tools.hide();
+                    getDevTools().hide();
                 }
             }
         });
+    }
+
+    private DevTools getDevTools() {
+        if (tools == null) {
+            tools = new DevTools(subRoot, this);
+            tools.getStructureTab().getSceneTree().tryToFocus(subRoot);
+        }
+        return tools;
     }
 
     private static SplitPane root(Parent subRoot) {

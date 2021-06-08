@@ -5,6 +5,7 @@ import com.me.tmw.debug.devtools.inspectors.SimpleInspector;
 import com.me.tmw.debug.devtools.nodeinfo.css.NodeCss;
 import com.me.tmw.debug.devtools.nodeinfo.css.sheets.SheetsInfo;
 import com.me.tmw.debug.devtools.scenetree.SceneTree;
+import com.me.tmw.nodes.richtextfx.languages.CSSLang;
 import com.me.tmw.nodes.util.NodeMisc;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -84,7 +85,10 @@ public class StructureTab extends Tab {
     }
     private void loadSheetsTab(Parent value) {
         if (!sheetsInfoMap.containsKey(value)) {
-            sheetsInfoMap.put(value, new SheetsInfo(value));
+            sheetsInfoMap.put(value, new SheetsInfo(value, url -> {
+                tools.getFilesTab().loadURL(url, new CSSLang());
+                tools.selectTab(tools.getFilesTab());
+            }));
         }
         ScrollPane scrollPane = new ScrollPane(sheetsInfoMap.get(value));
         stylesheetsTab.setContent(scrollPane);

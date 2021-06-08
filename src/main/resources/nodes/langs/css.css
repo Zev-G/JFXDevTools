@@ -1,17 +1,17 @@
 .paren, .semicolon, .brace {
-    -fx-fill: derive(turquoise, -30%);
+    -fx-fill: darkgray;
 }
 
 .value {
-    -fx-fill: orangered;
+    -fx-fill: #58b7c2;
 }
 
 .pseudo-class,.color-code {
-    -fx-fill: orchid ;
+    -fx-fill: #ba3db5;
 }
 
 .number {
-    -fx-fill: chocolate;
+    -fx-fill: #98682c;
 }
 
 .keyword {
@@ -19,7 +19,7 @@
 }
 
 .style-class {
-    -fx-fill: derive(turquoise, -40%);
+    -fx-fill: #c0842c;
 }
 
 .string {

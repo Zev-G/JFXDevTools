@@ -1,9 +1,14 @@
 package com.me.tmw.debug.devtools.nodeinfo.css.sheets;
 
 import com.me.tmw.css.Sheets;
+import com.me.tmw.nodes.control.svg.SVG;
+import com.me.tmw.nodes.util.NodeMisc;
 import javafx.css.Rule;
 import javafx.css.Stylesheet;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
@@ -11,7 +16,8 @@ import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static com.me.tmw.css.Sheets.Essentials.*;
 
 public class SheetInfo extends TitledPane {
 
@@ -22,10 +28,17 @@ public class SheetInfo extends TitledPane {
 
     private final Hyperlink viewMore = new Hyperlink("View full style sheet");
 
-    public SheetInfo(Stylesheet stylesheet, Parent node) {
+    private final Button openButton = new Button("", NodeMisc.svgPath(SVG.OPEN, 0.8));
+
+    public SheetInfo(Stylesheet stylesheet, Parent node, Runnable open) {
         this.stylesheet = stylesheet;
         String[] urlPieces = stylesheet.getUrl().split("[/\\\\]");
         setText(urlPieces[urlPieces.length - 1]);
+
+        openButton.setOnAction(event -> open.run());
+        setGraphic(this.openButton);
+        setContentDisplay(ContentDisplay.RIGHT);
+        this.openButton.getStyleClass().addAll(TRANSPARENT_BUTTON_CLASS, LIGHT_SVG_BUTTON_CLASS, HAND_CURSOR_CLASS);
 
         List<Rule> validRules = new ArrayList<>(stylesheet.getRules());
 

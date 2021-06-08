@@ -22,12 +22,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 public class SheetsInfo extends NodeInfo {
 
     private static final String STYLE_SHEET = Resources.DEBUGGER.getCss("stylesheets");
 
     private Parent node;
+    private Consumer<String> open;
 
     private final Accordion sheets = new Accordion();
     private final Label nothingHere = new Label("No style sheets found for node.");
@@ -71,7 +73,7 @@ public class SheetsInfo extends NodeInfo {
                 e.printStackTrace();
                 continue;
             }
-            SheetInfo info = new SheetInfo(stylesheet, node);
+            SheetInfo info = new SheetInfo(stylesheet, node, () -> open.accept(newSheet));
             viewedSheetsSheetInfoMap.put(newSheet, info);
             sheets.getPanes().add(info);
         }
@@ -82,8 +84,9 @@ public class SheetsInfo extends NodeInfo {
         }
     };
 
-    public SheetsInfo(Parent parent) {
+    public SheetsInfo(Parent parent, Consumer<String> open) {
         this.node = parent;
+        this.open = open;
         getStylesheets().add(STYLE_SHEET);
 
         stylesheets.addListener(sheetsInvalidated);
