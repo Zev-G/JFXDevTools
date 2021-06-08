@@ -3,6 +3,8 @@ package com.me.tmw.css;
 import com.me.tmw.resource.Resources;
 import javafx.css.Rule;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 
 public final class Sheets {
 
@@ -19,6 +21,12 @@ public final class Sheets {
         public static String HAND_CURSOR_CLASS = "hand-cursor";
         public static String SMALL_DIVIDER_CLASS = "small-divider";
         public static final String SILENT_DISABLE_CLASS = "silent-disable";
+
+        public static void makeSmoothButton(Button button) {
+            button.getStylesheets().add(STYLE_SHEET);
+            button.getStyleClass().addAll(TRANSPARENT_BUTTON_CLASS, LIGHT_SVG_BUTTON_CLASS, HAND_CURSOR_CLASS);
+            button.setContentDisplay(ContentDisplay.CENTER);
+        }
 
     }
 

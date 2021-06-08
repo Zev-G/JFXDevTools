@@ -1,10 +1,13 @@
 package com.me.tmw.nodes.util;
 
 import com.me.tmw.nodes.control.svg.SVG;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -107,4 +110,11 @@ public final class NodeMisc {
     public static Background simpleBackground(Color red) {
         return new Background(new BackgroundFill(red, CornerRadii.EMPTY, Insets.EMPTY));
     }
+
+    public static MenuItem makeMenuItem(String text, EventHandler<ActionEvent> eventHandler) {
+        MenuItem item = new MenuItem(text);
+        item.setOnAction(eventHandler);
+        return item;
+    }
+
 }

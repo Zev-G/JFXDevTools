@@ -1,11 +1,14 @@
 package com.me.tmw.nodes.tooltips;
 
 import com.me.tmw.resource.Resources;
+import javafx.css.Styleable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Control;
 import javafx.scene.control.Tooltip;
 import javafx.util.Duration;
+
+import java.util.function.Consumer;
 
 public class SimpleTooltip extends Tooltip {
 
@@ -14,6 +17,10 @@ public class SimpleTooltip extends Tooltip {
     public static void apply(Control control, String text) {
         control.getStylesheets().add(STYLE_SHEET);
         control.setTooltip(new SimpleTooltip(text));
+    }
+    public static void apply(Consumer<Tooltip> applier, Parent parent, String text) {
+        parent.getStylesheets().add(STYLE_SHEET);
+        applier.accept(new SimpleTooltip(text));
     }
 
     private SimpleTooltip(String text) {

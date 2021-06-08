@@ -2,20 +2,20 @@
     -fx-fill: darkgray;
 }
 
-.value {
-    -fx-fill: #58b7c2;
-}
-
-.pseudo-class,.color-code {
-    -fx-fill: #ba3db5;
-}
-
 .number {
     -fx-fill: #98682c;
 }
 
 .keyword {
     -fx-fill: purple;
+}
+
+.value {
+    -fx-fill: #58b7c2;
+}
+
+.pseudo-class,.color-code {
+    -fx-fill: #ba3db5;
 }
 
 .style-class {
