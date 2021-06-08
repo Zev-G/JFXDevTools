@@ -3,6 +3,8 @@ package com.me.tmw.debug.devtools.tabs;
 import com.me.tmw.debug.devtools.DevTools;
 import com.me.tmw.nodes.richtextfx.EditorLanguageBase;
 import com.me.tmw.nodes.richtextfx.LanguageCodeArea;
+import com.me.tmw.nodes.richtextfx.languages.CSSLang;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -11,13 +13,16 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
+import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -31,12 +36,33 @@ public class FilesTab extends Tab {
     private final Map<Object, SourceTab> sourceTabMap = new HashMap<>();
 
     private final GridPane backdrop = new GridPane() {
-        { add(new BorderPane(new Label("Open a file in the left view for it to show up here.")), 0, 0); }
+        { add(new Label("Open a file in the left view for it to show up here."), 0, 0); }
     };
     private final TabPane openFiles = new TabPane();
     private final StackPane tabPaneBg = new StackPane(backdrop, openFiles);
 
-    private final ListView<Object> files = new ListView<>();
+    private final ListView<Object> files = new ListView<>() {
+        {
+            setCellFactory(param -> {
+                ListCell<Object> cell = new ListCell<>();
+                cell.itemProperty().addListener((observable, oldValue, newValue) -> {
+                    if (newValue != null && sourceTabMap.containsKey(newValue)) {
+                        cell.setText(sourceTabMap.get(newValue).getSource().getName());
+                    } else {
+                        cell.setText("");
+                        cell.setGraphic(null);
+                    }
+                });
+                cell.setOnMousePressed(event -> {
+                    if (event.getClickCount() == 2 && cell.getItem() != null) {
+                        loadSource(sourceTabMap.get(cell.getItem()).source);
+                    }
+                });
+                return cell;
+            });
+            setPlaceholder(new Label("No files loaded yet."));
+        }
+    };
     private final SplitPane split = new SplitPane(files, tabPaneBg);
 
     public FilesTab(Parent root, DevTools tools) {
@@ -44,26 +70,13 @@ public class FilesTab extends Tab {
         this.root = root;
         this.tools = tools;
 
+        setClosable(false);
+
+        backdrop.setAlignment(Pos.CENTER);
+
         SplitPane.setResizableWithParent(files, false);
 
         setContent(split);
-        files.setCellFactory(param -> {
-            ListCell<Object> cell = new ListCell<>();
-            cell.itemProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue != null && sourceTabMap.containsKey(newValue)) {
-                    cell.setText(sourceTabMap.get(newValue).getSource().getName());
-                } else {
-                    cell.setText("");
-                    cell.setGraphic(null);
-                }
-            });
-            cell.setOnMousePressed(event -> {
-                if (event.getClickCount() == 2 && cell.getItem() != null) {
-                    loadSource(sourceTabMap.get(cell.getItem()).source);
-                }
-            });
-            return cell;
-        });
     }
 
     public boolean loadURL(String url) {
@@ -78,9 +91,28 @@ public class FilesTab extends Tab {
         }
     }
     public void loadURL(URL url) {
-        loadURL(url, null);
+        if (!tryURLasPath(url, null, false)) {
+            loadURL(url, null);
+        }
     }
     public void loadURL(URL url, EditorLanguageBase langChoice) {
+        if (tryURLasPath(url, langChoice, true)) {
+            return;
+        }
+        if (!url.getFile().isEmpty()) {
+            Path path;
+            try {
+                URI uri = url.toURI();
+                System.out.println(uri);
+                if (uri.getPath() != null) {
+                    path = Path.of(uri.getPath());
+                    loadFile(path, langChoice);
+                    return;
+                }
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        }
         Supplier<String> reader = () -> {
             StringBuilder urlText = new StringBuilder();
             try {
@@ -100,6 +132,61 @@ public class FilesTab extends Tab {
 
         Source source = new Source(
                 reader, null, url.toString(), urlPieces[urlPieces.length - 1]
+        );
+        source.setPreferredLanguage(langChoice);
+        loadSource(source);
+    }
+    private boolean tryURLasPath(URL url, EditorLanguageBase langChoice, boolean force) {
+        if (!url.getFile().isEmpty()) {
+            Path path;
+            try {
+                URI uri = url.toURI();
+                if (uri.getPath() != null) {
+                    path = new File(uri).toPath();
+                    if (force) {
+                        loadFile(path, langChoice);
+                    } else {
+                        loadFile(path);
+                    }
+                    return true;
+                }
+            } catch (URISyntaxException e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public void loadFile(Path file) {
+        String name = file.getFileName().toString();
+        if (name.endsWith(".css")) {
+            loadFile(file, new CSSLang());
+        } else {
+            loadFile(file, null);
+        }
+    }
+    public void loadFile(Path file, EditorLanguageBase langChoice) {
+        Supplier<String> reader = () -> {
+            try {
+                return String.join("\n", Files.readAllLines(file));
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "Error while reading file: " + file;
+            }
+        };
+        Consumer<String> writer = null;
+        if (Files.isWritable(file)) {
+            writer = text -> {
+                try {
+                    Files.writeString(file, text);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            };
+        }
+
+        Source source = new Source(
+            reader, writer, file, file.getFileName().toString()
         );
         source.setPreferredLanguage(langChoice);
         loadSource(source);
@@ -185,7 +272,7 @@ public class FilesTab extends Tab {
             setText(source.getName());
             CodeArea area = new LanguageCodeArea(source.preferredLanguage).addLineNumbers();
             area.replaceText(source.getReader().get());
-            setContent(area);
+            setContent(new VirtualizedScrollPane<>(area));
 
             if (source.writer == null) {
                 area.setEditable(false);
