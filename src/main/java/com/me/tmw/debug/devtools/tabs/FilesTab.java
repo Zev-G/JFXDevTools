@@ -14,6 +14,10 @@ import javafx.collections.ObservableMap;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -21,6 +25,8 @@ import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -72,9 +78,15 @@ public class FilesTab extends Tab {
                 cell.itemProperty().addListener((observable, oldValue, newValue) -> {
                     if (newValue != null && sourceTabMap.containsKey(newValue)) {
                         cell.setText(sourceTabMap.get(newValue).getSource().getName());
+                        cell.setContextMenu(new ContextMenu(
+                                NodeMisc.makeMenuItem("Copy Path", actionEvent -> {
+                                    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(sourceTabMap.get(newValue).getSource().getKey().toString()), null);
+                                })
+                        ));
                     } else {
                         cell.setText("");
                         cell.setGraphic(null);
+                        cell.setContextMenu(null);
                     }
                 });
                 cell.setOnMousePressed(event -> {

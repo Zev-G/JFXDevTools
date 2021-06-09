@@ -42,12 +42,16 @@ public class StylesheetsTab extends Tab {
                         if (selected == null) {
                             selected = "";
                         }
-                        return switch (selected) {
-                            case "File Path" -> "Location of the file, e.g. \"C:\\Windows\\stylesheet.css\"";
-                            case "URL" -> "URL of the stylesheet, e.g. \"https://www.domain/files/stylesheet.css\"";
-                            case "Temp File" -> "Any valid file name, e.g. \"stylesheet.css\"";
-                            default -> "";
-                        };
+                        switch (selected) {
+                            case "File Path":
+                                return "Location of the file, e.g. \"C:\\Windows\\stylesheet.css\"";
+                            case "URL":
+                                return "URL of the stylesheet, e.g. \"https://www.domain/files/stylesheet.css\"";
+                            case "Temp File":
+                                return "Any valid file name, e.g. \"stylesheet.css\"";
+                            default:
+                                return "";
+                        }
                     }, typeComboBox.getSelectionModel().selectedItemProperty())
             );
             setOnKeyPressed(event -> {
@@ -81,6 +85,8 @@ public class StylesheetsTab extends Tab {
         setContent(display);
         this.structureTab = structureTab;
 
+        VBox.setVgrow(stylesheetsPlaceHolder, Priority.ALWAYS);
+
         structureTab.getSceneTree().getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && newValue.getValue() instanceof Parent) {
                 load((Parent) newValue.getValue());
@@ -92,12 +98,14 @@ public class StylesheetsTab extends Tab {
 
     public void load(Parent value) {
         if (!sheetsInfoMap.containsKey(value)) {
-            sheetsInfoMap.put(value, new SheetsInfo(value, url -> {
+            SheetsInfo sheetsInfo = new SheetsInfo(value, url -> {
                 structureTab.getTools().getFilesTab().loadURL(url, new CSSLang());
                 structureTab.getTools().selectTab(structureTab.getTools().getFilesTab());
-            }));
+            });
+            sheetsInfoMap.put(value, sheetsInfo);
         }
         ScrollPane scrollPane = new ScrollPane(sheetsInfoMap.get(value));
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
         stylesheetsPlaceHolder.getChildren().setAll(scrollPane);
     }
 

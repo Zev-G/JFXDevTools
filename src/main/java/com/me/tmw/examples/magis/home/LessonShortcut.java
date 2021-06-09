@@ -3,6 +3,7 @@ package com.me.tmw.examples.magis.home;
 import com.me.tmw.animations.Animations;
 import com.me.tmw.examples.magis.lib.RingProgressIndicator;
 import com.me.tmw.nodes.util.Layout;
+import javafx.animation.ScaleTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;

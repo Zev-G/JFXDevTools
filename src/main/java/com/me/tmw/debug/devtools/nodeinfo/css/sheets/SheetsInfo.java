@@ -125,17 +125,19 @@ public class SheetsInfo extends NodeInfo {
                     if (lastStylesheetBinding.get() != null) {
                         lastStylesheetBinding.get().disconnect();
                     }
-                    parents.add(grandParent);
-                    StylesheetBinding stylesheetBinding = new StylesheetBinding(grandParent);
-                    stylesheetLists.add(stylesheetBinding);
                     if (!dependencies.isEmpty()) {
                         dependencies.forEach(ParentBinding::disconnect);
                         dependencies.clear();
                     }
-                    dependencies.add(new ParentBinding(parent, disconnectRef.get()));
-                    dependencies.addAll(loadParentList(grandParent));
-                    lastGrandParent.set(grandParent);
-                    lastStylesheetBinding.set(stylesheetBinding);
+                    if (grandParent != null) {
+                        parents.add(grandParent);
+                        StylesheetBinding stylesheetBinding = new StylesheetBinding(grandParent);
+                        stylesheetLists.add(stylesheetBinding);
+                        dependencies.add(new ParentBinding(parent, disconnectRef.get()));
+                        dependencies.addAll(loadParentList(grandParent));
+                        lastGrandParent.set(grandParent);
+                        lastStylesheetBinding.set(stylesheetBinding);
+                    }
                 }
             };
             disconnectRef.set(

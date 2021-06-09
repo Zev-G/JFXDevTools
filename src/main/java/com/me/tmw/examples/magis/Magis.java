@@ -36,7 +36,6 @@ public class Magis {
             shortcut.setScaleX(0.95);
             shortcut.setScaleY(0.95);
             shortcut.setMouseTransparent(true);
-            shortcut.setBorder(new Border(new BorderStroke(Color.ORANGE, BorderStrokeStyle.DASHED, CornerRadii.EMPTY, new BorderWidths(4))));
             lessons.getChildren().add(shortcut);
             Dragging.draggable(shortcut, shortcut.translateXProperty(), shortcut.translateYProperty());
             shortcut.setOnMouseReleased(event -> {

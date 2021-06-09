@@ -11,6 +11,9 @@
     -fx-min-width: 650;
     -fx-max-width: 680;
     -fx-cursor: hand;
+    -fx-border-width: 1 !important;
+    -fx-border-color: rgba(100, 100, 100, 0.4);
+    -fx-border-radius: 25;
 }
 
 .lesson-shortcut > .vbox {
