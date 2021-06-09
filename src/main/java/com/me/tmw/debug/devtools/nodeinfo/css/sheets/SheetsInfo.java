@@ -97,9 +97,11 @@ public class SheetsInfo extends NodeInfo {
             if (sceneBinding.get() != null) {
                 sceneBinding.get().disconnect();
             }
-            StylesheetBinding newBinding = new StylesheetBinding(newValue.getStylesheets());
-            stylesheetLists.add(newBinding);
-            sceneBinding.set(newBinding);
+            if (newValue != null) {
+                StylesheetBinding newBinding = new StylesheetBinding(newValue.getStylesheets());
+                stylesheetLists.add(newBinding);
+                sceneBinding.set(newBinding);
+            }
         };
         sceneListener.changed(parent.sceneProperty(), null, parent.getScene());
         parent.sceneProperty().addListener(sceneListener);

@@ -2,3 +2,8 @@
     -fx-font-size: 15;
     -fx-font-family: "Liberation Mono";
 }
+
+/*noinspection CssUnitlessNumber*/
+.paragraph-text {
+    -fx-tab-size: 4;
+}
