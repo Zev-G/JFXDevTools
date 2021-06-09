@@ -29,7 +29,6 @@ public class StructureTab extends Tab {
 
     private final ObjectProperty<Parent> root = new SimpleObjectProperty<>();
     private final Map<Node, NodeCss> cssPropertiesMap = new HashMap<>();
-    private final Map<Node, SheetsInfo> sheetsInfoMap = new HashMap<>();
 
     private final SceneTree sceneTree;
     private final TextFlow classChain = new TextFlow();
@@ -37,10 +36,9 @@ public class StructureTab extends Tab {
 
     private final StackPane noCssProperties = new StackPane(new Label("No Css Properties"));
     private final Tab cssTab = new Tab("Css Properties", noCssProperties);
-    private final StackPane noStylesheets = new StackPane(new Label("Can't load style sheets."));
-    private final Tab stylesheetsTab = new Tab("Stylesheets (Beta)");
+    private final StylesheetsTab stylesheetsTab;
     private final DevTools tools;
-    private final TabPane infoTabPane = new TabPane(cssTab, stylesheetsTab);
+    private final TabPane infoTabPane = new TabPane(cssTab);
 
     private final SplitPane split = new SplitPane();
 
@@ -49,6 +47,9 @@ public class StructureTab extends Tab {
         this.tools = tools;
         sceneTree = new SceneTree(this.root);
         VBox.setVgrow(sceneTree, Priority.ALWAYS);
+
+        stylesheetsTab = new StylesheetsTab(this);
+        infoTabPane.getTabs().add(stylesheetsTab);
 
         classChain.setPadding(new Insets(10));
         classChain.getStyleClass().add("class-chain");
@@ -64,7 +65,7 @@ public class StructureTab extends Tab {
         });
         stylesheetsTab.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue && sceneTree.getSelectionModel().getSelectedItem() != null && sceneTree.getSelectionModel().getSelectedItem().getValue() instanceof Parent) {
-                loadSheetsTab((Parent) sceneTree.getSelectionModel().getSelectedItem().getValue());
+                stylesheetsTab.load((Parent) sceneTree.getSelectionModel().getSelectedItem().getValue());
             }
         });
 
@@ -92,12 +93,9 @@ public class StructureTab extends Tab {
             if (newValue != null && newValue.getValue() instanceof Parent) {
                 if (infoTabPane.getSelectionModel().getSelectedItem() == cssTab) {
                     loadCssTab((Parent) newValue.getValue());
-                } else if (infoTabPane.getSelectionModel().getSelectedItem() == stylesheetsTab) {
-                    loadSheetsTab((Parent) newValue.getValue());
                 }
             } else {
                 cssTab.setContent(noCssProperties);
-                stylesheetsTab.setContent(noStylesheets);
             }
         });
 
@@ -118,18 +116,16 @@ public class StructureTab extends Tab {
         scrollPane.getStylesheets().add(NodeCss.STYLE_SHEET);
         cssTab.setContent(scrollPane);
     }
-    private void loadSheetsTab(Parent value) {
-        if (!sheetsInfoMap.containsKey(value)) {
-            sheetsInfoMap.put(value, new SheetsInfo(value, url -> {
-                tools.getFilesTab().loadURL(url, new CSSLang());
-                tools.selectTab(tools.getFilesTab());
-            }));
-        }
-        ScrollPane scrollPane = new ScrollPane(sheetsInfoMap.get(value));
-        stylesheetsTab.setContent(scrollPane);
-    }
 
     public SceneTree getSceneTree() {
         return sceneTree;
+    }
+
+    public DevTools getTools() {
+        return tools;
+    }
+
+    public Parent getRoot() {
+        return root.get();
     }
 }

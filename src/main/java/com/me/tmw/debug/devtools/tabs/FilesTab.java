@@ -165,14 +165,18 @@ public class FilesTab extends Tab {
             return false;
         }
     }
-    public void loadURL(URL url) {
-        if (!tryURLasPath(url, null, false)) {
-            loadURL(url, deriveLanguage(url.toString()));
+    public Source loadURL(URL url) {
+        Source pathResult;
+        if ((pathResult = tryURLasPath(url, null, false)) != null) {
+            return pathResult;
+        } else {
+            return loadURL(url, deriveLanguage(url.toString()));
         }
     }
-    public void loadURL(URL url, EditorLanguageBase langChoice) {
-        if (tryURLasPath(url, langChoice, true)) {
-            return;
+    public Source loadURL(URL url, EditorLanguageBase langChoice) {
+        Source pathResult;
+        if ((pathResult = tryURLasPath(url, langChoice, true)) != null) {
+            return pathResult;
         }
         Supplier<String> reader = () -> {
             StringBuilder urlText = new StringBuilder();
@@ -196,8 +200,9 @@ public class FilesTab extends Tab {
         );
         source.setPreferredLanguage(langChoice);
         loadSource(source);
+        return source;
     }
-    private boolean tryURLasPath(URL url, EditorLanguageBase langChoice, boolean force) {
+    private Source tryURLasPath(URL url, EditorLanguageBase langChoice, boolean force) {
         if (!url.getFile().isEmpty()) {
             Path path;
             try {
@@ -205,17 +210,16 @@ public class FilesTab extends Tab {
                 if (uri.getPath() != null && uri.getScheme().equals("file")) {
                     path = new File(uri).toPath();
                     if (force) {
-                        loadFile(path, langChoice);
+                        return loadFile(path, langChoice);
                     } else {
-                        loadFile(path);
+                        return loadFile(path);
                     }
-                    return true;
                 }
             } catch (URISyntaxException e) {
-                return false;
+                return null;
             }
         }
-        return false;
+        return null;
     }
 
     private EditorLanguageBase deriveLanguage(String text) {
@@ -226,10 +230,10 @@ public class FilesTab extends Tab {
         }
     }
 
-    public void loadFile(Path file) {
-        loadFile(file, deriveLanguage(file.toString()));
+    public Source loadFile(Path file) {
+        return loadFile(file, deriveLanguage(file.toString()));
     }
-    public void loadFile(Path file, EditorLanguageBase langChoice) {
+    public Source loadFile(Path file, EditorLanguageBase langChoice) {
         Supplier<String> reader = () -> {
             try {
                 return String.join("\n", Files.readAllLines(file));
@@ -254,6 +258,7 @@ public class FilesTab extends Tab {
         );
         source.setPreferredLanguage(langChoice);
         loadSource(source);
+        return source;
     }
 
     public void loadSource(Source source) {
@@ -292,6 +297,8 @@ public class FilesTab extends Tab {
 
         private EditorLanguageBase preferredLanguage;
 
+        private Consumer<String> onSaved;
+
         private Source(Supplier<String> reader, Consumer<String> writer, Object key, String name) {
             if (key == null) {
                 throw new IllegalArgumentException("Key can't be null");
@@ -322,6 +329,14 @@ public class FilesTab extends Tab {
 
         public void setPreferredLanguage(EditorLanguageBase preferredLanguage) {
             this.preferredLanguage = preferredLanguage;
+        }
+
+        public void setOnSaved(Consumer<String> onSaved) {
+            this.onSaved = onSaved;
+        }
+
+        public Consumer<String> getOnSaved() {
+            return onSaved;
         }
 
     }
@@ -374,6 +389,9 @@ public class FilesTab extends Tab {
                 source.writer.accept(area.getText());
                 originalText = area.getText();
                 setText(source.getName());
+                if (source.getOnSaved() != null) {
+                    source.getOnSaved().accept(area.getText());
+                }
             }
         }
 

@@ -81,6 +81,10 @@ public class DevTools extends StackPane {
         getStylesheets().addAll(TAB_STYLE_SHEET, Sheets.Essentials.STYLE_SHEET, STYLE_SHEET);
         getStyleClass().add(SMALL_DIVIDER_CLASS);
 
+        buttons.setPickOnBounds(false);
+        closePlaceHolder.setPickOnBounds(false);
+        detachPlaceHolder.setPickOnBounds(false);
+
         close.getStyleClass().addAll(TRANSPARENT_BUTTON_CLASS, LIGHT_SVG_BUTTON_CLASS, HAND_CURSOR_CLASS);
         detach.getStyleClass().addAll(TRANSPARENT_BUTTON_CLASS, LIGHT_SVG_BUTTON_CLASS, HAND_CURSOR_CLASS);
         SimpleTooltip.apply(close, "Closes dev tools.");

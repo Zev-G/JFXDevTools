@@ -183,7 +183,7 @@ public class SheetsInfo extends NodeInfo {
         private final ObservableList<String> stylesheets;
         private final Runnable disconnector;
 
-        private List<String> previousValue = new ArrayList<>();
+        private Set<String> previousValue = new HashSet<>();
 
         private StylesheetBinding(Parent parent) {
             this(parent.getStylesheets());
@@ -194,16 +194,17 @@ public class SheetsInfo extends NodeInfo {
                 List<String> added = new ArrayList<>();
                 List<String> removed = new ArrayList<>(previousValue);
                 for (String value : stylesheets) {
-                    previousValue.remove(value);
-                    if (!previousValue.contains(value)) {
+                    removed.remove(value);
+                    if (!previousValue.contains(value) || removed.contains(value)) {
                         added.add(value);
                     }
                 }
-                SheetsInfo.this.stylesheets.addAll(added);
                 SheetsInfo.this.stylesheets.removeAll(removed);
-                previousValue = new ArrayList<>(stylesheets);
+                SheetsInfo.this.stylesheets.addAll(added);
+                previousValue = new HashSet<>(stylesheets);
             };
             invalidated.invalidated(stylesheets);
+            stylesheets.addListener(invalidated);
             disconnector = () -> {
                 stylesheets.removeListener(invalidated);
                 stylesheetLists.remove(this);
