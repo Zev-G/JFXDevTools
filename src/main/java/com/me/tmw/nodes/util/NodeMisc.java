@@ -1,6 +1,7 @@
 package com.me.tmw.nodes.util;
 
 import com.me.tmw.nodes.control.svg.SVG;
+import javafx.beans.binding.StringBinding;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -13,6 +14,8 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import org.fxmisc.richtext.InlineCssTextArea;
 
 import java.util.ArrayList;
@@ -115,6 +118,42 @@ public final class NodeMisc {
         MenuItem item = new MenuItem(text);
         item.setOnAction(eventHandler);
         return item;
+    }
+
+    /**
+     * Creates an array of text nodes where each object passed into this method either adds a new text node (in the case of a String, Text, or StringBinding), or changes the current preset (in all other cases).
+     * @param objects must be either a {@link String}, {@link StringBinding}, {@link Text} node,{@link Paint}, or a {@link Font}.
+     * @return the parsed text nodes.
+     */
+    public static Collection<Text> createTexts(Object... objects) {
+        List<Text> texts = new ArrayList<>();
+        Font currentFont = null;
+        Paint currentFill = null;
+        for (int i = 0, objectsLength = objects.length; i < objectsLength; i++) {
+            Object obj = objects[i];
+            if (obj instanceof String || obj instanceof StringBinding) {
+                Text newText = new Text();
+                if (currentFill != null)
+                    newText.setFill(currentFill);
+                if (currentFont != null)
+                    newText.setFont(currentFont);
+                if (obj instanceof String) {
+                    newText.setText(obj.toString());
+                } else {
+                    newText.textProperty().bind((StringBinding) obj);
+                }
+                texts.add(newText);
+            } else if (obj instanceof Text) {
+                texts.add((Text) obj);
+            } else if (obj instanceof Paint) {
+                currentFill = (Paint) obj;
+            } else if (obj instanceof Font) {
+                currentFont = (Font) obj;
+            } else {
+                throw new IllegalArgumentException("Invalid argument: " + obj + " at position: " + i +".");
+            }
+        }
+        return texts;
     }
 
 }

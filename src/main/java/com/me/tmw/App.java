@@ -26,10 +26,7 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-//        Magis.run(primaryStage);
-
-        primaryStage.setScene(new DevScene(new LanguageCodeArea(new CSSLang()).addLineNumbers()));
-        primaryStage.show();
+        Magis.run(primaryStage);
 
     }
 

@@ -160,15 +160,12 @@ public class CssPropertyView {
         if (cssValue.isUsingAltGen()) {
             property.setValueObj(cssValue.genAlt());
         } else {
-//            Logging.getCSSLogger().disableLogging();
-            System.out.println(this);
             Stylesheet lastStyleSheet = parser.parse("* { " + this + "; }");
             if (!lastStyleSheet.getRules().isEmpty() && !lastStyleSheet.getRules().get(0).getDeclarations().isEmpty()) {
                 property.setValueObj(
                         property.getCssMetaData().getConverter().convert(lastStyleSheet.getRules().get(0).getDeclarations().get(0).getParsedValue(), null)
                 );
             }
-//            Logging.getCSSLogger().enableLogging();
         }
     }
 

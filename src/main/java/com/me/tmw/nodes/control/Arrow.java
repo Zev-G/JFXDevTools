@@ -40,10 +40,6 @@ public class Arrow extends HBox {
         line.setStartX(0);
         line.endXProperty().bind(lengthProperty());
 
-        widthProperty().addListener((observable, oldValue, newValue) -> {
-            System.out.println(newValue);
-        });
-
         getChildren().addAll(line, head);
     }
 

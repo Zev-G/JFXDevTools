@@ -8,3 +8,30 @@
     -fx-effect: none;
     -fx-border-width: 0;
 }
+
+.class-chain, .class-chain > .viewport {
+    -fx-background-color: -fx-control-inner-background;
+}
+
+.class-representative {
+    -fx-font-family: Consolas;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+}
+.abstract-representative {
+    -fx-fill: green;
+}
+.concrete-representative {
+    -fx-fill: derive(goldenrod, -10%);
+}
+
+.scroll-pane, .scroll-pane:focused {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+.tab-pane {
+    -fx-border-width: 1;
+    -fx-border-color: lightgray;
+}

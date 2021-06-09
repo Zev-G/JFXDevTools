@@ -173,7 +173,7 @@ public class Console extends StackPane {
         final HashMap<Pattern, String> regexCssMap  = new HashMap<>();
         regexCssMap.put(Pattern.compile("\"[^\"]*+\""), "-fx-fill: green;");
         regexCssMap.put(Pattern.compile("[0-9]+(\\.[0-9]+|)"), "-fx-fill: #c74418;");
-        regexCssMap.put(Pattern.compile("[()]"), "-fx-fill: lightblue;");
+        regexCssMap.put(Pattern.compile("[()]"), "-fx-fill: #137c88;");
         final String keywordCss = "-fx-fill: purple;";
         String keywords = "abstract\targuments\tawait\tboolean\n" +
                 "break\tbyte\tcase\tcatch\n" +

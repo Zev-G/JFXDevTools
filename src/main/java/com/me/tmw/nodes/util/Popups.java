@@ -22,7 +22,6 @@ public final class Popups {
 
         AtomicReference<Boolean> success = new AtomicReference<>(false);
         input.setOnKeyPressed(event -> {
-            System.out.println(event.getCode() + " == KeyCode.ENTER => " + (event.getCode() == KeyCode.ENTER));
             if (event.getCode() == KeyCode.ENTER) {
                 success.set(true);
                 stage.hide();

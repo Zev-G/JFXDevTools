@@ -1,6 +1,7 @@
 package com.me.tmw.debug.devtools.tabs;
 
 import com.me.tmw.debug.devtools.DevTools;
+import com.me.tmw.debug.devtools.DevUtils;
 import com.me.tmw.debug.devtools.inspectors.SimpleInspector;
 import com.me.tmw.debug.devtools.nodeinfo.css.NodeCss;
 import com.me.tmw.debug.devtools.nodeinfo.css.sheets.SheetsInfo;
@@ -9,15 +10,19 @@ import com.me.tmw.nodes.richtextfx.languages.CSSLang;
 import com.me.tmw.nodes.util.NodeMisc;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StructureTab extends Tab {
@@ -27,6 +32,9 @@ public class StructureTab extends Tab {
     private final Map<Node, SheetsInfo> sheetsInfoMap = new HashMap<>();
 
     private final SceneTree sceneTree;
+    private final TextFlow classChain = new TextFlow();
+    private final VBox left;
+
     private final StackPane noCssProperties = new StackPane(new Label("No Css Properties"));
     private final Tab cssTab = new Tab("Css Properties", noCssProperties);
     private final StackPane noStylesheets = new StackPane(new Label("Can't load style sheets."));
@@ -40,6 +48,14 @@ public class StructureTab extends Tab {
         this.root.set(root);
         this.tools = tools;
         sceneTree = new SceneTree(this.root);
+        VBox.setVgrow(sceneTree, Priority.ALWAYS);
+
+        classChain.setPadding(new Insets(10));
+        classChain.getStyleClass().add("class-chain");
+        ScrollPane classChainScrollPane = new ScrollPane(classChain);
+        classChainScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        classChainScrollPane.getStyleClass().add("class-chain");
+        left = new VBox(sceneTree, classChainScrollPane);
 
         cssTab.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue && sceneTree.getSelectionModel().getSelectedItem() != null && sceneTree.getSelectionModel().getSelectedItem().getValue() instanceof Parent) {
@@ -54,6 +70,25 @@ public class StructureTab extends Tab {
 
         sceneTree.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             tools.getConsoleTab().getConsole().requestBinding("selected", newValue == null ? null : newValue.getValue());
+
+            if (newValue != null && newValue.getValue() != null) {
+                List<Text> texts = new ArrayList<>();
+                for (Class<?> aClass = newValue.getValue().getClass(); aClass.getSuperclass() != null; aClass = aClass.getSuperclass()) {
+                    Text text = new Text(DevUtils.getSimpleClassName(aClass));
+                    text.getStyleClass().add("class-representative");
+                    if (aClass.isInterface() || Modifier.isAbstract(aClass.getModifiers())) {
+                        text.getStyleClass().add("abstract-representative");
+                    } else {
+                        text.getStyleClass().add("concrete-representative");
+                    }
+                    texts.add(text);
+                    texts.add(new Text("   "));
+                }
+                classChain.getChildren().setAll(texts);
+            } else {
+                classChain.getChildren().clear();
+            }
+
             if (newValue != null && newValue.getValue() instanceof Parent) {
                 if (infoTabPane.getSelectionModel().getSelectedItem() == cssTab) {
                     loadCssTab((Parent) newValue.getValue());
@@ -71,7 +106,7 @@ public class StructureTab extends Tab {
 
         cssTab.setClosable(false);
 
-        split.getItems().addAll(sceneTree, infoTabPane);
+        split.getItems().addAll(left, infoTabPane);
     }
 
     private void loadCssTab(Parent value) {

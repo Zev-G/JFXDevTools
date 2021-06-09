@@ -30,7 +30,6 @@ public final class Pseudos {
         BooleanProperty active = new SimpleBooleanProperty(pseudos.states.contains(pseudoClass));
 
         pseudos.changeListener = change -> {
-            System.out.println("2");
             if (pseudos.states != node.getPseudoClassStates()) {
                 pseudos.states.removeListener(pseudos.changeListener);
                 pseudos.states = node.getPseudoClassStates();
