@@ -14,13 +14,12 @@ public final class Sheets {
 
     public static class Essentials {
 
+        public static final String SILENT_DISABLE_CLASS = "silent-disable";
         public static String STYLE_SHEET = Resources.CSS.getCss("essentials");
-
         public static String TRANSPARENT_BUTTON_CLASS = "transparent-button";
         public static String LIGHT_SVG_BUTTON_CLASS = "light-svg-button";
         public static String HAND_CURSOR_CLASS = "hand-cursor";
         public static String SMALL_DIVIDER_CLASS = "small-divider";
-        public static final String SILENT_DISABLE_CLASS = "silent-disable";
 
         public static void makeSmoothButton(Button button) {
             button.getStylesheets().add(STYLE_SHEET);

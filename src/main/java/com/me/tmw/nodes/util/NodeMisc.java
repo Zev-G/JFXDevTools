@@ -16,7 +16,6 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import org.fxmisc.richtext.InlineCssTextArea;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,6 +49,7 @@ public final class NodeMisc {
     public static void addToGridPane(GridPane gridPane, Collection<? extends Node> nodes, IntFunction<Integer> xConverter) {
         addToGridPane(gridPane, nodes, xConverter, 0, x -> 0, 0);
     }
+
     public static void addToGridPane(GridPane gridPane, Collection<? extends Node> nodes, IntFunction<Integer> xConverter, int startX, IntFunction<Integer> yConverter, int startY) {
         for (Node node : nodes) {
             gridPane.add(node, startX, startY);
@@ -69,6 +69,7 @@ public final class NodeMisc {
     public static SVGPath svgPath(String s, double multiplier) {
         return svgPath(SVG.resizePath(s, multiplier));
     }
+
     public static SVGPath svgPath(String s) {
         SVGPath svgPath = new SVGPath();
         svgPath.getStyleClass().addAll("svg-path", "svg");
@@ -122,6 +123,7 @@ public final class NodeMisc {
 
     /**
      * Creates an array of text nodes where each object passed into this method either adds a new text node (in the case of a String, Text, or StringBinding), or changes the current preset (in all other cases).
+     *
      * @param objects must be either a {@link String}, {@link StringBinding}, {@link Text} node,{@link Paint}, or a {@link Font}.
      * @return the parsed text nodes.
      */
@@ -150,7 +152,7 @@ public final class NodeMisc {
             } else if (obj instanceof Font) {
                 currentFont = (Font) obj;
             } else {
-                throw new IllegalArgumentException("Invalid argument: " + obj + " at position: " + i +".");
+                throw new IllegalArgumentException("Invalid argument: " + obj + " at position: " + i + ".");
             }
         }
         return texts;

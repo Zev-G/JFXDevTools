@@ -19,9 +19,11 @@ public class Arrow extends HBox {
     public Arrow() {
         this(1);
     }
+
     public Arrow(double headSize) {
         this(headSize, 1);
     }
+
     public Arrow(double headSize, double initialStrokeWidth) {
         strokeWidth.set(initialStrokeWidth);
         head.setSize(headSize);
@@ -46,9 +48,11 @@ public class Arrow extends HBox {
     public double getStrokeWidth() {
         return strokeWidth.get();
     }
+
     public DoubleProperty strokeWidthProperty() {
         return strokeWidth;
     }
+
     public void setStrokeWidth(double strokeWidth) {
         this.strokeWidth.set(strokeWidth);
     }
@@ -56,9 +60,11 @@ public class Arrow extends HBox {
     public double getLength() {
         return length.get();
     }
+
     public DoubleProperty lengthProperty() {
         return length;
     }
+
     public void setLength(double length) {
         this.length.set(length);
     }
@@ -66,6 +72,7 @@ public class Arrow extends HBox {
     public Line getLine() {
         return line;
     }
+
     public ArrowHead getHead() {
         return head;
     }

@@ -9,9 +9,11 @@
     -fx-background-radius: 7.5;
     -fx-background-insets: 1;
 }
+
 .real-tree-cell:hover {
     -fx-background-color: derive(CHART_COLOR_5_TRANS_70, 80%);
 }
+
 .real-tree-cell:selected {
     -fx-background-color: derive(CHART_COLOR_5_TRANS_70, 80%);
     -fx-text-fill: -fx-dark-text-color;

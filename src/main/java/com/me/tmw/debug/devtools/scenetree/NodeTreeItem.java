@@ -35,6 +35,7 @@ public class NodeTreeItem extends TreeItem<Node> {
     public NodeTreeItem() {
         this(null);
     }
+
     public NodeTreeItem(Node node) {
         super(node);
 

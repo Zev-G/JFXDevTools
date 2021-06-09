@@ -2,11 +2,9 @@ package com.me.tmw.nodes.util;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Popup;
@@ -34,6 +32,7 @@ public final class Dragging {
                 super.attachListeners();
                 node.addEventHandler(MouseEvent.MOUSE_RELEASED, mouseReleased);
             }
+
             @Override
             public void detachListeners() {
                 super.detachListeners();
@@ -100,6 +99,7 @@ public final class Dragging {
             node.addEventHandler(MouseEvent.MOUSE_PRESSED, mousePressed);
             node.addEventHandler(MouseEvent.MOUSE_DRAGGED, mouseDragged);
         }
+
         public void detachListeners() {
             node.removeEventHandler(MouseEvent.MOUSE_PRESSED, mousePressed);
             node.removeEventHandler(MouseEvent.MOUSE_DRAGGED, mouseDragged);
@@ -108,9 +108,11 @@ public final class Dragging {
         public double getStartX() {
             return startX.get();
         }
+
         public DoubleProperty startXProperty() {
             return startX;
         }
+
         public void setStartX(double startX) {
             this.startX.set(startX);
         }
@@ -118,9 +120,11 @@ public final class Dragging {
         public double getStartY() {
             return startY.get();
         }
+
         public DoubleProperty startYProperty() {
             return startY;
         }
+
         public void setStartY(double startY) {
             this.startY.set(startY);
         }
@@ -128,9 +132,11 @@ public final class Dragging {
         public double getStartScreenX() {
             return startScreenX.get();
         }
+
         public DoubleProperty startScreenXProperty() {
             return startScreenX;
         }
+
         public void setStartScreenX(double startScreenX) {
             this.startScreenX.set(startScreenX);
         }
@@ -138,9 +144,11 @@ public final class Dragging {
         public double getStartScreenY() {
             return startScreenY.get();
         }
+
         public DoubleProperty startScreenYProperty() {
             return startScreenY;
         }
+
         public void setStartScreenY(double startScreenY) {
             this.startScreenY.set(startScreenY);
         }
@@ -152,6 +160,7 @@ public final class Dragging {
         public DoubleProperty getX() {
             return x;
         }
+
         public void setX(DoubleProperty x) {
             this.x = x;
         }
@@ -159,6 +168,7 @@ public final class Dragging {
         public DoubleProperty getY() {
             return y;
         }
+
         public void setY(DoubleProperty y) {
             this.y = y;
         }

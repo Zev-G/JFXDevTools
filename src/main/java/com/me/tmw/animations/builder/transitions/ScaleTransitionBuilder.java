@@ -22,6 +22,7 @@ public final class ScaleTransitionBuilder extends TransitionBuilderBase<ScaleTra
     public ScaleTransitionBuilder() {
         this(null);
     }
+
     public ScaleTransitionBuilder(Node node) {
         super(node);
         loadInProperties(toX, fromX, byX, toY, fromY, byY, toZ, fromZ, byZ);
@@ -30,9 +31,11 @@ public final class ScaleTransitionBuilder extends TransitionBuilderBase<ScaleTra
     public double getToX() {
         return toX.get();
     }
+
     public DoubleProperty toXProperty() {
         return toX;
     }
+
     public ScaleTransitionBuilder setToX(double toX) {
         this.toX.set(toX);
         return this;
@@ -41,9 +44,11 @@ public final class ScaleTransitionBuilder extends TransitionBuilderBase<ScaleTra
     public double getFromX() {
         return fromX.get();
     }
+
     public DoubleProperty fromXProperty() {
         return fromX;
     }
+
     public ScaleTransitionBuilder setFromX(double fromX) {
         this.fromX.set(fromX);
         return this;
@@ -52,9 +57,11 @@ public final class ScaleTransitionBuilder extends TransitionBuilderBase<ScaleTra
     public double getByX() {
         return byX.get();
     }
+
     public DoubleProperty byXProperty() {
         return byX;
     }
+
     public ScaleTransitionBuilder setByX(double byX) {
         this.byX.set(byX);
         return this;
@@ -63,9 +70,11 @@ public final class ScaleTransitionBuilder extends TransitionBuilderBase<ScaleTra
     public double getToY() {
         return toY.get();
     }
+
     public DoubleProperty toYProperty() {
         return toY;
     }
+
     public ScaleTransitionBuilder setToY(double toY) {
         this.toY.set(toY);
         return this;
@@ -74,9 +83,11 @@ public final class ScaleTransitionBuilder extends TransitionBuilderBase<ScaleTra
     public double getFromY() {
         return fromY.get();
     }
+
     public DoubleProperty fromYProperty() {
         return fromY;
     }
+
     public ScaleTransitionBuilder setFromY(double fromY) {
         this.fromY.set(fromY);
         return this;
@@ -85,9 +96,11 @@ public final class ScaleTransitionBuilder extends TransitionBuilderBase<ScaleTra
     public double getByY() {
         return byY.get();
     }
+
     public DoubleProperty byYProperty() {
         return byY;
     }
+
     public ScaleTransitionBuilder setByY(double byY) {
         this.byY.set(byY);
         return this;
@@ -96,9 +109,11 @@ public final class ScaleTransitionBuilder extends TransitionBuilderBase<ScaleTra
     public double getToZ() {
         return toZ.get();
     }
+
     public DoubleProperty toZProperty() {
         return toZ;
     }
+
     public ScaleTransitionBuilder setToZ(double toZ) {
         this.toZ.set(toZ);
         return this;
@@ -107,9 +122,11 @@ public final class ScaleTransitionBuilder extends TransitionBuilderBase<ScaleTra
     public double getFromZ() {
         return fromZ.get();
     }
+
     public DoubleProperty fromZProperty() {
         return fromZ;
     }
+
     public ScaleTransitionBuilder setFromZ(double fromZ) {
         this.fromZ.set(fromZ);
         return this;
@@ -118,9 +135,11 @@ public final class ScaleTransitionBuilder extends TransitionBuilderBase<ScaleTra
     public double getByZ() {
         return byZ.get();
     }
+
     public DoubleProperty byZProperty() {
         return byZ;
     }
+
     public ScaleTransitionBuilder setByZ(double byZ) {
         this.byZ.set(byZ);
         return this;

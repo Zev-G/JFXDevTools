@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class StylesheetsTab extends Tab {
 
-    private StructureTab structureTab;
+    private final StructureTab structureTab;
     private final Map<Node, SheetsInfo> sheetsInfoMap = new HashMap<>();
     private final StackPane noStylesheets = new StackPane(new Label("Can't load style sheets."));
 

@@ -57,6 +57,7 @@ public abstract class CssValues<T> extends CssValue<T> {
         }
         expand.setText("-");
     }
+
     private void minimized() {
         layout.getChildren().remove(items);
         expand.setText("+");

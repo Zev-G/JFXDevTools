@@ -15,6 +15,7 @@
     -fx-min-width: 200;
     -fx-padding: 5 20;
 }
+
 #overlay-content {
     -fx-background-color: rgba(0, 161, 255, 0.3) !important;
     -fx-border-color: #be0059 !important;
@@ -32,12 +33,15 @@
     -fx-font-weight: bold;
     -fx-font-size: 16;
 }
+
 .style-classes {
     -fx-fill: #c405c4;
 }
+
 .pseudo-states {
     -fx-fill: #28ac08;
 }
+
 .id {
     -fx-fill: #0c2bdb;
 }

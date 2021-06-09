@@ -12,6 +12,7 @@ public class ResourceFolder {
     public ResourceFolder(ResourceFolder parent, String subPath) {
         this(parent.getPath() + subPath);
     }
+
     public ResourceFolder(String path) {
         this.path = path;
     }

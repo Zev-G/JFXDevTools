@@ -6,7 +6,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
 import java.util.Arrays;
@@ -14,7 +13,7 @@ import java.util.Arrays;
 public class ColorTransitionPicker extends GridPane {
 
     private final ObjectProperty<Color> fromValue = new SimpleObjectProperty<>(this, "from");
-    private final ObjectProperty<Color> toValue   = new SimpleObjectProperty<>(this, "to");
+    private final ObjectProperty<Color> toValue = new SimpleObjectProperty<>(this, "to");
 
     private final ColorPickerMiniView fromColor = new ColorPickerMiniView(fromValue.get());
     private final ColorPickerMiniView toColor = new ColorPickerMiniView(toValue.get());
@@ -24,6 +23,7 @@ public class ColorTransitionPicker extends GridPane {
     public ColorTransitionPicker() {
         this(Color.WHITE, Color.WHITE);
     }
+
     public ColorTransitionPicker(Color from, Color to) {
         fromColor.setColor(from);
         toColor.setColor(from);
@@ -46,9 +46,11 @@ public class ColorTransitionPicker extends GridPane {
     public Color getFromValue() {
         return fromValue.get();
     }
+
     public ObjectProperty<Color> fromValueProperty() {
         return fromValue;
     }
+
     public void setFromValue(Color fromValue) {
         this.fromValue.set(fromValue);
     }
@@ -56,9 +58,11 @@ public class ColorTransitionPicker extends GridPane {
     public Color getToValue() {
         return toValue.get();
     }
+
     public ObjectProperty<Color> toValueProperty() {
         return toValue;
     }
+
     public void setToValue(Color toValue) {
         this.toValue.set(toValue);
     }

@@ -1,7 +1,6 @@
 package com.me.tmw.debug.devtools.tabs;
 
 import com.me.tmw.debug.devtools.console.Console;
-import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Tab;
 

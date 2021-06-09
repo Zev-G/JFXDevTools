@@ -10,7 +10,6 @@ import javafx.beans.property.Property;
 import javafx.css.PseudoClass;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TreeCell;
 import javafx.scene.layout.BackgroundFill;
@@ -95,7 +94,7 @@ public class NodeTreeCell extends TreeCell<Node> {
         classIndicator.getStyleClass().add("text-indicator");
         idIndicator.getStyleClass().add("text-indicator");
 
-        Text[] themed = { idText, classText, classIndicator, idIndicator };
+        Text[] themed = {idText, classText, classIndicator, idIndicator};
 
         TextFlow classFlow = new TextFlow(classIndicator, classText);
         TextFlow idFlow = new TextFlow(idIndicator, idText);

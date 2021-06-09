@@ -1,6 +1,5 @@
 package com.me.tmw.nodes.control.paint;
 
-import com.me.tmw.nodes.control.Arrow;
 import com.me.tmw.nodes.control.FillWidthTextField;
 import com.me.tmw.nodes.util.NodeMisc;
 import com.me.tmw.resource.Resources;
@@ -28,19 +27,20 @@ public class LinearGradientPicker extends VBox {
 
     private final TextField position = new FillWidthTextField("from 0% 0% to 100% 100%");
     private final ComboBox<CycleMethod> cycleMethods = new ComboBox<>();
-    private final HBox topHBox  = new HBox(position, cycleMethods);
+    private final HBox topHBox = new HBox(position, cycleMethods);
 
     private final FlowPane stops = new FlowPane();
     private final Pane resultPreview = new StackPane();
 
-    private final List<ColorPickerMiniView> colorPickers   = new ArrayList<>();
-    private final List<StringProperty>      stopProperties = new ArrayList<>();
+    private final List<ColorPickerMiniView> colorPickers = new ArrayList<>();
+    private final List<StringProperty> stopProperties = new ArrayList<>();
 
     private final ObjectProperty<LinearGradient> value = new SimpleObjectProperty<>(this, "value");
 
     public LinearGradientPicker() {
         this(new LinearGradient(0, 0, 100, 100, true, CycleMethod.NO_CYCLE, new Stop(100, Color.WHITE)));
     }
+
     public LinearGradientPicker(LinearGradient originalValue) {
         getStyleClass().add("linear-gradient-picker");
         getStylesheets().add(STYLE_SHEET);
@@ -86,7 +86,7 @@ public class LinearGradientPicker extends VBox {
         for (int i = 0; i < colorPickers.size(); i++) {
             stops.add(
                     NodeMisc.colorToCss(colorPickers.get(i).getColor())
-                    + " " + stopProperties.get(i).get()
+                            + " " + stopProperties.get(i).get()
             );
         }
         CycleMethod cycleMethod = cycleMethods.getValue();
@@ -103,9 +103,11 @@ public class LinearGradientPicker extends VBox {
     public void addStop() {
         addStop(colorPickers.size(), Color.WHITE, "");
     }
+
     public void addStop(Color initialColor, String stopRule) {
         addStop(colorPickers.size(), initialColor, stopRule);
     }
+
     public void addStop(int i, Color initialColor, String stopRule) {
         ColorPickerMiniView colorPicker = new ColorPickerMiniView(initialColor);
         colorPicker.setPrefSize(100, 100);

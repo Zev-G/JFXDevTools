@@ -14,6 +14,7 @@ public final class FadeTransitionBuilder extends TransitionBuilderBase<FadeTrans
     public FadeTransitionBuilder() {
         this(null);
     }
+
     public FadeTransitionBuilder(Node node) {
         super(node);
         loadInProperties(fromValue, toValue, byValue);
@@ -32,9 +33,11 @@ public final class FadeTransitionBuilder extends TransitionBuilderBase<FadeTrans
     public double getFromValue() {
         return fromValue.get();
     }
+
     public DoubleProperty fromValueProperty() {
         return fromValue;
     }
+
     public FadeTransitionBuilder setFromValue(double fromValue) {
         this.fromValue.set(fromValue);
         return this;
@@ -43,9 +46,11 @@ public final class FadeTransitionBuilder extends TransitionBuilderBase<FadeTrans
     public double getToValue() {
         return toValue.get();
     }
+
     public DoubleProperty toValueProperty() {
         return toValue;
     }
+
     public FadeTransitionBuilder setToValue(double toValue) {
         this.toValue.set(toValue);
         return this;
@@ -54,9 +59,11 @@ public final class FadeTransitionBuilder extends TransitionBuilderBase<FadeTrans
     public double getByValue() {
         return byValue.get();
     }
+
     public DoubleProperty byValueProperty() {
         return byValue;
     }
+
     public FadeTransitionBuilder setByValue(double byValue) {
         this.byValue.set(byValue);
         return this;

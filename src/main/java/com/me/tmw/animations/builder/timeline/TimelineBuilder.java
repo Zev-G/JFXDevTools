@@ -17,6 +17,7 @@ public final class TimelineBuilder extends AnimationBuilderBase<Timeline, Timeli
     public TimelineBuilder() {
         this(null);
     }
+
     public TimelineBuilder(Node node) {
         super(node);
     }
@@ -29,9 +30,11 @@ public final class TimelineBuilder extends AnimationBuilderBase<Timeline, Timeli
         keyFrames.add(builder);
         return this;
     }
+
     public TimelineBuilder addAll(KeyFrameBuilder... builders) {
         return addAll(Arrays.asList(builders));
     }
+
     public TimelineBuilder addAll(Collection<KeyFrameBuilder> builders) {
         keyFrames.addAll(builders);
         return this;
@@ -41,9 +44,11 @@ public final class TimelineBuilder extends AnimationBuilderBase<Timeline, Timeli
         keyFrames.remove(builder);
         return this;
     }
+
     public TimelineBuilder removeAll(KeyFrameBuilder... builders) {
         return removeAll(Arrays.asList(builders));
     }
+
     public TimelineBuilder removeAll(Collection<KeyFrameBuilder> builders) {
         keyFrames.removeAll(builders);
         return this;

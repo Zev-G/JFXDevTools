@@ -33,9 +33,11 @@ public final class KeyFrameBuilder {
     public Duration getDuration() {
         return duration.get();
     }
+
     public ObjectProperty<Duration> durationProperty() {
         return duration;
     }
+
     public KeyFrameBuilder setDuration(Duration duration) {
         this.duration.set(duration);
         return this;
@@ -44,9 +46,11 @@ public final class KeyFrameBuilder {
     public String getName() {
         return name.get();
     }
+
     public StringProperty nameProperty() {
         return name;
     }
+
     public KeyFrameBuilder setName(String name) {
         this.name.set(name);
         return this;
@@ -55,9 +59,11 @@ public final class KeyFrameBuilder {
     public EventHandler<ActionEvent> getOnFinished() {
         return onFinished.get();
     }
+
     public ObjectProperty<EventHandler<ActionEvent>> onFinishedProperty() {
         return onFinished;
     }
+
     public KeyFrameBuilder setOnFinished(EventHandler<ActionEvent> onFinished) {
         this.onFinished.set(onFinished);
         return this;
@@ -71,9 +77,11 @@ public final class KeyFrameBuilder {
         keyValueBuilders.add(keyValue);
         return this;
     }
+
     public KeyFrameBuilder addAll(KeyValueBuilder<?>... keyValues) {
         return addAll(Arrays.asList(keyValues));
     }
+
     public KeyFrameBuilder addAll(Collection<KeyValueBuilder<?>> keyValues) {
         keyValueBuilders.addAll(keyValues);
         return this;
@@ -82,10 +90,12 @@ public final class KeyFrameBuilder {
     public KeyFrameBuilder removeAll(KeyValueBuilder<?>... keyValues) {
         return removeAll(Arrays.asList(keyValues));
     }
+
     public KeyFrameBuilder removeAll(Collection<KeyValueBuilder<?>> keyValues) {
         keyValueBuilders.removeAll(keyValues);
         return this;
     }
+
     public KeyFrameBuilder remove(KeyValueBuilder<?> keyValue) {
         keyValueBuilders.remove(keyValue);
         return this;

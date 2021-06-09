@@ -22,8 +22,7 @@ public class CursorCssValue extends EnumCssValue<CursorCssValue.CursorEnum> {
         W_RESIZE(Cursor.W_RESIZE),
         V_RESIZE(Cursor.V_RESIZE),
         TEXT(Cursor.TEXT),
-        WAIT(Cursor.WAIT)
-        ;
+        WAIT(Cursor.WAIT);
 
         final Cursor cursor;
 

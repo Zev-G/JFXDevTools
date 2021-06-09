@@ -12,7 +12,7 @@ import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -28,8 +28,8 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -170,7 +170,7 @@ public class Console extends StackPane {
     }
 
     private static void makeInlineCssTextAreaJSCompatible(InlineCssTextArea input, ScriptContext context) {
-        final HashMap<Pattern, String> regexCssMap  = new HashMap<>();
+        final HashMap<Pattern, String> regexCssMap = new HashMap<>();
         regexCssMap.put(Pattern.compile("\"[^\"]*+\""), "-fx-fill: green;");
         regexCssMap.put(Pattern.compile("[0-9]+(\\.[0-9]+|)"), "-fx-fill: #c74418;");
         regexCssMap.put(Pattern.compile("[()]"), "-fx-fill: #137c88;");
@@ -213,7 +213,7 @@ public class Console extends StackPane {
                 Matcher matcher = pattern.matcher(text);
                 while (matcher.find()) {
                     int start = matcher.start();
-                    int end   = matcher.end();
+                    int end = matcher.end();
                     input.setStyle(start, end, mapCopy.get(pattern));
                 }
             }

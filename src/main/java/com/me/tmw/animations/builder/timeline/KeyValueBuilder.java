@@ -22,9 +22,11 @@ public final class KeyValueBuilder<T> {
     public Function<Node, WritableValue<T>> getWritableValue() {
         return writableValue.get();
     }
+
     public ObjectProperty<Function<Node, WritableValue<T>>> writableValueProperty() {
         return writableValue;
     }
+
     public KeyValueBuilder<T> setWritableValue(Function<Node, WritableValue<T>> writableValue) {
         this.writableValue.set(writableValue);
         return this;
@@ -33,9 +35,11 @@ public final class KeyValueBuilder<T> {
     public T getEndValue() {
         return endValue.get();
     }
+
     public ObjectProperty<T> endValueProperty() {
         return endValue;
     }
+
     public KeyValueBuilder<T> setEndValue(T endValue) {
         this.endValue.set(endValue);
         return this;
@@ -44,9 +48,11 @@ public final class KeyValueBuilder<T> {
     public Interpolator getInterpolator() {
         return interpolator.get();
     }
+
     public ObjectProperty<Interpolator> interpolatorProperty() {
         return interpolator;
     }
+
     public KeyValueBuilder<T> setInterpolator(Interpolator interpolator) {
         this.interpolator.set(interpolator);
         return this;

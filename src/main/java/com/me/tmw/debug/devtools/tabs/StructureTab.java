@@ -2,20 +2,17 @@ package com.me.tmw.debug.devtools.tabs;
 
 import com.me.tmw.debug.devtools.DevTools;
 import com.me.tmw.debug.devtools.DevUtils;
-import com.me.tmw.debug.devtools.inspectors.SimpleInspector;
 import com.me.tmw.debug.devtools.nodeinfo.css.NodeCss;
-import com.me.tmw.debug.devtools.nodeinfo.css.sheets.SheetsInfo;
 import com.me.tmw.debug.devtools.scenetree.SceneTree;
-import com.me.tmw.nodes.richtextfx.languages.CSSLang;
-import com.me.tmw.nodes.util.NodeMisc;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 

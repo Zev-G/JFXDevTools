@@ -5,7 +5,6 @@ import com.me.tmw.nodes.control.svg.SVG;
 import com.me.tmw.nodes.util.NodeMisc;
 import javafx.css.Rule;
 import javafx.css.Stylesheet;
-import javafx.geometry.NodeOrientation;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;

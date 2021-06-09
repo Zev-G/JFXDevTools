@@ -1,9 +1,6 @@
 package com.me.tmw.debug.devtools.nodeinfo.css;
 
 import com.me.tmw.debug.devtools.nodeinfo.css.CssPropertiesView.ObservableStyleableProperty;
-import com.me.tmw.nodes.util.NodeMisc;
-import com.sun.javafx.scene.layout.region.Margins;
-import com.sun.javafx.util.Logging;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -22,14 +19,11 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class CssPropertyView {
@@ -57,7 +51,7 @@ public class CssPropertyView {
     public CssPropertyView(ObservableStyleableProperty<?> property, Parent node) {
         super();
         this.property = property;
-        
+
         if (property.getBackingStyleableProperty() instanceof Property<?>) {
             EventHandler<MouseEvent> hoverListener = event -> editable.set(!((Property<?>) property.getBackingStyleableProperty()).isBound());
             hoverListener.handle(null);
@@ -119,6 +113,7 @@ public class CssPropertyView {
     public Parent left() {
         return left;
     }
+
     public Parent right() {
         return right;
     }
@@ -177,6 +172,7 @@ public class CssPropertyView {
     public static <T> CssValue<?> cssNode(T obj, StyleConverter<?, ?> converter, CssPropertyView view) {
         return cssNode(obj, converter, view.updateNode, view.expanded);
     }
+
     public static <T> CssValue<?> cssNode(T obj, StyleConverter<?, ?> converter, Runnable updateNode, BooleanProperty expanded) {
         if (converter instanceof CursorConverter) {
             return new CursorCssValue((Cursor) obj, updateNode);
@@ -246,8 +242,8 @@ public class CssPropertyView {
                         strokeStyle.getLineJoin() + " " +
                         strokeStyle.getLineCap() + " " +
                         strokeStyle.getMiterLimit() + " " +
-                        strokeStyle.getDashOffset() + ( strokeStyle.getDashArray() != null ?
-                           " " + strokeStyle.getDashArray()
+                        strokeStyle.getDashOffset() + (strokeStyle.getDashArray() != null ?
+                        " " + strokeStyle.getDashArray()
                         : "");
                 return new StringCssValue(buffer, updateNode);
             }

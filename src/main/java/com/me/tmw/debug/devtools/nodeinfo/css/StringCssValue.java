@@ -12,6 +12,7 @@ class StringCssValue extends CssValue<String> {
     public StringCssValue(Runnable updater) {
         this("", updater);
     }
+
     public StringCssValue(String initialValue, Runnable updater) {
         super(initialValue, updater);
         value.getStyleClass().addAll("property-value", "css-property");

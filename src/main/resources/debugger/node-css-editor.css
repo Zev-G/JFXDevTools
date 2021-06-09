@@ -28,9 +28,11 @@
     -fx-text-fill: derive(CHART_COLOR_1, -25%);
     -fx-font-weight: bold;
 }
+
 .property-value:hover {
     -fx-border-color: derive(-fx-text-box-border, 10%);
 }
+
 .property-value:focused {
     -fx-border-color: derive(-fx-text-box-border, -15%);
 }

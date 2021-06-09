@@ -1,11 +1,9 @@
 package com.me.tmw.nodes.control;
 
 import com.sun.javafx.scene.control.skin.Utils;
-import javafx.application.Platform;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.text.Text;
 
 public class FillWidthTextField extends TextField {
 

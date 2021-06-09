@@ -7,9 +7,11 @@
 .light-svg-button > .svg {
     -fx-fill: derive(-fx-mid-text-color, 30%);
 }
+
 .light-svg-button:hover > .svg {
     -fx-fill: derive(-fx-dark-text-color, 30%);
 }
+
 .light-svg-button:armed > .svg {
     -fx-fill: -fx-dark-text-color;
 }

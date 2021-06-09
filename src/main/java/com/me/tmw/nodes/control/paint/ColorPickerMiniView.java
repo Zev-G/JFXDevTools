@@ -27,6 +27,7 @@ public class ColorPickerMiniView extends Pane {
     public ColorPickerMiniView() {
         this(Color.WHITE);
     }
+
     public ColorPickerMiniView(Color ogColor) {
         color.set(ogColor);
         getStylesheets().add(STYLE_SHEET);
@@ -63,9 +64,11 @@ public class ColorPickerMiniView extends Pane {
     public String getText() {
         return text.get();
     }
+
     public StringProperty textProperty() {
         return text;
     }
+
     public void setText(String text) {
         this.text.set(text);
     }
@@ -73,9 +76,11 @@ public class ColorPickerMiniView extends Pane {
     public Color getColor() {
         return color.get();
     }
+
     public ObjectProperty<Color> colorProperty() {
         return color;
     }
+
     public void setColor(Color color) {
         this.picker.setCurrentColor(color);
     }

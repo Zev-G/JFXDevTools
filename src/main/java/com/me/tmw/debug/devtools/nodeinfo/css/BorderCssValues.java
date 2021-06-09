@@ -11,15 +11,14 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 
 import java.util.*;
-import java.util.List;
 
 public class BorderCssValues extends CssValues<Border> {
 
-    private final Label borderColor  = new Label("-fx-border-color: ");
-    private final Label borderRadii  = new Label("-fx-border-radius: ");
+    private final Label borderColor = new Label("-fx-border-color: ");
+    private final Label borderRadii = new Label("-fx-border-radius: ");
     private final Label borderInsets = new Label("-fx-border-insets: ");
-    private final Label borderStyle  = new Label("-fx-border-style: ");
-    private final Label borderWidth  = new Label("-fx-border-width: ");
+    private final Label borderStyle = new Label("-fx-border-style: ");
+    private final Label borderWidth = new Label("-fx-border-width: ");
 
     private final GridPane values = new GridPane();
     private final VBox names = new VBox();
@@ -75,10 +74,10 @@ public class BorderCssValues extends CssValues<Border> {
             ColorCssValue bottom = new ColorCssValue(stroke.getBottomStroke(), updateNode);
             ColorCssValue left = new ColorCssValue(stroke.getLeftStroke(), updateNode);
 
-            map.put(Side.TOP,    top);
-            map.put(Side.RIGHT,  right);
+            map.put(Side.TOP, top);
+            map.put(Side.RIGHT, right);
             map.put(Side.BOTTOM, bottom);
-            map.put(Side.LEFT,   left);
+            map.put(Side.LEFT, left);
         }
         colorEditors.add(map);
 
@@ -94,6 +93,7 @@ public class BorderCssValues extends CssValues<Border> {
         strokes.setPadding(new Insets(0, 5, 0, 0));
         values.add(strokes, i, 0);
     }
+
     private void loadRadiis(BorderStroke stroke, int i) {
         CornerRadii cornerRadii = stroke.getRadii();
         InsetsCssValue radiis = new InsetsCssValue(
@@ -103,11 +103,13 @@ public class BorderCssValues extends CssValues<Border> {
         radiiEditors.add(radiis);
         values.add(radiis.node(), i, 1);
     }
+
     private void loadInsets(BorderStroke stroke, int i) {
         InsetsCssValue insets = new InsetsCssValue(stroke.getInsets(), updateNode);
         insetsEditors.add(insets);
         values.add(insets.node(), i, 2);
     }
+
     private void loadStyles(BorderStroke stroke, int i) {
         HashMap<Side, EnumCssValue<BorderStrokeStyles>> map = new HashMap<>();
         if (NodeMisc.allEqual(stroke.getTopStroke(), stroke.getRightStroke(), stroke.getBottomStroke(), stroke.getLeftStroke())) {
@@ -121,10 +123,10 @@ public class BorderCssValues extends CssValues<Border> {
             EnumCssValue<BorderStrokeStyles> bottom = new EnumCssValue<>(BorderStrokeStyles.class, BorderStrokeStyles.getFromBorderStrokeStyle(stroke.getBottomStyle()), updateNode);
             EnumCssValue<BorderStrokeStyles> left = new EnumCssValue<>(BorderStrokeStyles.class, BorderStrokeStyles.getFromBorderStrokeStyle(stroke.getLeftStyle()), updateNode);
 
-            map.put(Side.TOP,    top);
-            map.put(Side.RIGHT,  right);
+            map.put(Side.TOP, top);
+            map.put(Side.RIGHT, right);
             map.put(Side.BOTTOM, bottom);
-            map.put(Side.LEFT,   left);
+            map.put(Side.LEFT, left);
         }
         styleEditors.add(map);
 
@@ -140,6 +142,7 @@ public class BorderCssValues extends CssValues<Border> {
         styles.setPadding(new Insets(0, 5, 0, 0));
         values.add(styles, i, 3);
     }
+
     private void loadWidths(BorderStroke stroke, int i) {
         BorderWidths width = stroke.getWidths();
         InsetsCssValue widths = new InsetsCssValue(
@@ -215,10 +218,9 @@ public class BorderCssValues extends CssValues<Border> {
         NONE(BorderStrokeStyle.NONE),
         DOTTED(BorderStrokeStyle.DOTTED),
         DASHED(BorderStrokeStyle.DASHED),
-        SOLD(BorderStrokeStyle.SOLID)
-        ;
+        SOLD(BorderStrokeStyle.SOLID);
 
-        private static BorderStrokeStyles getFromBorderStrokeStyle(BorderStrokeStyle strokeStyle){
+        private static BorderStrokeStyles getFromBorderStrokeStyle(BorderStrokeStyle strokeStyle) {
             if (strokeStyle == null) return NONE;
             for (BorderStrokeStyles enumEquiv : values()) {
                 if (enumEquiv.getStyle() == strokeStyle) {

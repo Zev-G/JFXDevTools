@@ -3,7 +3,8 @@ package com.me.tmw.animations.builder.transitions;
 import com.me.tmw.animations.AnimationBuilderBase;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
-import javafx.beans.property.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 import javafx.util.Duration;
 
@@ -17,29 +18,40 @@ public abstract class TransitionBuilderBase<A extends Transition, T extends Tran
     public TransitionBuilderBase() {
         this(null);
     }
+
     public TransitionBuilderBase(Node node) {
         super(node);
         loadInProperties(duration, interpolator);
     }
 
-    @Override public Duration getDuration() {
+    @Override
+    public Duration getDuration() {
         return duration.get();
     }
-    @Override public ObjectProperty<Duration> durationProperty() {
+
+    @Override
+    public ObjectProperty<Duration> durationProperty() {
         return duration;
     }
-    @Override public T setDuration(Duration duration) {
+
+    @Override
+    public T setDuration(Duration duration) {
         this.duration.set(duration);
         return getThis();
     }
 
-    @Override public Interpolator getInterpolator() {
+    @Override
+    public Interpolator getInterpolator() {
         return interpolator.get();
     }
-    @Override public ObjectProperty<Interpolator> interpolatorProperty() {
+
+    @Override
+    public ObjectProperty<Interpolator> interpolatorProperty() {
         return interpolator;
     }
-    @Override public T setInterpolator(Interpolator interpolator) {
+
+    @Override
+    public T setInterpolator(Interpolator interpolator) {
         this.interpolator.set(interpolator);
         return getThis();
     }
@@ -49,7 +61,8 @@ public abstract class TransitionBuilderBase<A extends Transition, T extends Tran
         transition.setInterpolator(interpolator.get());
         try {
             transition.getClass().getMethod("setDuration", Duration.class).invoke(transition, duration.get());
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ignored) { }
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ignored) {
+        }
     }
 
 }

@@ -2,7 +2,6 @@ package com.me.tmw.examples.magis.home;
 
 import com.me.tmw.animations.Animations;
 import com.me.tmw.examples.magis.lib.RingProgressIndicator;
-import com.me.tmw.nodes.util.Dragging;
 import com.me.tmw.nodes.util.Layout;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
@@ -14,7 +13,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import java.util.Objects;

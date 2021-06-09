@@ -18,9 +18,11 @@
     -fx-font-size: 14;
     -fx-font-weight: bold;
 }
+
 .abstract-representative {
     -fx-fill: green;
 }
+
 .concrete-representative {
     -fx-fill: derive(goldenrod, -10%);
 }

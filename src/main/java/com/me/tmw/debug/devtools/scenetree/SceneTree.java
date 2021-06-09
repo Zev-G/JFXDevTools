@@ -2,14 +2,15 @@ package com.me.tmw.debug.devtools.scenetree;
 
 import com.me.tmw.debug.devtools.inspectors.SimpleInspector;
 import com.me.tmw.resource.Resources;
-import javafx.beans.property.*;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.scene.control.skin.TreeViewSkin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ public class SceneTree extends TreeView<Node> {
     public SceneTree(Scene scene) {
         this(scene.rootProperty());
     }
+
     public SceneTree(ObjectProperty<Parent> root) {
         getStylesheets().add(STYLE_SHEET);
         getStyleClass().add("scene-tree");

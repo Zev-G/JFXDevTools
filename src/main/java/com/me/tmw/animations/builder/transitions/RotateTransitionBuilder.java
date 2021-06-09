@@ -14,6 +14,7 @@ public final class RotateTransitionBuilder extends TransitionBuilderBase<RotateT
     public RotateTransitionBuilder() {
         this(null);
     }
+
     public RotateTransitionBuilder(Node node) {
         super(node);
         loadInProperties(fromAngle, toAngle, byAngle);
@@ -32,9 +33,11 @@ public final class RotateTransitionBuilder extends TransitionBuilderBase<RotateT
     public double getFromAngle() {
         return fromAngle.get();
     }
+
     public DoubleProperty fromAngleProperty() {
         return fromAngle;
     }
+
     public RotateTransitionBuilder setFromAngle(double fromAngle) {
         this.fromAngle.set(fromAngle);
         return this;
@@ -43,9 +46,11 @@ public final class RotateTransitionBuilder extends TransitionBuilderBase<RotateT
     public double getToAngle() {
         return toAngle.get();
     }
+
     public DoubleProperty toAngleProperty() {
         return toAngle;
     }
+
     public RotateTransitionBuilder setToAngle(double toAngle) {
         this.toAngle.set(toAngle);
         return this;
@@ -54,9 +59,11 @@ public final class RotateTransitionBuilder extends TransitionBuilderBase<RotateT
     public double getByAngle() {
         return byAngle.get();
     }
+
     public DoubleProperty byAngleProperty() {
         return byAngle;
     }
+
     public RotateTransitionBuilder setByAngle(double byAngle) {
         this.byAngle.set(byAngle);
         return this;

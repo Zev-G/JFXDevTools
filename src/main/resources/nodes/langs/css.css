@@ -14,7 +14,7 @@
     -fx-fill: #58b7c2;
 }
 
-.pseudo-class,.color-code {
+.pseudo-class, .color-code {
     -fx-fill: #ba3db5;
 }
 

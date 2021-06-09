@@ -4,7 +4,6 @@ import com.me.tmw.debug.devtools.DevUtils;
 import com.me.tmw.resource.Resources;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -13,7 +12,8 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ObjectVisualizer extends TitledPane {
@@ -28,6 +28,7 @@ public class ObjectVisualizer extends TitledPane {
     public ObjectVisualizer(Object object) {
         this(object, null);
     }
+
     public ObjectVisualizer(Object object, String name) {
         this.object = object;
         setContent(items);

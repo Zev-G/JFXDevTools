@@ -1,10 +1,11 @@
 package com.me.tmw.nodes.control;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.scene.shape.*;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 
 public class ArrowHead extends Path {
 
@@ -86,7 +87,7 @@ public class ArrowHead extends Path {
         DoubleProperty endY = new SimpleDoubleProperty(0);
         endX.bind(width);
 
-        return new DoubleProperty[] {
+        return new DoubleProperty[]{
                 pointX, pointY,
                 endX, endY
         };

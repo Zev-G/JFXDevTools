@@ -21,14 +21,18 @@ import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -41,7 +45,9 @@ public class FilesTab extends Tab {
     private final ObservableMap<Object, SourceTab> sourceTabMap = FXCollections.observableHashMap();
 
     private final GridPane backdrop = new GridPane() {
-        { add(new Label("Open a file in the left view for it to show up here."), 0, 0); }
+        {
+            add(new Label("Open a file in the left view for it to show up here."), 0, 0);
+        }
     };
     private final TabPane openFiles = new TabPane() {
         {
@@ -111,7 +117,7 @@ public class FilesTab extends Tab {
             Sheets.Essentials.makeSmoothButton(this);
 
             setOnAction(event ->
-                Popups.showInputPopup("Input a URL", FilesTab.this::loadURL)
+                    Popups.showInputPopup("Input a URL", FilesTab.this::loadURL)
             );
         }
     };
@@ -157,6 +163,7 @@ public class FilesTab extends Tab {
     public boolean loadURL(String url) {
         return loadURL(url, deriveLanguage(url));
     }
+
     public boolean loadURL(String url, EditorLanguageBase langChoice) {
         try {
             loadURL(new URL(url), langChoice);
@@ -165,6 +172,7 @@ public class FilesTab extends Tab {
             return false;
         }
     }
+
     public Source loadURL(URL url) {
         Source pathResult;
         if ((pathResult = tryURLasPath(url, null, false)) != null) {
@@ -173,6 +181,7 @@ public class FilesTab extends Tab {
             return loadURL(url, deriveLanguage(url.toString()));
         }
     }
+
     public Source loadURL(URL url, EditorLanguageBase langChoice) {
         Source pathResult;
         if ((pathResult = tryURLasPath(url, langChoice, true)) != null) {
@@ -202,6 +211,7 @@ public class FilesTab extends Tab {
         loadSource(source);
         return source;
     }
+
     private Source tryURLasPath(URL url, EditorLanguageBase langChoice, boolean force) {
         if (!url.getFile().isEmpty()) {
             Path path;
@@ -233,6 +243,7 @@ public class FilesTab extends Tab {
     public Source loadFile(Path file) {
         return loadFile(file, deriveLanguage(file.toString()));
     }
+
     public Source loadFile(Path file, EditorLanguageBase langChoice) {
         Supplier<String> reader = () -> {
             try {
@@ -254,7 +265,7 @@ public class FilesTab extends Tab {
         }
 
         Source source = new Source(
-            reader, writer, file, file.getFileName().toString()
+                reader, writer, file, file.getFileName().toString()
         );
         source.setPreferredLanguage(langChoice);
         loadSource(source);
@@ -264,6 +275,7 @@ public class FilesTab extends Tab {
     public void loadSource(Source source) {
         this.loadSource(source, false);
     }
+
     public void loadSource(Source source, boolean silent) {
         if (source == null) {
             throw new NullPointerException();

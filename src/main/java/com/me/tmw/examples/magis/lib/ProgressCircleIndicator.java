@@ -1,15 +1,7 @@
 package com.me.tmw.examples.magis.lib;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.ReadOnlyBooleanWrapper;
-import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.*;
 import javafx.css.CssMetaData;
 import javafx.css.Styleable;
 import javafx.css.StyleableDoubleProperty;
@@ -17,11 +9,14 @@ import javafx.css.StyleableProperty;
 import javafx.css.converter.SizeConverter;
 import javafx.scene.control.Control;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Base class for the progress indicator controls represented by circualr shapes
  *
  * @author Andrea Vacondio
- *
  */
 abstract class ProgressCircleIndicator extends Control {
     private static final int INDETERMINATE_PROGRESS = -1;
@@ -119,6 +114,7 @@ abstract class ProgressCircleIndicator extends Control {
         };
 
         public static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
+
         static {
             final List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<>(Control.getClassCssMetaData());
             styleables.add(INNER_CIRCLE_RADIUS);

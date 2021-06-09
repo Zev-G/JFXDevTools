@@ -1,6 +1,5 @@
 package com.me.tmw.animations.builder.transitions;
 
-import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -23,6 +22,7 @@ public final class TranslateTransitionBuilder extends TransitionBuilderBase<Tran
     public TranslateTransitionBuilder() {
         this(null);
     }
+
     public TranslateTransitionBuilder(Node node) {
         super(node);
         loadInProperties(toX, fromX, byX, toY, fromY, byY, toZ, fromZ, byZ);
@@ -31,9 +31,11 @@ public final class TranslateTransitionBuilder extends TransitionBuilderBase<Tran
     public double getToX() {
         return toX.get();
     }
+
     public DoubleProperty toXProperty() {
         return toX;
     }
+
     public TranslateTransitionBuilder setToX(double toX) {
         this.toX.set(toX);
         return this;
@@ -42,9 +44,11 @@ public final class TranslateTransitionBuilder extends TransitionBuilderBase<Tran
     public double getFromX() {
         return fromX.get();
     }
+
     public DoubleProperty fromXProperty() {
         return fromX;
     }
+
     public TranslateTransitionBuilder setFromX(double fromX) {
         this.fromX.set(fromX);
         return this;
@@ -53,9 +57,11 @@ public final class TranslateTransitionBuilder extends TransitionBuilderBase<Tran
     public double getByX() {
         return byX.get();
     }
+
     public DoubleProperty byXProperty() {
         return byX;
     }
+
     public TranslateTransitionBuilder setByX(double byX) {
         this.byX.set(byX);
         return this;
@@ -64,9 +70,11 @@ public final class TranslateTransitionBuilder extends TransitionBuilderBase<Tran
     public double getToY() {
         return toY.get();
     }
+
     public DoubleProperty toYProperty() {
         return toY;
     }
+
     public TranslateTransitionBuilder setToY(double toY) {
         this.toY.set(toY);
         return this;
@@ -75,9 +83,11 @@ public final class TranslateTransitionBuilder extends TransitionBuilderBase<Tran
     public double getFromY() {
         return fromY.get();
     }
+
     public DoubleProperty fromYProperty() {
         return fromY;
     }
+
     public TranslateTransitionBuilder setFromY(double fromY) {
         this.fromY.set(fromY);
         return this;
@@ -86,9 +96,11 @@ public final class TranslateTransitionBuilder extends TransitionBuilderBase<Tran
     public double getByY() {
         return byY.get();
     }
+
     public DoubleProperty byYProperty() {
         return byY;
     }
+
     public TranslateTransitionBuilder setByY(double byY) {
         this.byY.set(byY);
         return this;
@@ -97,9 +109,11 @@ public final class TranslateTransitionBuilder extends TransitionBuilderBase<Tran
     public double getToZ() {
         return toZ.get();
     }
+
     public DoubleProperty toZProperty() {
         return toZ;
     }
+
     public TranslateTransitionBuilder setToZ(double toZ) {
         this.toZ.set(toZ);
         return this;
@@ -108,9 +122,11 @@ public final class TranslateTransitionBuilder extends TransitionBuilderBase<Tran
     public double getFromZ() {
         return fromZ.get();
     }
+
     public DoubleProperty fromZProperty() {
         return fromZ;
     }
+
     public TranslateTransitionBuilder setFromZ(double fromZ) {
         this.fromZ.set(fromZ);
         return this;
@@ -119,9 +135,11 @@ public final class TranslateTransitionBuilder extends TransitionBuilderBase<Tran
     public double getByZ() {
         return byZ.get();
     }
+
     public DoubleProperty byZProperty() {
         return byZ;
     }
+
     public TranslateTransitionBuilder setByZ(double byZ) {
         this.byZ.set(byZ);
         return this;

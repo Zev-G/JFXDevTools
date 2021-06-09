@@ -2,8 +2,6 @@ package com.me.tmw.debug.devtools.nodeinfo.css.sheets;
 
 import com.me.tmw.debug.devtools.nodeinfo.NodeInfo;
 import com.me.tmw.resource.Resources;
-import com.sun.javafx.css.StyleManager;
-import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -13,7 +11,6 @@ import javafx.css.CssParser;
 import javafx.css.Stylesheet;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.SubScene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 
@@ -188,6 +185,7 @@ public class SheetsInfo extends NodeInfo {
         private StylesheetBinding(Parent parent) {
             this(parent.getStylesheets());
         }
+
         private StylesheetBinding(ObservableList<String> stylesheets) {
             this.stylesheets = stylesheets;
             InvalidationListener invalidated = observable -> {

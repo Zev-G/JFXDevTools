@@ -11,9 +11,10 @@
 .error-log-line .svg-path {
     -fx-fill: #be3636;
 }
+
 .error-text {
-   -fx-text-fill: #b1193b;
-   -fx-padding: 1.5 0 0 0;
+    -fx-text-fill: #b1193b;
+    -fx-padding: 1.5 0 0 0;
 }
 
 .svg-path {
@@ -31,4 +32,5 @@
     -fx-label-padding: 0;
 }
 
-.console-log {}
+.console-log {
+}

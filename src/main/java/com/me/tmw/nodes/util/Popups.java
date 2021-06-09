@@ -7,7 +7,6 @@ import javafx.stage.Stage;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public final class Popups {
 

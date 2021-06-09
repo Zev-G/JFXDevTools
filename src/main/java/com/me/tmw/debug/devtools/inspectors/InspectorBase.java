@@ -1,12 +1,10 @@
 package com.me.tmw.debug.devtools.inspectors;
 
 import com.me.tmw.resource.Resources;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.css.PseudoClass;
-import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import javafx.scene.transform.Transform;
@@ -78,9 +76,11 @@ public abstract class InspectorBase {
     }
 
     protected abstract void populatePopup(Node newValue);
+
     protected abstract void layoutPopup(Node node);
+
     protected boolean showPopup(Node node) {
-        if (node != null && node.getScene() != null && node.getScene().getWindow() != null){
+        if (node != null && node.getScene() != null && node.getScene().getWindow() != null) {
             popup.show(node.getScene().getWindow());
             if (usingOverlay) {
                 overlayPopup.show(node.getScene().getWindow());
@@ -89,10 +89,12 @@ public abstract class InspectorBase {
         }
         return false;
     }
+
     protected void hidePopup() {
         popup.hide();
         overlayPopup.hide();
     }
+
     protected boolean isPopupShowing() {
         return popup.isShowing() && (!usingOverlay || overlayPopup.isShowing());
     }
@@ -108,9 +110,11 @@ public abstract class InspectorBase {
     public Node getExamined() {
         return examined.get();
     }
+
     public ObjectProperty<Node> examinedProperty() {
         return examined;
     }
+
     public void setExamined(Node node) {
         examinedProperty().set(node);
     }

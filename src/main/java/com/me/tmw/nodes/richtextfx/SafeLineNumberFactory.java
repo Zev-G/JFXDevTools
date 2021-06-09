@@ -1,11 +1,6 @@
 package com.me.tmw.nodes.richtextfx;
 
 
-import java.util.Collection;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -19,9 +14,13 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-
 import org.reactfx.collection.LiveList;
 import org.reactfx.value.Val;
+
+import java.util.Collection;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  * Graphic factory that produces labels containing line numbers and a "+" to indicate folded paragraphs.
@@ -39,25 +38,23 @@ public class SafeLineNumberFactory implements IntFunction<Node> {
         return get(area, digits -> "%1$" + digits + "s");
     }
 
-    public static IntFunction<Node> get(LanguageCodeArea area, IntFunction<String> format )
-    {
-        return get(area, format, area.getFoldStyleCheck(), area.getRemoveFoldStyle() );
+    public static IntFunction<Node> get(LanguageCodeArea area, IntFunction<String> format) {
+        return get(area, format, area.getFoldStyleCheck(), area.getRemoveFoldStyle());
     }
 
     /**
      * Use this if you extended GenericStyledArea for your own text area and you're using paragraph folding.
      *
-     * @param format Given an int convert to a String for the line number.
-     * @param isFolded Given a paragraph style PS check if it's folded.
+     * @param format          Given an int convert to a String for the line number.
+     * @param isFolded        Given a paragraph style PS check if it's folded.
      * @param removeFoldStyle Given a paragraph style PS, return a <b>new</b> PS that excludes fold styling.
      */
     public static IntFunction<Node> get(
             LanguageCodeArea area,
             IntFunction<String> format,
             Predicate<Collection<String>> isFolded,
-            UnaryOperator<Collection<String>> removeFoldStyle )
-    {
-        return new SafeLineNumberFactory(area, format, isFolded, removeFoldStyle );
+            UnaryOperator<Collection<String>> removeFoldStyle) {
+        return new SafeLineNumberFactory(area, format, isFolded, removeFoldStyle);
     }
 
     private final Val<Integer> nParagraphs;
@@ -70,8 +67,7 @@ public class SafeLineNumberFactory implements IntFunction<Node> {
             LanguageCodeArea area,
             IntFunction<String> format,
             Predicate<Collection<String>> isFolded,
-            UnaryOperator<Collection<String>> removeFoldStyle )
-    {
+            UnaryOperator<Collection<String>> removeFoldStyle) {
         nParagraphs = LiveList.sizeOf(area.getParagraphs());
         this.removeFoldStyle = removeFoldStyle;
         this.isFoldedCheck = isFolded;
@@ -81,7 +77,7 @@ public class SafeLineNumberFactory implements IntFunction<Node> {
 
     @Override
     public Node apply(int idx) {
-        Val<String> formatted = nParagraphs.map(n -> format(idx+1, n));
+        Val<String> formatted = nParagraphs.map(n -> format(idx + 1, n));
 
         Label lineNo = new Label();
         lineNo.setFont(DEFAULT_FONT);
@@ -95,25 +91,24 @@ public class SafeLineNumberFactory implements IntFunction<Node> {
         // when lineNo is removed from scene
         lineNo.textProperty().bind(formatted.conditionOnShowing(lineNo));
 
-        if ( isFoldedCheck != null )
-        {
-            Label foldIndicator = new Label( " " );
-            foldIndicator.setTextFill( Color.BLUE ); // Prevents CSS errors
-            foldIndicator.setFont( DEFAULT_FOLD_FONT );
+        if (isFoldedCheck != null) {
+            Label foldIndicator = new Label(" ");
+            foldIndicator.setTextFill(Color.BLUE); // Prevents CSS errors
+            foldIndicator.setFont(DEFAULT_FOLD_FONT);
 
-            lineNo.setContentDisplay( ContentDisplay.RIGHT );
-            lineNo.setGraphic( foldIndicator );
+            lineNo.setContentDisplay(ContentDisplay.RIGHT);
+            lineNo.setGraphic(foldIndicator);
 
-            if ( area.getParagraphs().size() > idx+1 ) {
-                if ( isFoldedCheck.test( area.getParagraph( idx+1 ).getParagraphStyle() )
-                        && ! isFoldedCheck.test( area.getParagraph( idx ).getParagraphStyle() ) ) {
-                    foldIndicator.setOnMouseClicked( ME -> area.unfoldParagraphs
+            if (area.getParagraphs().size() > idx + 1) {
+                if (isFoldedCheck.test(area.getParagraph(idx + 1).getParagraphStyle())
+                        && !isFoldedCheck.test(area.getParagraph(idx).getParagraphStyle())) {
+                    foldIndicator.setOnMouseClicked(ME -> area.unfoldParagraphs
                             (
                                     idx, isFoldedCheck, removeFoldStyle
                             ));
-                    foldIndicator.getStyleClass().add( "fold-indicator" );
-                    foldIndicator.setCursor( Cursor.HAND );
-                    foldIndicator.setText( "+" );
+                    foldIndicator.getStyleClass().add("fold-indicator");
+                    foldIndicator.setCursor(Cursor.HAND);
+                    foldIndicator.setText("+");
                 }
             }
         }

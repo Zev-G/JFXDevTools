@@ -48,7 +48,7 @@ public class CssPropertiesView extends GridPane {
     static class ObservableStyleableProperty<T> implements ObservableValue<T>, StyleableProperty<T> {
 
         private final ObservableValue<T> observable;
-        private final StyleableProperty<T>  styleableProperty;
+        private final StyleableProperty<T> styleableProperty;
 
         @SuppressWarnings("unchecked")
         public ObservableStyleableProperty(StyleableProperty<T> styleable) {

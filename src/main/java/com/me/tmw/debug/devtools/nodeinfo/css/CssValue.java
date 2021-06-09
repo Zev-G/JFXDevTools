@@ -19,11 +19,13 @@ public abstract class CssValue<T> {
     }
 
     public abstract String toCssString();
+
     public abstract Parent node();
 
     protected boolean isUsingAltGen() {
         return false;
     }
+
     public T genAlt() {
         return null;
     }

@@ -19,16 +19,19 @@ public class LangHighlighting {
         }
         return simpleRegexMap(map);
     }
+
     public static Function<String, List<SortableStyleSpan<Collection<String>>>> simpleRegexMap(Map<String, String> map) {
         Map<Pattern, Collection<String>> compiled = new HashMap<>();
         map.forEach((s, strings) -> compiled.put(Pattern.compile(s), Collections.singleton(strings)));
         return regexMap(compiled);
     }
+
     public static Function<String, List<SortableStyleSpan<Collection<String>>>> nonCompiledRegexMap(Map<String, Collection<String>> map) {
         Map<Pattern, Collection<String>> compiled = new HashMap<>();
         map.forEach((s, strings) -> compiled.put(Pattern.compile(s), strings));
         return regexMap(compiled);
     }
+
     public static Function<String, List<SortableStyleSpan<Collection<String>>>> regexMap(Map<Pattern, Collection<String>> map) {
         return text -> {
             List<SortableStyleSpan<Collection<String>>> styleSpans = new ArrayList<>();
@@ -36,7 +39,7 @@ public class LangHighlighting {
                 Matcher matcher = item.getKey().matcher(text);
                 while (matcher.find()) {
                     int start = matcher.start();
-                    int end   = matcher.end();
+                    int end = matcher.end();
                     styleSpans.add(new SortableStyleSpan<>(item.getValue(), start, end));
                 }
             }

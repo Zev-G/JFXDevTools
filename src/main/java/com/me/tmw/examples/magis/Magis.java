@@ -2,13 +2,11 @@ package com.me.tmw.examples.magis;
 
 import com.me.tmw.animations.Animations;
 import com.me.tmw.debug.devtools.DevScene;
-import com.me.tmw.debug.util.Debugger;
 import com.me.tmw.examples.magis.home.LessonShortcut;
 import com.me.tmw.nodes.util.Dragging;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;

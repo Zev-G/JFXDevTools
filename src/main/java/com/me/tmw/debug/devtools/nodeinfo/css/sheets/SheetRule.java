@@ -6,7 +6,6 @@ import com.me.tmw.debug.devtools.nodeinfo.css.NodeCss;
 import javafx.collections.ObservableList;
 import javafx.css.*;
 import javafx.geometry.Insets;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;

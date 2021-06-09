@@ -2,7 +2,6 @@ package com.me.tmw.animations.builder.grouping;
 
 import com.me.tmw.animations.AnimationBuilderBase;
 import com.me.tmw.animations.builder.AnimationBuilder;
-import com.me.tmw.animations.builder.PauseBuilder;
 import javafx.animation.Animation;
 import javafx.animation.ParallelTransition;
 import javafx.scene.Node;

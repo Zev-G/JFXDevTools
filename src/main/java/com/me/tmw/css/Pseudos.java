@@ -1,16 +1,11 @@
 package com.me.tmw.css;
 
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.css.PseudoClass;
 import javafx.scene.Node;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 public final class Pseudos {
 
@@ -20,6 +15,7 @@ public final class Pseudos {
         }
         return pseudoClassProperty(node, PseudoClass.getPseudoClass(pseudoClass));
     }
+
     public static BooleanProperty pseudoClassProperty(Node node, PseudoClass pseudoClass) {
         var pseudos = new Object() {
             private ObservableSet<PseudoClass> states;

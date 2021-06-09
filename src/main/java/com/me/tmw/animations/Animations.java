@@ -24,6 +24,7 @@ public final class Animations {
     public static AnimationGroupBuilder animate(Node node) {
         return new AnimationGroupBuilder(node);
     }
+
     public static AnimationGroupBuilder animator() {
         return new AnimationGroupBuilder();
     }
@@ -49,15 +50,19 @@ public final class Animations {
     public static FadeTransitionBuilder fade() {
         return new FadeTransitionBuilder();
     }
+
     public static RotateTransitionBuilder rotate() {
         return new RotateTransitionBuilder();
     }
+
     public static ScaleTransitionBuilder scale() {
         return new ScaleTransitionBuilder();
     }
+
     public static TranslateTransitionBuilder translate() {
         return new TranslateTransitionBuilder();
     }
+
     public static TimelineBuilder timeline() {
         return new TimelineBuilder();
     }
@@ -65,6 +70,7 @@ public final class Animations {
     public static void fadeOn(EventType<?> eventType, Node node, double to, double millis) {
         fadeOn(eventType, node, to, Duration.millis(millis));
     }
+
     public static void fadeOn(EventType<?> action, Node node, double to, Duration duration) {
         FadeTransition transition = new FadeTransition(duration, node);
         transition.setToValue(to);
@@ -97,6 +103,7 @@ public final class Animations {
     public static <T> void animatePropertyChange(WritableValue<T> translateYProperty, T v, double millis) {
         animatePropertyChange(translateYProperty, v, Duration.millis(millis));
     }
+
     public static <T> void animatePropertyChange(WritableValue<T> translateYProperty, T v, Duration duration) {
         timeline().add(new KeyFrameBuilder().setDuration(duration).add(new KeyValueBuilder<T>().setWritableValue(node -> translateYProperty).setEndValue(v))).play();
     }

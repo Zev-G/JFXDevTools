@@ -13,6 +13,7 @@ public final class Layout {
     public static void anchor(Node node) {
         anchor(node, 0);
     }
+
     public static void anchor(Node node, double amount) {
         AnchorPane.setTopAnchor(node, amount);
         AnchorPane.setLeftAnchor(node, amount);
@@ -25,16 +26,19 @@ public final class Layout {
             AnchorPane.setTopAnchor(node, amount);
         }
     }
+
     public static void anchorLeft(double amount, Node... nodes) {
         for (Node node : nodes) {
             AnchorPane.setLeftAnchor(node, amount);
         }
     }
+
     public static void anchorBottom(double amount, Node... nodes) {
         for (Node node : nodes) {
             AnchorPane.setBottomAnchor(node, amount);
         }
     }
+
     public static void anchorRight(double amount, Node... nodes) {
         for (Node node : nodes) {
             AnchorPane.setRightAnchor(node, amount);

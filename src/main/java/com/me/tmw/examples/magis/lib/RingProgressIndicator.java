@@ -1,9 +1,5 @@
 package com.me.tmw.examples.magis.lib;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import javafx.beans.property.DoubleProperty;
 import javafx.css.CssMetaData;
 import javafx.css.Styleable;
@@ -13,11 +9,14 @@ import javafx.css.converter.SizeConverter;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Progress indicator showing a filling arc.
  *
  * @author Andrea Vacondio
- *
  */
 public class RingProgressIndicator extends ProgressCircleIndicator {
     public RingProgressIndicator() {

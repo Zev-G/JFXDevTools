@@ -4,8 +4,6 @@ import com.me.tmw.animations.Animations;
 import com.me.tmw.animations.builder.grouping.AnimationGroupBuilder;
 import com.me.tmw.debug.devtools.DevScene;
 import com.me.tmw.examples.magis.Magis;
-import com.me.tmw.nodes.richtextfx.LanguageCodeArea;
-import com.me.tmw.nodes.richtextfx.languages.CSSLang;
 import com.me.tmw.nodes.util.Dragging;
 import com.me.tmw.nodes.util.Layout;
 import javafx.application.Application;

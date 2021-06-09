@@ -15,6 +15,7 @@ public class ConsoleLog extends VBox {
     public void log(ConsoleLogLine item) {
         getChildren().add(item);
     }
+
     public void log(String log) {
         log(new ConsoleLogLine.Output(log));
     }
