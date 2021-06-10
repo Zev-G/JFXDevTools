@@ -39,7 +39,7 @@ public class DevTools extends StackPane {
     private static final String STYLE_SHEET = Resources.DEBUGGER.getCss("dev-tools");
     private static final String TAB_STYLE_SHEET = Resources.DEBUGGER.getCss("flat-tab");
 
-    private final ObservableSet<String> ALL_STYLE_SHEETS = FXCollections.observableSet();
+    private final ObservableSet<String> allStyleSheets = FXCollections.observableSet();
 
     private final StructureTab structureTab;
     private final ConsoleTab consoleTab;
@@ -139,7 +139,7 @@ public class DevTools extends StackPane {
     private void recursivelyListenToStylesheetsOf(Parent parent) {
         parent.getProperties().put(LISTENING_TO_STYLESHEETS, true);
 
-        InvalidationListener stylesheetsListener = observable -> ALL_STYLE_SHEETS.addAll(parent.getStylesheets());
+        InvalidationListener stylesheetsListener = observable -> allStyleSheets.addAll(parent.getStylesheets());
         stylesheetsListener.invalidated(parent.getStylesheets());
         parent.getStylesheets().addListener(stylesheetsListener);
 
@@ -152,6 +152,10 @@ public class DevTools extends StackPane {
 
         childrenListener.invalidated(parent.getChildrenUnmodifiable());
         parent.getChildrenUnmodifiable().addListener(childrenListener);
+    }
+
+    public ObservableSet<String> getAllStyleSheets() {
+        return allStyleSheets;
     }
 
     public StructureTab getStructureTab() {

@@ -8,10 +8,9 @@ import com.me.tmw.nodes.richtextfx.LanguageCodeArea;
 import com.me.tmw.nodes.richtextfx.languages.CSSLang;
 import com.me.tmw.nodes.util.NodeMisc;
 import com.me.tmw.nodes.util.Popups;
-import com.sun.javafx.css.StyleManager;
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 import javafx.geometry.Pos;
@@ -48,7 +47,7 @@ import java.util.stream.Collectors;
 
 public class FilesTab extends Tab {
 
-    private final ObservableSet<String> unloadedURLs = FXCollections.observableSet();
+    private final ObservableSet<URL> unloadedURLs = FXCollections.observableSet();
     private final ObservableSet<Path> unloadedFiles = FXCollections.observableSet();
 
     private final Parent root;
@@ -82,13 +81,30 @@ public class FilesTab extends Tab {
             setCellFactory(param -> {
                 ListCell<Object> cell = new ListCell<>();
                 cell.itemProperty().addListener((observable, oldValue, newValue) -> {
-                    if (newValue != null && sourceTabMap.containsKey(newValue)) {
-                        cell.setText(sourceTabMap.get(newValue).getSource().getName());
-                        cell.setContextMenu(new ContextMenu(
-                                NodeMisc.makeMenuItem("Copy Path", actionEvent -> {
-                                    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(sourceTabMap.get(newValue).getSource().getKey().toString()), null);
-                                })
-                        ));
+                    if (newValue != null) {
+                        if (sourceTabMap.containsKey(newValue)) {
+                            cell.setText(sourceTabMap.get(newValue).getSource().getName());
+                            cell.setContextMenu(new ContextMenu(
+                                    NodeMisc.makeMenuItem("Copy Path", actionEvent ->
+                                            Toolkit.getDefaultToolkit().getSystemClipboard()
+                                                    .setContents(
+                                                            new StringSelection(sourceTabMap.get(newValue).getSource().getKey().toString())
+                                                            , null))
+                            ));
+                        } else {
+                            if (newValue instanceof Path && unloadedFiles.contains(newValue)) {
+                                cell.setText(((Path) newValue).getFileName().toString());
+                            } else if (newValue instanceof URL && unloadedURLs.contains(newValue)) {
+                                String[] urlPieces = newValue.toString().split("[/\\\\]");
+                                if (urlPieces.length != 0) {
+                                    cell.setText(urlPieces[urlPieces.length - 1]);
+                                } else {
+                                    cell.setText(newValue.toString());
+                                }
+                            }
+                            cell.setContextMenu(null);
+                            cell.setGraphic(null);
+                        }
                     } else {
                         cell.setText("");
                         cell.setGraphic(null);
@@ -97,7 +113,12 @@ public class FilesTab extends Tab {
                 });
                 cell.setOnMousePressed(event -> {
                     if (event.getClickCount() == 2 && cell.getItem() != null) {
-                        loadSource(sourceTabMap.get(cell.getItem()).source);
+                        Object item = cell.getItem();
+                        if (sourceTabMap.containsKey(item)) {
+                            loadSource(sourceTabMap.get(item).source);
+                        } else if (item instanceof URL && unloadedURLs.contains(item)) {
+                            loadURL(item.toString());
+                        }
                     }
                 });
                 return cell;
@@ -169,10 +190,16 @@ public class FilesTab extends Tab {
         this.root = root;
         this.tools = tools;
 
+        InvalidationListener stylesheetsChanged = observable -> {
+            for (String stylesheet : tools.getAllStyleSheets()) {
+                addUnloadedURL(stylesheet);
+            }
+        };
+        tools.getAllStyleSheets().addListener(stylesheetsChanged);
+        stylesheetsChanged.invalidated(tools.getAllStyleSheets());
+
         setClosable(false);
-
         backdrop.setAlignment(Pos.CENTER);
-
         SplitPane.setResizableWithParent(files, false);
 
         setContent(split);
@@ -192,6 +219,7 @@ public class FilesTab extends Tab {
     }
 
     public Source loadURL(URL url) {
+        removeUnloadedURL(url);
         Source pathResult;
         if ((pathResult = tryURLasPath(url, null, false)) != null) {
             return pathResult;
@@ -201,6 +229,7 @@ public class FilesTab extends Tab {
     }
 
     public Source loadURL(URL url, EditorLanguageBase langChoice) {
+        removeUnloadedURL(url);
         Source pathResult;
         if ((pathResult = tryURLasPath(url, langChoice, true)) != null) {
             return pathResult;
@@ -263,6 +292,7 @@ public class FilesTab extends Tab {
     }
 
     public Source loadFile(Path file, EditorLanguageBase langChoice) {
+        removeUnloadedFile(file);
         Supplier<String> reader = () -> {
             try {
                 return String.join("\n", Files.readAllLines(file));
@@ -317,11 +347,35 @@ public class FilesTab extends Tab {
         }
     }
 
-    public ObservableSet<Path> getUnloadedFiles() {
-        return unloadedFiles;
+    public void addUnloadedFile(Path file) {
+        if (unloadedFiles.contains(file) && !sourceTabMap.containsKey(file)) {
+            return;
+        }
+        unloadedFiles.add(file);
+        files.getItems().add(file);
     }
-    public ObservableSet<String> getUnloadedURLs() {
-        return unloadedURLs;
+    public void addUnloadedURL(String path) {
+        try {
+            URL url = new URL(path);
+            if (unloadedURLs.contains(url) && !sourceTabMap.containsKey(url.toString())) {
+                return;
+            }
+            unloadedURLs.add(url);
+            files.getItems().add(url);
+        } catch (MalformedURLException ignored) { }
+    }
+    public void removeUnloadedFile(Path file) {
+        unloadedFiles.remove(file);
+        files.getItems().remove(file);
+    }
+    public void removeUnloadedURL(String path) {
+        try {
+            removeUnloadedURL(new URL(path));
+        } catch (MalformedURLException ignored) { }
+    }
+    public void removeUnloadedURL(URL url) {
+        unloadedURLs.remove(url);
+        files.getItems().remove(url);
     }
 
     public static class Source {
