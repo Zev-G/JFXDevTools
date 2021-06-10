@@ -25,8 +25,9 @@ jar {
         attributes "Main-Class": "$mainClass"
     }
 
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+// Uncomment below for fat jar
+//    from {
+//        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+//    }
 
 }

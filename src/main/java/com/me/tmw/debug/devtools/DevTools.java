@@ -29,6 +29,12 @@ import static com.me.tmw.css.Sheets.Essentials.*;
 
 public class DevTools extends StackPane {
 
+    public static boolean listenToStylesheets = true;
+
+    public static void enableImprovedPerformanceMode() {
+        listenToStylesheets = false;
+    }
+
     private static final Object LISTENING_TO_STYLESHEETS = new Object() {
         @Override
         public String toString() {
@@ -137,6 +143,8 @@ public class DevTools extends StackPane {
     }
 
     private void recursivelyListenToStylesheetsOf(Parent parent) {
+        if (!listenToStylesheets) return;
+
         parent.getProperties().put(LISTENING_TO_STYLESHEETS, true);
 
         InvalidationListener stylesheetsListener = observable -> allStyleSheets.addAll(parent.getStylesheets());
