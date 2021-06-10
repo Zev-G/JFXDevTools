@@ -8,9 +8,12 @@ import com.me.tmw.nodes.richtextfx.LanguageCodeArea;
 import com.me.tmw.nodes.richtextfx.languages.CSSLang;
 import com.me.tmw.nodes.util.NodeMisc;
 import com.me.tmw.nodes.util.Popups;
+import com.sun.javafx.css.StyleManager;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
+import javafx.collections.ObservableSet;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -44,6 +47,9 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class FilesTab extends Tab {
+
+    private final ObservableSet<String> unloadedURLs = FXCollections.observableSet();
+    private final ObservableSet<Path> unloadedFiles = FXCollections.observableSet();
 
     private final Parent root;
     private final DevTools tools;
@@ -309,6 +315,13 @@ public class FilesTab extends Tab {
         if (!files.getItems().contains(source.getKey())) {
             files.getItems().add(source.getKey());
         }
+    }
+
+    public ObservableSet<Path> getUnloadedFiles() {
+        return unloadedFiles;
+    }
+    public ObservableSet<String> getUnloadedURLs() {
+        return unloadedURLs;
     }
 
     public static class Source {

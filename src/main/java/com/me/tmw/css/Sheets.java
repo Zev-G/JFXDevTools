@@ -21,10 +21,12 @@ public final class Sheets {
         public static String HAND_CURSOR_CLASS = "hand-cursor";
         public static String SMALL_DIVIDER_CLASS = "small-divider";
 
-        public static void makeSmoothButton(Button button) {
-            button.getStylesheets().add(STYLE_SHEET);
-            button.getStyleClass().addAll(TRANSPARENT_BUTTON_CLASS, LIGHT_SVG_BUTTON_CLASS, HAND_CURSOR_CLASS);
-            button.setContentDisplay(ContentDisplay.CENTER);
+        public static void makeSmoothButton(Button... buttons) {
+            for (Button button : buttons) {
+                button.getStylesheets().add(STYLE_SHEET);
+                button.getStyleClass().addAll(TRANSPARENT_BUTTON_CLASS, LIGHT_SVG_BUTTON_CLASS, HAND_CURSOR_CLASS);
+                button.setContentDisplay(ContentDisplay.CENTER);
+            }
         }
 
     }

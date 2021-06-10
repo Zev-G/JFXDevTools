@@ -71,6 +71,9 @@ public class SheetsInfo extends NodeInfo {
                 continue;
             }
             SheetInfo info = new SheetInfo(stylesheet, node, () -> open.accept(newSheet));
+            if (!node.getStylesheets().contains(newSheet)) {
+                info.setInherited(true);
+            }
             viewedSheetsSheetInfoMap.put(newSheet, info);
             sheets.getPanes().add(info);
         }

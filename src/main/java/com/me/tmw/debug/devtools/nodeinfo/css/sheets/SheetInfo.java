@@ -11,6 +11,8 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
@@ -28,16 +30,24 @@ public class SheetInfo extends TitledPane {
     private final Hyperlink viewMore = new Hyperlink("View full style sheet");
 
     private final Button openButton = new Button("", NodeMisc.svgPath(SVG.OPEN, 0.8));
+    private final Button removeButton = new Button("", NodeMisc.svgPath(SVG.TRASH, 0.5));
+    private final StackPane removeButtonPlaceHolder = new StackPane(removeButton);
+    private final HBox content = new HBox(openButton, removeButtonPlaceHolder);
+
+    private final String baseText;
 
     public SheetInfo(Stylesheet stylesheet, Parent node, Runnable open) {
         this.stylesheet = stylesheet;
         String[] urlPieces = stylesheet.getUrl().split("[/\\\\]");
-        setText(urlPieces[urlPieces.length - 1]);
+        baseText = urlPieces[urlPieces.length - 1];
+        setText(baseText);
 
         openButton.setOnAction(event -> open.run());
-        setGraphic(this.openButton);
+        removeButton.setOnAction(event -> node.getStylesheets().remove(stylesheet.getUrl()));
+        content.setSpacing(3);
+        setGraphic(content);
         setContentDisplay(ContentDisplay.RIGHT);
-        this.openButton.getStyleClass().addAll(TRANSPARENT_BUTTON_CLASS, LIGHT_SVG_BUTTON_CLASS, HAND_CURSOR_CLASS);
+        Sheets.Essentials.makeSmoothButton(removeButton, openButton);
 
         List<Rule> validRules = new ArrayList<>(stylesheet.getRules());
 
@@ -69,6 +79,18 @@ public class SheetInfo extends TitledPane {
         }
 
         setContent(layout);
+    }
+
+    public void setInherited(boolean b) {
+        if (b) {
+            setText(baseText + " (Inherited)");
+            removeButtonPlaceHolder.getChildren().clear();
+        } else {
+            setText(baseText);
+            if (!removeButtonPlaceHolder.getChildren().contains(removeButton)) {
+                removeButtonPlaceHolder.getChildren().add(removeButton);
+            }
+        }
     }
 
 }

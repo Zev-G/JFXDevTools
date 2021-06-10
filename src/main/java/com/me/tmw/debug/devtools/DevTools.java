@@ -8,8 +8,11 @@ import com.me.tmw.nodes.control.svg.SVG;
 import com.me.tmw.nodes.tooltips.SimpleTooltip;
 import com.me.tmw.nodes.util.NodeMisc;
 import com.me.tmw.resource.Resources;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableSet;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -26,8 +29,17 @@ import static com.me.tmw.css.Sheets.Essentials.*;
 
 public class DevTools extends StackPane {
 
+    private static final Object LISTENING_TO_STYLESHEETS = new Object() {
+        @Override
+        public String toString() {
+            return "DevTools stylesheet listener marker. Can be removed but doing so will slightly hurt performance.";
+        }
+    };
+
     private static final String STYLE_SHEET = Resources.DEBUGGER.getCss("dev-tools");
     private static final String TAB_STYLE_SHEET = Resources.DEBUGGER.getCss("flat-tab");
+
+    private final ObservableSet<String> ALL_STYLE_SHEETS = FXCollections.observableSet();
 
     private final StructureTab structureTab;
     private final ConsoleTab consoleTab;
@@ -85,6 +97,8 @@ public class DevTools extends StackPane {
         closePlaceHolder.setPickOnBounds(false);
         detachPlaceHolder.setPickOnBounds(false);
 
+        recursivelyListenToStylesheetsOf(root);
+
         close.getStyleClass().addAll(TRANSPARENT_BUTTON_CLASS, LIGHT_SVG_BUTTON_CLASS, HAND_CURSOR_CLASS);
         detach.getStyleClass().addAll(TRANSPARENT_BUTTON_CLASS, LIGHT_SVG_BUTTON_CLASS, HAND_CURSOR_CLASS);
         SimpleTooltip.apply(close, "Closes dev tools.");
@@ -120,6 +134,24 @@ public class DevTools extends StackPane {
         tabPane.getTabs().addAll(structureTab, consoleTab, filesTab);
 
         getChildren().addAll(tabPane, buttons);
+    }
+
+    private void recursivelyListenToStylesheetsOf(Parent parent) {
+        parent.getProperties().put(LISTENING_TO_STYLESHEETS, true);
+
+        InvalidationListener stylesheetsListener = observable -> ALL_STYLE_SHEETS.addAll(parent.getStylesheets());
+        stylesheetsListener.invalidated(parent.getStylesheets());
+        parent.getStylesheets().addListener(stylesheetsListener);
+
+        InvalidationListener childrenListener = observable ->
+                parent.getChildrenUnmodifiable().stream()
+                .filter(node -> node instanceof Parent)
+                .filter(node -> !node.getProperties().containsKey(LISTENING_TO_STYLESHEETS))
+                .map(node -> (Parent) node)
+                .forEach(this::recursivelyListenToStylesheetsOf);
+
+        childrenListener.invalidated(parent.getChildrenUnmodifiable());
+        parent.getChildrenUnmodifiable().addListener(childrenListener);
     }
 
     public StructureTab getStructureTab() {
