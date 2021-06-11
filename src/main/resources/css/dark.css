@@ -1,0 +1,74 @@
+* {
+    -fx-base: #292d3e;
+
+    -fx-background: derive(-fx-base, -26.4%);
+    -fx-control-inner-background: derive(-fx-base, -50%);
+    -fx-control-inner-background-alt: derive(-fx-control-inner-background, 5%);
+
+    -fx-dark-text-color: white;
+    -fx-mid-text-color: #d9d9d9;
+    -fx-light-text-color: black;
+
+    -fx-default-button: derive(-fx-accent, -10%);
+
+    -fx-hover-base: ladder(
+            -fx-base,
+            derive(-fx-base,-20%) 20%,
+            derive(-fx-base,-30%) 35%,
+            derive(-fx-base,-40%) 50%
+    );
+
+    -fx-pressed-base: derive(-fx-base, 6%);
+
+    -fx-text-background-color: ladder(
+            -fx-mid-text-color,
+            -fx-dark-text-color 45%,
+            -fx-dark-text-color  46%,
+            -fx-light-text-color  59%,
+            -fx-background   60%
+    );
+
+    -fx-box-border: ladder(
+            -fx-color,
+            black 20%,
+            derive(-fx-color, 15%) 30%
+    );
+
+    -fx-text-box-border: ladder(
+            -fx-background,
+            black 10%,
+            derive(-fx-background, 15%) 30%
+    );
+
+    -fx-outer-border: derive(-fx-color, 23%);
+
+    -fx-text-base-color: ladder(
+            -fx-color,
+            -fx-mid-text-color 45%,
+            -fx-dark-text-color  46%,
+            -fx-dark-text-color  59%,
+            -fx-light-text-color   60%
+    );
+
+    -fx-text-inner-color: ladder(
+            -fx-control-inner-background,
+            -fx-mid-text-color 45%,
+            -fx-dark-text-color  46%,
+            -fx-dark-text-color  59%,
+            -fx-light-text-color   60%
+    );
+
+    -fx-mark-color: -fx-mid-text-color;
+
+    -fx-mark-highlight-color: -fx-light-text-color;
+
+}
+
+.tree-cell > .tree-disclosure-node > .arrow,
+.tree-table-row-cell > .tree-disclosure-node > .arrow {
+    -fx-background-color: -fx-mark-color;
+}
+
+.text-input {
+    -fx-prompt-text-fill: derive(-fx-control-inner-background, 60%);
+}

@@ -35,5 +35,5 @@
 
 .tab-pane {
     -fx-border-width: 1;
-    -fx-border-color: lightgray;
+    /*-fx-border-color: derive(-fx-dark-text-color, 10%);*/
 }

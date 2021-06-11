@@ -5,14 +5,14 @@
 .lesson-shortcut {
     -fx-padding: 20;
     -fx-spacing: 15;
-    -fx-background-color: white;
+    -fx-background-color: -fx-control-inner-background;
     -fx-background-radius: 25;
-    -fx-effect: dropshadow(three-pass-box, #b7b7b7, 24, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, -fx-base, 24, 0, 0, 0);
     -fx-min-width: 650;
     -fx-max-width: 680;
     -fx-cursor: hand;
     -fx-border-width: 1 !important;
-    -fx-border-color: rgba(100, 100, 100, 0.4);
+    -fx-border-color: derive(-fx-control-inner-background, -20%);
     -fx-border-radius: 25;
 }
 
@@ -25,14 +25,14 @@
 }
 
 .label {
-    -fx-text-fill: #5d5d5d;
+    -fx-text-fill: derive(-fx-mid-text-color, 10%);
     -fx-font-size: 16;
 }
 
 .title {
     -fx-font-size: 26;
     -fx-font-weight: bold;
-    -fx-text-fill: #343434;
+    -fx-text-fill: -fx-mid-text-color;
 }
 
 .separator {

@@ -8,6 +8,8 @@ import javafx.scene.control.ContentDisplay;
 
 public final class Sheets {
 
+    public static String DARK_BASE = Resources.CSS.getCss("dark");
+
     public static boolean applies(Parent node, Rule rule) {
         return rule.getSelectors().stream().anyMatch(selector -> selector.applies(node));
     }

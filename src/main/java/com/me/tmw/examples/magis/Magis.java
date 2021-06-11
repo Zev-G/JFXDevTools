@@ -1,6 +1,7 @@
 package com.me.tmw.examples.magis;
 
 import com.me.tmw.animations.Animations;
+import com.me.tmw.css.Sheets;
 import com.me.tmw.debug.devtools.DevScene;
 import com.me.tmw.examples.magis.home.LessonShortcut;
 import com.me.tmw.nodes.util.Dragging;

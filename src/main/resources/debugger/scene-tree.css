@@ -8,6 +8,7 @@
     -fx-padding: 2 0 2 0;
     -fx-background-radius: 7.5;
     -fx-background-insets: 1;
+    -fx-text-fill: -fx-dark-text-color;
 }
 
 .real-tree-cell:hover {
