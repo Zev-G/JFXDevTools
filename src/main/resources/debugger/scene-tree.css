@@ -12,11 +12,11 @@
 }
 
 .real-tree-cell:hover {
-    -fx-background-color: derive(CHART_COLOR_5_TRANS_70, 80%);
+    -fx-background-color: derive(-fx-accent, 30%);
 }
 
 .real-tree-cell:selected {
-    -fx-background-color: derive(CHART_COLOR_5_TRANS_70, 80%);
+    -fx-background-color: derive(-fx-accent, 50%);
     -fx-text-fill: -fx-dark-text-color;
 }
 
