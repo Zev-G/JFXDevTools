@@ -2,14 +2,22 @@ package com.me.tmw.nodes.util;
 
 import com.me.tmw.nodes.control.svg.SVG;
 import javafx.beans.binding.StringBinding;
+import javafx.css.Styleable;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.PickResult;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -17,9 +25,7 @@ import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.function.IntFunction;
 
 public final class NodeMisc {
@@ -156,6 +162,121 @@ public final class NodeMisc {
             }
         }
         return texts;
+    }
+
+    /**
+     * Group or Pane -> returns their respective getChildren() methods.
+     * <br/>
+     * Tab, ScrollPane, ToolTip, or TiledPane -> returns their respective getContent() wrapped in an unmodifiable list.
+     * <br/>
+     * ToolBar, SplitPane -> returns their respective getItems() methods.
+     * <br/>
+     * Labeled -> returns its getGraphic() method wrapped in an unmodifiable list.
+     * @return a list of the children of the node.
+     */
+    public static Optional<List<Node>> getChildren(Styleable parent) {
+        if (parent instanceof Group) {
+            return Optional.of(((Group) parent).getChildren());
+        } else if (parent instanceof Pane) {
+            return Optional.of(((Pane) parent).getChildren());
+        } else if (parent instanceof Tab) {
+            return Optional.of(Collections.singletonList(((Tab) parent).getContent()));
+        } else if (parent instanceof ScrollPane) {
+            return Optional.of(Collections.singletonList(((ScrollPane) parent).getContent()));
+        } else if (parent instanceof TitledPane) {
+            return Optional.of(Collections.singletonList(((TitledPane) parent).getContent()));
+        } else if (parent instanceof ToolBar) {
+            return Optional.of(((ToolBar) parent).getItems());
+        } else if (parent instanceof SplitPane) {
+            return Optional.of(((SplitPane) parent).getItems());
+        } else if (parent instanceof Labeled) {
+            return Optional.of(Collections.singletonList(((Labeled) parent).getGraphic()));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Generates a new MouseEvent. This table explains how the parameters are decided.
+     * <br/>
+     * <br/>
+     * <table>
+     *     <tr>
+     *         <td>source</td> <td>A string referencing this method.</td>
+     *     </tr>
+     *     <tr>
+     *         <td>target</td> <td>The inputted {@link Node}</td>
+     *     </tr>
+     *     <tr>
+     *         <td>x</td> <td>The node's x in scene.</td>
+     *     </tr>
+     *     <tr>
+     *         <td>y</td> <td>The node's y in scene.</td>
+     *     </tr>
+     *     <tr>
+     *         <td>screenX</td> <td>The node's x on the screen.</td>
+     *     </tr>
+     *     <tr>
+     *         <td>screenY</td> <td>The node's y on the screen.</td>
+     *     </tr>
+     *     <tr>
+     *         <td>button</td> <td>always {@link MouseButton#FORWARD}</td>
+     *     </tr>
+     *     <tr>
+     *         <td>clickCount</td> <td>always 1</td>
+     *     </tr>
+     *     <tr>
+     *         <td>shiftDown, controlDown, altDown, metaDown</td> <td>All false</td>
+     *     </tr>
+     *     <tr>
+     *         <td><p>primaryDown, middleDown, secondaryDown, backDown, and forwardDown</p></td> <td>All false</td>
+     *     </tr>
+     *     <tr>
+     *         <td><p>synthesized, popupTrigger, and stillSincePress</p></td> <td>All false</td>
+     *     </tr>
+     *     <tr>
+     *         <td>pickResult</td> <td> Generated based on these variables:
+     *             <table>
+     *                 <tr>
+     *                     <td>node</td> <td>Inputted node</td>
+     *                 </tr>
+     *                 <tr>
+     *                     <td>x</td> <td>Inputted node's x in scene</td>
+     *                 </tr>
+     *                 <tr>
+     *                      <td>y</td> <td>Inputted node's y in scene</td>
+     *                 </tr>
+     *             </table>
+     *         </td>
+     *     </tr>
+     * </table>
+     */
+    public static MouseEvent generateMouseEvent(Node node, EventType<? extends MouseEvent> eventType) {
+        double boundsX = node.getLayoutBounds().getCenterX();
+        double boundsY = node.getLayoutBounds().getCenterY();
+        Point2D locationOnScreen = node.localToScreen(boundsX, boundsY);
+        Point2D locationInScene = node.localToScene(boundsX,boundsY);
+        return new MouseEvent(
+                "NodeMisc#generateMouseEvent(Node, EventType<? extends MouseEvent>)", node,
+                eventType,
+                locationInScene.getX(), locationInScene.getY(),
+                locationOnScreen.getX(), locationOnScreen.getY(),
+                MouseButton.FORWARD,
+                1,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                new PickResult(node, locationInScene.getX(), locationInScene.getY())
+        );
     }
 
 }

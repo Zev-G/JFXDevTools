@@ -106,14 +106,16 @@ public class Console extends StackPane {
                 } else {
                     input.insertText(input.getCaretPosition(), "\n");
                 }
-            } else if ((event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) && !input.getText().replaceAll("\r", "\n").contains("\n")) {
-                int delta = event.getCode() == KeyCode.UP ? 1 : -1;
-                int newOffset = offset + delta;
-                if (newOffset >= 0 && newOffset < history.size()) {
-                    offset = newOffset;
-                    String val = history.get((history.size() - offset) - 1).get();
-                    input.replaceText(val);
-                    input.displaceCaret(val.length());
+            } else if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) {
+                if ((event.getCode() == KeyCode.UP) && (input.getCaretPosition() < input.getText().indexOf("\n") || !input.getText().contains("\n")) || (event.getCode() == KeyCode.DOWN) && input.getCaretPosition() > input.getText().lastIndexOf("\n")) {
+                    int delta = event.getCode() == KeyCode.UP ? 1 : -1;
+                    int newOffset = offset + delta;
+                    if (newOffset >= 0 && newOffset < history.size()) {
+                        offset = newOffset;
+                        String val = history.get((history.size() - offset) - 1).get();
+                        input.replaceText(val);
+                        input.displaceCaret(val.length());
+                    }
                 }
             }
         });
@@ -175,6 +177,7 @@ public class Console extends StackPane {
         regexCssMap.put(Pattern.compile("[0-9]+(\\.[0-9]+|)"), "-fx-fill: #c74418;");
         regexCssMap.put(Pattern.compile("[()]"), "-fx-fill: #137c88;");
         final String keywordCss = "-fx-fill: purple;";
+        input.setWrapText(true);
         String keywords = "abstract\targuments\tawait\tboolean\n" +
                 "break\tbyte\tcase\tcatch\n" +
                 "char\tclass\tcontinue\n" +

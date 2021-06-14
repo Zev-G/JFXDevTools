@@ -3,6 +3,9 @@ package com.me.tmw;
 import com.me.tmw.animations.Animations;
 import com.me.tmw.animations.builder.grouping.AnimationGroupBuilder;
 import com.me.tmw.debug.devtools.DevScene;
+import com.me.tmw.debug.devtools.DevTools;
+import com.me.tmw.debug.devtools.DevToolsContainer;
+import com.me.tmw.debug.uiactions.UIActions;
 import com.me.tmw.examples.magis.Magis;
 import com.me.tmw.nodes.control.paint.LinearGradientPicker;
 import com.me.tmw.nodes.util.Dragging;
@@ -12,11 +15,14 @@ import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.LinearGradient;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -29,6 +35,8 @@ public class App extends Application {
 //        Magis.run(primaryStage);
         primaryStage.setScene(new DevScene(new LinearGradientPicker()));
         primaryStage.show();
+
+        UIActions.performOn(primaryStage).lookupAll(".button", nodeUIAction -> nodeUIAction.fireMouseEvent(MouseEvent.MOUSE_ENTERED)).execute();
 
     }
 
@@ -86,6 +94,81 @@ public class App extends Application {
         Layout.anchor(load);
         primaryStage.setScene(new DevScene(loadPane));
         primaryStage.show();
+    }
+
+    private static void benchmarkDevTools(int times) {
+        new DevTools(new LinearGradientPicker(), new DevToolsContainer() {
+            @Override
+            public void attach(DevTools tools) {
+
+            }
+
+            @Override
+            public void remove(DevTools tools) {
+
+            }
+
+            @Override
+            public boolean isShowing(DevTools tools) {
+                return false;
+            }
+        });
+        DevToolsContainer container = new DevToolsContainer() {
+            @Override
+            public void attach(DevTools tools) {
+
+            }
+
+            @Override
+            public void remove(DevTools tools) {
+
+            }
+
+            @Override
+            public boolean isShowing(DevTools tools) {
+                return true;
+            }
+        };
+        long[] totalLowTimes = new long[times];
+        long[] totalHighTimes = new long[times];
+
+        long totalHighPerformanceTime = 0;
+        long totalLowPerformanceTime = 0;
+        for (int i = 0; i < times; i++) {
+            Parent parent = new LinearGradientPicker(LinearGradient.valueOf("linear-gradient(from 0px 0px to 200px 0px, #00ff00 0%, 0xff0000 50%, 0x1122ff40 100%)"));
+            DevTools.disableImprovedPerformanceMode();
+            long highPerformanceTime = timeToMakeDevTools(parent, container);
+            totalHighPerformanceTime += highPerformanceTime;
+
+            parent = new LinearGradientPicker(LinearGradient.valueOf("linear-gradient(from 0px 0px to 200px 0px, #00ff00 0%, 0xff0000 50%, 0x1122ff40 100%)"));
+            DevTools.enableImprovedPerformanceMode();
+            long lowPerformanceTime = timeToMakeDevTools(parent, container);
+            totalLowPerformanceTime += lowPerformanceTime;
+
+            totalLowTimes[i] = lowPerformanceTime;
+            totalHighTimes[i] = highPerformanceTime;
+        }
+        System.out.println("-".repeat(15) + " ".repeat(3) + "Benchmark Results" + " ".repeat(3) + "-".repeat(15));
+        System.out.println("Total time: " + (totalHighPerformanceTime + totalLowPerformanceTime) + "ms");
+        System.out.println("\tWith node tree search time: " + totalLowPerformanceTime + "ms");
+        System.out.println("\tWithout node tree search time: " + totalHighPerformanceTime + "ms");
+        System.out.println();
+        System.out.println("Average time: " + ((totalHighPerformanceTime + totalLowPerformanceTime) / times) + "ms");
+        System.out.println("\tWith node tree search average time: " + (totalLowPerformanceTime / times) + "ms");
+        System.out.println("\tWithout node tree search average time: " + (totalHighPerformanceTime / times) + "ms");
+
+        System.out.println("Graph:");
+        for (int i = 0; i < times; i++) {
+            System.out.println("-".repeat((int) totalHighTimes[i]) + " (" + totalHighTimes[i] +"ms)");
+            System.out.println("=".repeat((int) totalLowTimes[i]) + " (" + totalLowTimes[i] +"ms)");
+        }
+        System.out.println("-".repeat(36 + "Benchmark Results".length()));
+    }
+
+    private static long timeToMakeDevTools(Parent parent, DevToolsContainer container) {
+        long time = System.currentTimeMillis();
+        new DevTools(parent, container);
+        return System.currentTimeMillis() - time;
     }
 
 }

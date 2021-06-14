@@ -34,6 +34,9 @@ public class DevTools extends StackPane {
     public static void enableImprovedPerformanceMode() {
         listenToStylesheets = false;
     }
+    public static void disableImprovedPerformanceMode() {
+        listenToStylesheets = true;
+    }
 
     private static final Object LISTENING_TO_STYLESHEETS = new Object() {
         @Override
