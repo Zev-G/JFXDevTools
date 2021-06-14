@@ -85,8 +85,7 @@ public class LinearGradientPicker extends VBox {
         List<String> stops = new ArrayList<>();
         for (int i = 0; i < colorPickers.size(); i++) {
             stops.add(
-                    NodeMisc.colorToCss(colorPickers.get(i).getColor())
-                            + " " + stopProperties.get(i).get()
+                    NodeMisc.colorToCss(colorPickers.get(i).getColor()) + " " + stopProperties.get(i).get()
             );
         }
         CycleMethod cycleMethod = cycleMethods.getValue();

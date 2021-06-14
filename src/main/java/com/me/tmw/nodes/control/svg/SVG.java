@@ -1,5 +1,10 @@
 package com.me.tmw.nodes.control.svg;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class SVG {
 
     public static final String PLUS = "M 27.2836 13.6423 c 0 1.3188 -1.0688 2.3874 -2.3882 2.3874 H 16.0291 v 8.8667 c 0 1.3191 -1.0691 2.3878 -2.3876 2.3874 c -0.6594 0 -1.2562 -0.2668 -1.688 -0.6988 c -0.4322 -0.4325 -0.6994 -1.0291 -0.6991 -1.6881 l -0.0004 -8.8677 H 2.3867 c -0.659 0 -1.2553 -0.2668 -1.688 -0.6994 c -0.4315 -0.4315 -0.6985 -1.0283 -0.6985 -1.6878 C 0 12.3238 1.0688 11.2549 2.388 11.2549 h 8.8664 V 2.388 C 11.2545 1.0691 12.3238 0 13.6425 0 c 1.3182 0.0004 2.3865 1.0684 2.3872 2.3871 v 8.8677 h 8.8673 C 26.2156 11.2555 27.2829 12.3238 27.2836 13.6423 z";
@@ -15,21 +20,78 @@ public class SVG {
 
     public static String resizePath(String path, double multiply) {
         StringBuilder builder = new StringBuilder();
-        for (String spaceSplit : path.split(" ")) {
+        for (PathElement element : PathElement.parse(path)) {
             builder.append(" ");
-            try {
-                double num = Double.parseDouble(spaceSplit);
-                num *= multiply;
-                if (((int) num) == num) {
-                    builder.append((int) num);
-                } else {
-                    builder.append(num);
-                }
-            } catch (NumberFormatException exception) {
-                builder.append(spaceSplit);
-            }
+            Number[] values = element.values;
+            for (int i = 0; i < values.length; i++) values[i] = values[i].doubleValue() * multiply;
+            builder.append(element);
         }
-        return builder.substring(1);
+        return builder.toString().trim();
+    }
+
+    private static class PathElement {
+
+        private static final double DECIMAL_CAPPER = 1000D;
+
+        private final String command;
+        private final Number[] values;
+
+        private PathElement(String command, Number... values) {
+            this.command = command;
+            this.values = values;
+        }
+
+        private static PathElement[] parse(String text) {
+            List<PathElement> elements = new ArrayList<>();
+
+            var lambdaRef = new Object() {
+                StringBuilder numBuilder = new StringBuilder();
+                String command = null;
+            };
+
+            Runnable addCommand = () -> {
+                List<Number> items = new ArrayList<>();
+                for (String num : lambdaRef.numBuilder.toString().split(" +")) {
+                    if (num.isEmpty()) continue;
+                    double val = Double.parseDouble(num);
+                    if ((int) val == val) {
+                        items.add((int) val);
+                    } else {
+                        items.add(val);
+                    }
+                }
+                elements.add(new PathElement(lambdaRef.command, items.toArray(new Number[0])));
+                lambdaRef.numBuilder = new StringBuilder();
+            };
+
+            for (String charString : text.split("")) {
+                if (charString.matches("[A-z]")) {
+                    if (lambdaRef.command != null) {
+                        addCommand.run();
+                    }
+                    lambdaRef.command = charString;
+                } else {
+                    lambdaRef.numBuilder.append(charString);
+                }
+            }
+            if (lambdaRef.command != null) {
+                addCommand.run();
+            }
+
+            return elements.toArray(new PathElement[0]);
+        }
+
+        @Override
+        public String toString() {
+            return command + " " + Arrays.stream(values).map(i -> {
+                if (i.doubleValue() == i.intValue()) {
+                    return String.valueOf(i.intValue());
+                } else {
+                    return String.valueOf(((int) (i.doubleValue() * DECIMAL_CAPPER)) / DECIMAL_CAPPER);
+                }
+            }).collect(Collectors.joining(" "));
+        }
+
     }
 
 }
