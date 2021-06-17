@@ -107,7 +107,7 @@ public class Console extends StackPane {
                     input.insertText(input.getCaretPosition(), "\n");
                 }
             } else if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) {
-                if ((event.getCode() == KeyCode.UP) && (input.getCaretPosition() < input.getText().indexOf("\n") || !input.getText().contains("\n")) || (event.getCode() == KeyCode.DOWN) && input.getCaretPosition() > input.getText().lastIndexOf("\n")) {
+                if (((event.getCode() == KeyCode.UP) && (input.getCaretPosition() <= input.getText().indexOf("\n")) || !input.getText().contains("\n")) || ((event.getCode() == KeyCode.DOWN) && input.getCaretPosition() > input.getText().lastIndexOf("\n"))) {
                     int delta = event.getCode() == KeyCode.UP ? 1 : -1;
                     int newOffset = offset + delta;
                     if (newOffset >= 0 && newOffset < history.size()) {
@@ -133,6 +133,7 @@ public class Console extends StackPane {
         InlineCssTextArea uneditableArea = new InlineCssTextArea();
         makeInlineCssTextAreaJSCompatible(uneditableArea, context);
 
+        uneditableArea.setWrapText(false);
         uneditableArea.replaceText(text);
         uneditableArea.getStyleClass().add("console-input");
         uneditableArea.setEditable(false);

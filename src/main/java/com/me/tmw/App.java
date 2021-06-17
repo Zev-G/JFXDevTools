@@ -32,12 +32,11 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-//        Magis.run(primaryStage);
-        primaryStage.setScene(new DevScene(new LinearGradientPicker()));
-        primaryStage.show();
-
-        UIActions.performOn(primaryStage).lookupAll(".button", nodeUIAction -> nodeUIAction.fireMouseEvent(MouseEvent.MOUSE_ENTERED)).execute();
-
+        Magis.run(primaryStage);
+//        primaryStage.setScene(new DevScene(new LinearGradientPicker()));
+//        primaryStage.show();
+//
+//        UIActions.performOn(primaryStage).lookupAll(".button", nodeUIAction -> nodeUIAction.fireMouseEvent(MouseEvent.MOUSE_ENTERED)).execute();
     }
 
     private static void testApp(Stage primaryStage) {
