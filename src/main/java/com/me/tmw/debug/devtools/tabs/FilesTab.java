@@ -39,8 +39,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -82,8 +82,8 @@ public class FilesTab extends Tab {
                 ListCell<Object> cell = new ListCell<>();
                 cell.itemProperty().addListener((observable, oldValue, newValue) -> {
                     if (newValue != null) {
+                        cell.setText(textOfValidSourceObject(newValue));
                         if (sourceTabMap.containsKey(newValue)) {
-                            cell.setText(sourceTabMap.get(newValue).getSource().getName());
                             cell.setContextMenu(new ContextMenu(
                                     NodeMisc.makeMenuItem("Copy Path", actionEvent ->
                                             Toolkit.getDefaultToolkit().getSystemClipboard()
@@ -92,16 +92,6 @@ public class FilesTab extends Tab {
                                                             , null))
                             ));
                         } else {
-                            if (newValue instanceof Path && unloadedFiles.contains(newValue)) {
-                                cell.setText(((Path) newValue).getFileName().toString());
-                            } else if (newValue instanceof URL && unloadedURLs.contains(newValue)) {
-                                String[] urlPieces = newValue.toString().split("[/\\\\]");
-                                if (urlPieces.length != 0) {
-                                    cell.setText(urlPieces[urlPieces.length - 1]);
-                                } else {
-                                    cell.setText(newValue.toString());
-                                }
-                            }
                             cell.setContextMenu(null);
                             cell.setGraphic(null);
                         }
@@ -165,14 +155,7 @@ public class FilesTab extends Tab {
             setPromptText("Filter displayed sources.");
             HBox.setHgrow(this, Priority.ALWAYS);
 
-            textProperty().addListener((observable, oldValue, newValue) -> {
-                List<Source> sources = sourceTabMap.values().stream()
-                        .map(SourceTab::getSource)
-                        .filter(source -> source.getName().toLowerCase(Locale.ROOT).contains(newValue.toLowerCase(Locale.ROOT)))
-                        .collect(Collectors.toList());
-
-                files.getItems().setAll(sources.stream().map(Source::getKey).collect(Collectors.toList()));
-            });
+            textProperty().addListener((observable, oldValue, newValue) -> applyFilter());
         }
     };
     private final HBox topLeft = new HBox(filter, openFile, search) {
@@ -198,11 +181,57 @@ public class FilesTab extends Tab {
         tools.getAllStyleSheets().addListener(stylesheetsChanged);
         stylesheetsChanged.invalidated(tools.getAllStyleSheets());
 
+        InvalidationListener dataChanged = observable -> applyFilter();
+        unloadedFiles.addListener(dataChanged);
+        unloadedURLs.addListener(dataChanged);
+        sourceTabMap.addListener(dataChanged);
+
         setClosable(false);
         backdrop.setAlignment(Pos.CENTER);
         SplitPane.setResizableWithParent(files, false);
 
         setContent(split);
+    }
+
+    private String textOfValidSourceObject(Object object) {
+        if (sourceTabMap.containsKey(object)) {
+            return sourceTabMap.get(object).source.getName();
+        }
+        if (object instanceof Path && unloadedFiles.contains(object)) {
+            return ((Path) object).getFileName().toString();
+        } else if (object instanceof URL && unloadedURLs.contains(object)) {
+            String[] urlPieces = object.toString().split("[/\\\\]");
+            if (urlPieces.length != 0) {
+                return urlPieces[urlPieces.length - 1];
+            } else {
+                return object.toString();
+            }
+        }
+        return "error in format of object: " + object;
+    }
+
+    private void applyFilter() {
+
+        List<Object> relevantObjects = new ArrayList<>();
+        relevantObjects.addAll(sourceTabMap.keySet());
+        relevantObjects.addAll(unloadedURLs);
+        relevantObjects.addAll(unloadedFiles);
+
+        if (filter.getText().isEmpty()) {
+            files.getItems().setAll(relevantObjects);
+            return;
+        }
+
+        List<Object> validObjects = new ArrayList<>();
+
+        for (Object obj : relevantObjects) {
+            String text = textOfValidSourceObject(obj);
+            if (text.toLowerCase(Locale.ROOT).contains(filter.getText().toLowerCase(Locale.ROOT))) {
+                validObjects.add(obj);
+            }
+        }
+
+        files.getItems().setAll(validObjects);
     }
 
     public boolean loadURL(String url) {

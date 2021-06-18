@@ -3,12 +3,15 @@ package com.me.tmw.debug.devtools.nodeinfo.css.sheets;
 import com.me.tmw.debug.devtools.nodeinfo.NodeInfo;
 import com.me.tmw.resource.Resources;
 import javafx.beans.InvalidationListener;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.css.CssParser;
 import javafx.css.Stylesheet;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
@@ -39,6 +42,8 @@ public class SheetsInfo extends NodeInfo {
     private final ObservableList<String> stylesheets = FXCollections.observableArrayList();
     private final ObservableList<StylesheetBinding> stylesheetLists = FXCollections.observableArrayList();
     private final ObservableList<Parent> parents = FXCollections.observableArrayList();
+
+    private final ObjectProperty<Node> placeholder = new SimpleObjectProperty<>(this, "placeholder");
 
     private final InvalidationListener sheetsInvalidated = observable -> {
         List<String> invalidSheets = new ArrayList<>(viewedSheets);
@@ -96,14 +101,33 @@ public class SheetsInfo extends NodeInfo {
         stylesheetLists.add(nodeStylesheets);
 
         AtomicReference<StylesheetBinding> sceneBinding = new AtomicReference<>();
+        AtomicReference<StylesheetBinding> userAgentBinding = new AtomicReference<>();
+        AtomicReference<InvalidationListener> userAgentListener = new AtomicReference<>();
         ChangeListener<Scene> sceneListener = (observableValue, oldValue, newValue) -> {
             if (sceneBinding.get() != null) {
                 sceneBinding.get().disconnect();
+            }
+            if (userAgentBinding.get() != null) {
+                userAgentBinding.get().disconnect();
+            }
+            if (oldValue != null && userAgentListener.get() != null) {
+                oldValue.userAgentStylesheetProperty().removeListener(userAgentListener.get());
             }
             if (newValue != null) {
                 StylesheetBinding newBinding = new StylesheetBinding(newValue.getStylesheets());
                 stylesheetLists.add(newBinding);
                 sceneBinding.set(newBinding);
+
+                ObservableList<String> userAgentStylesheets = FXCollections.observableArrayList(newValue.getUserAgentStylesheet());
+                userAgentListener.set(observable -> userAgentStylesheets.setAll(newValue.getUserAgentStylesheet()));
+                System.out.println(newValue.getUserAgentStylesheet());
+                newValue.userAgentStylesheetProperty().addListener(userAgentListener.get());
+                StylesheetBinding userAgent = new StylesheetBinding(userAgentStylesheets);
+                stylesheetLists.add(userAgent);
+            } else {
+                sceneBinding.set(null);
+                userAgentListener.set(null);
+                userAgentBinding.set(null);
             }
         };
         sceneListener.changed(parent.sceneProperty(), null, parent.getScene());

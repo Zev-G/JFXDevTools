@@ -42,7 +42,7 @@ public class StylesheetsTab extends Tab {
                         if (selected == null) {
                             selected = "";
                         }
-                        switch (selected) {
+                        switch (selected) { // Not using enhanced switch for backwards compatibility with computers at school which use jdk11.
                             case "File Path":
                                 return "Location of the file, e.g. \"C:\\Windows\\stylesheet.css\"";
                             case "URL":
@@ -88,7 +88,7 @@ public class StylesheetsTab extends Tab {
         VBox.setVgrow(stylesheetsPlaceHolder, Priority.ALWAYS);
 
         structureTab.getSceneTree().getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null && newValue.getValue() instanceof Parent) {
+            if (structureTab.getInfoTabPane().getSelectionModel().getSelectedItem() == this && newValue != null && newValue.getValue() instanceof Parent) {
                 load((Parent) newValue.getValue());
             } else {
                 stylesheetsPlaceHolder.getChildren().setAll(noStylesheets);
@@ -122,8 +122,17 @@ public class StylesheetsTab extends Tab {
                 file = new File(filePath);
             } else {
                 int lastIndexOf = filePath.lastIndexOf('.');
+                String name;
+                String ending;
+                if (lastIndexOf == -1) {
+                    name = filePath;
+                    ending = ".css";
+                } else {
+                    name = filePath.substring(0, lastIndexOf);
+                    ending = filePath.substring(lastIndexOf);
+                }
                 try {
-                    file = Files.createTempFile(filePath.substring(0, lastIndexOf), filePath.substring(lastIndexOf)).toFile();
+                    file = Files.createTempFile(name, ending).toFile();
                 } catch (IOException e) {
                     return;
                 }

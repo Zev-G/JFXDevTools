@@ -125,4 +125,8 @@ public class StructureTab extends Tab {
     public Parent getRoot() {
         return root.get();
     }
+
+    public TabPane getInfoTabPane() {
+        return infoTabPane;
+    }
 }
