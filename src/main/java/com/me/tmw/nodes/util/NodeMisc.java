@@ -1,7 +1,12 @@
 package com.me.tmw.nodes.util;
 
+import com.me.tmw.debug.devtools.nodeinfo.css.sheets.SheetsInfo;
 import com.me.tmw.nodes.control.svg.SVG;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.binding.StringBinding;
+import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
 import javafx.css.Styleable;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -12,6 +17,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -26,6 +32,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.IntFunction;
 
 public final class NodeMisc {
@@ -279,4 +286,8 @@ public final class NodeMisc {
         );
     }
 
+    public static void runAndAddListener(Observable observable, InvalidationListener listener) {
+        listener.invalidated(observable);
+        observable.addListener(listener);
+    }
 }

@@ -1,6 +1,7 @@
 package com.me.tmw.debug.devtools.nodeinfo.css.sheets;
 
 import com.me.tmw.debug.devtools.nodeinfo.NodeInfo;
+import com.me.tmw.nodes.util.NodeMisc;
 import com.me.tmw.resource.Resources;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
@@ -32,9 +33,8 @@ public class SheetsInfo extends NodeInfo {
     private Consumer<String> open;
 
     private final Accordion sheets = new Accordion();
-    private final Label nothingHere = new Label("No style sheets found for node.");
 
-    private final List<String> viewedSheets = new ArrayList<>();
+    private final ObservableList<String> viewedSheets = FXCollections.observableArrayList();
     private final Map<String, SheetInfo> viewedSheetsSheetInfoMap = new HashMap<>();
 
     private final CssParser parser = new CssParser();
@@ -43,14 +43,15 @@ public class SheetsInfo extends NodeInfo {
     private final ObservableList<StylesheetBinding> stylesheetLists = FXCollections.observableArrayList();
     private final ObservableList<Parent> parents = FXCollections.observableArrayList();
 
-    private final ObjectProperty<Node> placeholder = new SimpleObjectProperty<>(this, "placeholder");
+    private final ObjectProperty<Node> placeholder = new SimpleObjectProperty<>(this, "placeholder", new Label("No stylesheets found for this node."));
 
+    private ChangeListener<Node> tempPlaceHolderListener;
     private final InvalidationListener sheetsInvalidated = observable -> {
         List<String> invalidSheets = new ArrayList<>(viewedSheets);
         List<String> newSheets = new ArrayList<>();
         for (String sheet : stylesheets) {
             invalidSheets.remove(sheet);
-            if (!viewedSheets.contains(sheet) && !newSheets.contains(sheet)) {
+            if (!viewedSheets.contains(sheet) && !newSheets.contains(sheet) && sheet != null) {
                 newSheets.add(sheet);
             }
         }
@@ -82,11 +83,6 @@ public class SheetsInfo extends NodeInfo {
             viewedSheetsSheetInfoMap.put(newSheet, info);
             sheets.getPanes().add(info);
         }
-        if (stylesheets.isEmpty()) {
-            getChildren().add(nothingHere);
-        } else {
-            getChildren().remove(nothingHere);
-        }
     };
 
     public SheetsInfo(Parent parent, Consumer<String> open) {
@@ -96,6 +92,22 @@ public class SheetsInfo extends NodeInfo {
 
         stylesheets.addListener(sheetsInvalidated);
         sheetsInvalidated.invalidated(null);
+        NodeMisc.runAndAddListener(viewedSheets, observable -> {
+            if (viewedSheets.isEmpty()) {
+                getChildren().add(placeholder.get());
+                tempPlaceHolderListener = (observableValue, oldValue, newValue) -> {
+                    getChildren().remove(oldValue);
+                    getChildren().add(newValue);
+                };
+                placeholder.addListener(tempPlaceHolderListener);
+            } else {
+                if (tempPlaceHolderListener != null) {
+                    placeholder.removeListener(tempPlaceHolderListener);
+                    tempPlaceHolderListener = null;
+                }
+                getChildren().remove(placeholder.get());
+            }
+        });
 
         StylesheetBinding nodeStylesheets = new StylesheetBinding(parent);
         stylesheetLists.add(nodeStylesheets);
@@ -120,7 +132,6 @@ public class SheetsInfo extends NodeInfo {
 
                 ObservableList<String> userAgentStylesheets = FXCollections.observableArrayList(newValue.getUserAgentStylesheet());
                 userAgentListener.set(observable -> userAgentStylesheets.setAll(newValue.getUserAgentStylesheet()));
-                System.out.println(newValue.getUserAgentStylesheet());
                 newValue.userAgentStylesheetProperty().addListener(userAgentListener.get());
                 StylesheetBinding userAgent = new StylesheetBinding(userAgentStylesheets);
                 stylesheetLists.add(userAgent);

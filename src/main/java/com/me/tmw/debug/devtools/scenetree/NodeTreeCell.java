@@ -25,9 +25,7 @@ public class NodeTreeCell extends TreeCell<Node> {
 
     private static final PseudoClass DARK = PseudoClass.getPseudoClass("dark");
 
-    private BackgroundFill highlight = new BackgroundFill(Color.rgb(100, 100, 100, 0.05), new CornerRadii(10), Insets.EMPTY);
-
-    private List<Binding<?>> toBeDisposed = new ArrayList<>();
+    private final List<Binding<?>> toBeDisposed = new ArrayList<>();
 
     public NodeTreeCell(SceneTree sceneTree) {
         setOnMouseEntered(event -> {
@@ -35,9 +33,7 @@ public class NodeTreeCell extends TreeCell<Node> {
                 ((SceneTree) getTreeView()).getInspector().setExamined(getItem());
             }
         });
-        setOnMouseExited(event -> {
-            ((SceneTree) getTreeView()).getInspector().setExamined(null);
-        });
+        setOnMouseExited(event -> ((SceneTree) getTreeView()).getInspector().setExamined(null));
 
         setContentDisplay(ContentDisplay.RIGHT);
 
