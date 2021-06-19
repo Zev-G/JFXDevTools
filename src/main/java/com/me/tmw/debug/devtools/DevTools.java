@@ -30,12 +30,17 @@ import static com.me.tmw.css.Sheets.Essentials.*;
 public class DevTools extends StackPane {
 
     public static boolean listenToStylesheets = true;
+    public static boolean propertiesInSceneTree = true;
+
+    public static boolean displayPossibleClutterInSceneTree = false;
 
     public static void enableImprovedPerformanceMode() {
         listenToStylesheets = false;
+        propertiesInSceneTree = false;
     }
     public static void disableImprovedPerformanceMode() {
         listenToStylesheets = true;
+        propertiesInSceneTree = true;
     }
 
     private static final Object LISTENING_TO_STYLESHEETS = new Object() {
