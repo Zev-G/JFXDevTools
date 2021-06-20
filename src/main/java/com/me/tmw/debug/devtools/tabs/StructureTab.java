@@ -34,6 +34,7 @@ public class StructureTab extends Tab {
     private final StackPane noCssProperties = new StackPane(new Label("No Css Properties"));
     private final Tab cssTab = new Tab("Css Properties", noCssProperties);
     private final StylesheetsTab stylesheetsTab;
+    private final DetailsTab detailsTab;
     private final DevTools tools;
     private final TabPane infoTabPane = new TabPane(cssTab);
 
@@ -45,8 +46,10 @@ public class StructureTab extends Tab {
         sceneTree = new SceneTree(this.root);
         VBox.setVgrow(sceneTree, Priority.ALWAYS);
 
+        detailsTab = new DetailsTab(this);
         stylesheetsTab = new StylesheetsTab(this);
-        infoTabPane.getTabs().add(stylesheetsTab);
+
+        infoTabPane.getTabs().addAll(stylesheetsTab/*, detailsTab*/);
 
         classChain.setPadding(new Insets(10));
         classChain.getStyleClass().add("class-chain");
@@ -63,6 +66,11 @@ public class StructureTab extends Tab {
         stylesheetsTab.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue && sceneTree.getSelectionModel().getSelectedItem() != null && sceneTree.getSelectionModel().getSelectedItem().getValue() instanceof Parent) {
                 stylesheetsTab.load((Parent) sceneTree.getSelectionModel().getSelectedItem().getValue());
+            }
+        });
+        detailsTab.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                detailsTab.load(sceneTree.getSelectionModel().getSelectedItem().getValue());
             }
         });
 
