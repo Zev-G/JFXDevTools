@@ -22,6 +22,13 @@ public class SimpleTooltip extends Tooltip {
         parent.getStylesheets().add(STYLE_SHEET);
         applier.accept(new SimpleTooltip(text));
     }
+    public static void install(Control control, String text) {
+        apply(control, text);
+    }
+
+    public static void install(Consumer<Tooltip> applier, Parent parent, String text) {
+        apply(applier, parent, text);
+    }
 
     private SimpleTooltip(String text) {
         super(text);

@@ -5,21 +5,24 @@ import com.me.tmw.animations.builder.grouping.AnimationGroupBuilder;
 import com.me.tmw.debug.devtools.DevScene;
 import com.me.tmw.debug.devtools.DevTools;
 import com.me.tmw.debug.devtools.DevToolsContainer;
-import com.me.tmw.debug.uiactions.UIActions;
 import com.me.tmw.examples.magis.Magis;
 import com.me.tmw.nodes.control.paint.LinearGradientPicker;
 import com.me.tmw.nodes.util.Dragging;
 import com.me.tmw.nodes.util.Layout;
 
+import com.me.tmw.properties.editors.DoublePropertyEditor;
+import com.me.tmw.properties.editors.EnumPropertyEditor;
+import com.me.tmw.properties.editors.OptionBasedPropertyEditor;
+import com.me.tmw.properties.editors.StringPropertyEditor;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.LinearGradient;
@@ -27,15 +30,32 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
 
-        Magis.run(primaryStage);
-//        primaryStage.setScene(new DevScene(new LinearGradientPicker()));
-//        primaryStage.show();
-//
+//        Magis.run(primaryStage);
+        Label label = new Label("Label");
+        StringPropertyEditor editor = new StringPropertyEditor(label.textProperty());
+        DoublePropertyEditor heightEditor = new DoublePropertyEditor(label.minHeightProperty());
+        OptionBasedPropertyEditor<Cursor> cursors = OptionBasedPropertyEditor.fromArray(label.cursorProperty(), Stream.concat(Arrays.stream(Cursor.class.getDeclaredFields()).filter(field -> Cursor.class.isAssignableFrom(field.getType())).map(field -> {
+            try {
+                return (Cursor) field.get(null);
+            } catch (IllegalAccessException e) {
+                return null;
+            }
+        }), Stream.of((Cursor) null)).toArray(Cursor[]::new));
+        Button button = new Button("Set to: \"hi\"");
+        button.setOnAction(event -> label.setText("hi"));
+        primaryStage.setScene(new DevScene(new VBox(button, label, editor.getNode(), heightEditor.getNode(), cursors.getNode())));
+
+        primaryStage.show();
+
 //        UIActions.performOn(primaryStage).lookupAll(".button", nodeUIAction -> nodeUIAction.fireMouseEvent(MouseEvent.MOUSE_ENTERED)).execute();
     }
 

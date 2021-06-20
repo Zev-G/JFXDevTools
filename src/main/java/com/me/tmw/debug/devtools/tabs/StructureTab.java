@@ -49,7 +49,7 @@ public class StructureTab extends Tab {
         detailsTab = new DetailsTab(this);
         stylesheetsTab = new StylesheetsTab(this);
 
-        infoTabPane.getTabs().addAll(stylesheetsTab/*, detailsTab*/);
+        infoTabPane.getTabs().addAll(stylesheetsTab, detailsTab);
 
         classChain.setPadding(new Insets(10));
         classChain.getStyleClass().add("class-chain");
