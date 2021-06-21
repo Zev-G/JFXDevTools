@@ -10,10 +10,8 @@ import com.me.tmw.nodes.control.paint.LinearGradientPicker;
 import com.me.tmw.nodes.util.Dragging;
 import com.me.tmw.nodes.util.Layout;
 
-import com.me.tmw.properties.editors.DoublePropertyEditor;
-import com.me.tmw.properties.editors.EnumPropertyEditor;
-import com.me.tmw.properties.editors.OptionBasedPropertyEditor;
-import com.me.tmw.properties.editors.StringPropertyEditor;
+import com.me.tmw.properties.ColorProperty;
+import com.me.tmw.properties.editors.*;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
@@ -50,9 +48,10 @@ public class App extends Application {
                 return null;
             }
         }), Stream.of((Cursor) null)).toArray(Cursor[]::new));
+        PaintPropertyEditor colorEditor = new PaintPropertyEditor(label.textFillProperty());
         Button button = new Button("Set to: \"hi\"");
         button.setOnAction(event -> label.setText("hi"));
-        primaryStage.setScene(new DevScene(new VBox(button, label, editor.getNode(), heightEditor.getNode(), cursors.getNode())));
+        primaryStage.setScene(new DevScene(new VBox(button, label, editor.getNode(), heightEditor.getNode(), cursors.getNode(), colorEditor.getNode())));
 
         primaryStage.show();
 

@@ -1,16 +1,8 @@
 package com.me.tmw.properties.editors;
 
-import com.me.tmw.animations.Animations;
-import com.me.tmw.animations.builder.timeline.KeyFrameBuilder;
-import com.me.tmw.animations.builder.timeline.KeyValueBuilder;
 import com.me.tmw.nodes.control.FillWidthTextField;
 import com.me.tmw.nodes.tooltips.SimpleTooltip;
-import javafx.animation.*;
 import javafx.beans.property.Property;
-import javafx.scene.effect.Bloom;
-import javafx.scene.effect.Glow;
-import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 
 public abstract class TextBasedPropertyEditor<T> extends PropertyEditorBase<T> {
 

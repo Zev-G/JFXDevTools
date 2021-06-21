@@ -23,6 +23,12 @@ public abstract class PropertyEditorBase<T> implements PropertyEditor<T> {
 
     private Class<?> propertyType;
 
+    public PropertyEditorBase(Property<T> value) {
+        this(value.getName(), value);
+    }
+    public PropertyEditorBase(Node node, Property<T> value) {
+        this(value.getName(), node, value);
+    }
     public PropertyEditorBase(String name, Property<T> value) {
         this(name, null, value);
     }
