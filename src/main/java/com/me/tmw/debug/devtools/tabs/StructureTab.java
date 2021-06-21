@@ -48,6 +48,7 @@ public class StructureTab extends Tab {
 
         detailsTab = new DetailsTab(this);
         stylesheetsTab = new StylesheetsTab(this);
+        SplitPane.setResizableWithParent(infoTabPane, false);
 
         infoTabPane.getTabs().addAll(stylesheetsTab, detailsTab);
 

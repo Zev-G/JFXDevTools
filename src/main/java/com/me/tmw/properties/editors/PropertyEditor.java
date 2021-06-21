@@ -6,8 +6,10 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.WritableValue;
 import javafx.collections.ObservableList;
-import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
+import javafx.scene.control.ContentDisplay;
+
+import java.util.Optional;
 
 public interface PropertyEditor<T> extends ObservableValue<T>, WritableValue<T> {
 
@@ -37,9 +39,12 @@ public interface PropertyEditor<T> extends ObservableValue<T>, WritableValue<T> 
         nodeProperty().set(node);
     }
 
-    ReadOnlyProperty<NodeOrientation> nodeOrientationProperty();
-    default NodeOrientation getNodeOrientation() {
-        return nodeOrientationProperty().getValue();
+    ReadOnlyProperty<ContentDisplay> contentDisplayProperty();
+    default ContentDisplay getContentDisplay() {
+        return contentDisplayProperty().getValue();
     }
+
+    Optional<Class<?>> getPropertyType();
+    void setPropertyType(Class<?> propertyType);
 
 }

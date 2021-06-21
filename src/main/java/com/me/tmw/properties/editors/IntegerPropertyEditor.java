@@ -2,9 +2,9 @@ package com.me.tmw.properties.editors;
 
 import javafx.beans.property.Property;
 
-public class IntegerPropertyEditor extends NumberPropertyEditor<Integer> {
+public class IntegerPropertyEditor extends NumberPropertyEditor<Number> {
 
-    public IntegerPropertyEditor(Property<Integer> value) {
+    public IntegerPropertyEditor(Property<Number> value) {
         super(value);
     }
 

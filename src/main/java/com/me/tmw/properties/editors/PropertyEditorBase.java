@@ -1,25 +1,27 @@
 package com.me.tmw.properties.editors;
 
-import com.me.tmw.properties.NodeOrientationProperty;
 import com.me.tmw.properties.NodeProperty;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
+import javafx.scene.control.ContentDisplay;
+
+import java.util.Optional;
 
 public abstract class PropertyEditorBase<T> implements PropertyEditor<T> {
 
     private final StringProperty name = new SimpleStringProperty(this, "name");
     private final NodeProperty node = new NodeProperty(this);
     private final NodeProperty graphic = new NodeProperty(this, "graphic");
-    private final NodeOrientationProperty nodeOrientation = new NodeOrientationProperty(this);
+    private final ObjectProperty<ContentDisplay> contentDisplay = new SimpleObjectProperty<>(this, "contentDisplay", ContentDisplay.RIGHT);
 
     private final ObservableList<PropertyEditor<T>> children = FXCollections.observableArrayList();
+    protected final Property<T> value;
 
-    private final Property<T> value;
+    private Class<?> propertyType;
 
     public PropertyEditorBase(String name, Property<T> value) {
         this(name, null, value);
@@ -46,11 +48,11 @@ public abstract class PropertyEditorBase<T> implements PropertyEditor<T> {
     }
 
     @Override
-    public NodeOrientationProperty nodeOrientationProperty() {
-        return nodeOrientation;
+    public ObjectProperty<ContentDisplay> contentDisplayProperty() {
+        return contentDisplay;
     }
-    public void setNodeOrientation(NodeOrientation orientation) {
-        this.nodeOrientation.set(orientation);
+    public void setContentDisplay(ContentDisplay orientation) {
+        this.contentDisplay.set(orientation);
     }
 
     @Override
@@ -83,7 +85,7 @@ public abstract class PropertyEditorBase<T> implements PropertyEditor<T> {
         this.value.setValue(value);
     }
     public void set(T value) {
-        this.value.setValue(value);
+        setValue(value);
     }
 
     @Override
@@ -95,4 +97,15 @@ public abstract class PropertyEditorBase<T> implements PropertyEditor<T> {
     public void removeListener(InvalidationListener listener) {
         value.removeListener(listener);
     }
+
+    @Override
+    public Optional<Class<?>> getPropertyType() {
+        return propertyType == null ? Optional.empty() : Optional.of(propertyType);
+    }
+
+    @Override
+    public void setPropertyType(Class<?> propertyType) {
+        this.propertyType = propertyType;
+    }
+
 }

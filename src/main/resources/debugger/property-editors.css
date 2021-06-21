@@ -1,0 +1,7 @@
+
+
+.invalid-text {
+    -fx-background-color: rgb(171, 37, 37);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
