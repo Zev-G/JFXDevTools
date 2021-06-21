@@ -21,7 +21,7 @@ public class ResourceFolder {
         if (!name.endsWith(".css")) {
             name = name + ".css";
         }
-        return Objects.requireNonNull(getClass().getClassLoader().getResource(path + name)).toExternalForm();
+        return Objects.requireNonNull(getClass().getClassLoader().getResource(path + "css/" + name)).toExternalForm();
     }
 
     public String getPath() {
@@ -32,7 +32,7 @@ public class ResourceFolder {
         if (!png.endsWith(".png")) {
             png = png + ".png";
         }
-        return Objects.requireNonNull(getClass().getClassLoader().getResource(path + png)).toExternalForm();
+        return Objects.requireNonNull(getClass().getClassLoader().getResource(path + "images/" + png)).toExternalForm();
     }
 
     public String read(String s) {
