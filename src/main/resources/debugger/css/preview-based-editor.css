@@ -1,0 +1,12 @@
+/* PreviewBasedEditor styling */
+
+.preview-root {
+    -fx-border-width: 1;
+    -fx-border-color: #1a1a1a;
+    -fx-border-insets: 0;
+    -fx-cursor: hand;
+}
+.preview-root:hover {
+    -fx-border-width: 2;
+    -fx-border-insets: -1;
+}
