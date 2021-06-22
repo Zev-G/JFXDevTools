@@ -1,0 +1,10 @@
+.stops-picker {
+    -fx-spacing: 15;
+    -fx-alignment: center;
+}
+
+.stops {
+    -fx-hgap: 5;
+    -fx-vgap: 5;
+    -fx-alignment: center;
+}

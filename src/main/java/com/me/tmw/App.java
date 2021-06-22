@@ -7,6 +7,7 @@ import com.me.tmw.debug.devtools.DevTools;
 import com.me.tmw.debug.devtools.DevToolsContainer;
 import com.me.tmw.examples.magis.Magis;
 import com.me.tmw.nodes.control.paint.LinearGradientPicker;
+import com.me.tmw.nodes.control.paint.StopsPicker;
 import com.me.tmw.nodes.util.Dragging;
 import com.me.tmw.nodes.util.Layout;
 
@@ -38,20 +39,23 @@ public class App extends Application {
     public void start(Stage primaryStage) {
 
 //        Magis.run(primaryStage);
-        Label label = new Label("Label");
-        StringPropertyEditor editor = new StringPropertyEditor(label.textProperty());
-        DoublePropertyEditor heightEditor = new DoublePropertyEditor(label.minHeightProperty());
-        OptionBasedPropertyEditor<Cursor> cursors = OptionBasedPropertyEditor.fromArray(label.cursorProperty(), Stream.concat(Arrays.stream(Cursor.class.getDeclaredFields()).filter(field -> Cursor.class.isAssignableFrom(field.getType())).map(field -> {
-            try {
-                return (Cursor) field.get(null);
-            } catch (IllegalAccessException e) {
-                return null;
-            }
-        }), Stream.of((Cursor) null)).toArray(Cursor[]::new));
-        PaintPropertyEditor colorEditor = new PaintPropertyEditor(label.textFillProperty());
-        Button button = new Button("Set to: \"hi\"");
-        button.setOnAction(event -> label.setText("hi"));
-        primaryStage.setScene(new DevScene(new VBox(button, label, editor.getNode(), heightEditor.getNode(), cursors.getNode(), colorEditor.getNode())));
+
+//        Label label = new Label("Label");
+//        StringPropertyEditor editor = new StringPropertyEditor(label.textProperty());
+//        DoublePropertyEditor heightEditor = new DoublePropertyEditor(label.minHeightProperty());
+//        OptionBasedPropertyEditor<Cursor> cursors = OptionBasedPropertyEditor.fromArray(label.cursorProperty(), Stream.concat(Arrays.stream(Cursor.class.getDeclaredFields()).filter(field -> Cursor.class.isAssignableFrom(field.getType())).map(field -> {
+//            try {
+//                return (Cursor) field.get(null);
+//            } catch (IllegalAccessException e) {
+//                return null;
+//            }
+//        }), Stream.of((Cursor) null)).toArray(Cursor[]::new));
+//        PaintPropertyEditor colorEditor = new PaintPropertyEditor(label.textFillProperty());
+//        Button button = new Button("Set to: \"hi\"");
+//        button.setOnAction(event -> label.setText("hi"));
+//        primaryStage.setScene(new DevScene(new VBox(button, label, editor.getNode(), heightEditor.getNode(), cursors.getNode(), colorEditor.getNode())));
+
+        primaryStage.setScene(new DevScene(new LinearGradientPicker()));
 
         primaryStage.show();
 

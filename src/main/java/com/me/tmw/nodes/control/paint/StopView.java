@@ -11,6 +11,7 @@ import javafx.event.EventType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
@@ -19,7 +20,7 @@ import java.util.Optional;
 
 public class StopView extends VBox {
 
-    public static final EventType<ActionEvent> REMOVED = new EventType<>(Event.ANY, "removed");
+    public static final EventType<ActionEvent> REMOVED = ActionEvent.ACTION;
 
     private final ObjectProperty<EventHandler<ActionEvent>> onRemoved = new SimpleObjectProperty<>(this, "onRemoved");
     private Stop lastStop = null;
@@ -57,9 +58,11 @@ public class StopView extends VBox {
 
         // Configure components
         stopPoint.setPromptText("Stop point, i.e. 10%");
+        VBox.setVgrow(colorPicker, Priority.ALWAYS);
+        HBox.setHgrow(stopPoint, Priority.ALWAYS);
 
         // Configure self
-        setPrefSize(75, 75);
+        setPrefSize(250, 200);
 
         // Event handlers and listeners
         removeStop.setOnAction(event -> fireEvent(new ActionEvent(this, this)));
@@ -78,10 +81,14 @@ public class StopView extends VBox {
         });
     }
 
+    public static double ruleFromString(String stopRule) {
+        return Double.parseDouble(stopRule.strip().replace("%", ""));
+    }
+
     private Optional<Stop> tryAndGenerateStop() {
         Color color = colorPicker.getColor();
         try {
-            double offset = Double.parseDouble(stopPoint.getText().strip().replace("%", ""));
+            double offset = ruleFromString(stopPoint.getText());
             return Optional.of(new Stop(offset, color));
         } catch (NumberFormatException e) {
             return Optional.empty();

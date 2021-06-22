@@ -9,15 +9,6 @@
     -fx-border-color: #1f1f1f;
 }
 
-.stops {
-    -fx-alignment: center;
-}
-
-.stops {
-    -fx-hgap: 5;
-    -fx-vgap: 5;
-}
-
 .stop-line {
     -fx-alignment: center;
     -fx-spacing: 5;

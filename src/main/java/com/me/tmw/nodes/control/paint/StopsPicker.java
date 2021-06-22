@@ -1,5 +1,6 @@
 package com.me.tmw.nodes.control.paint;
 
+import com.me.tmw.resource.Resources;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -7,6 +8,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableObjectValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
@@ -54,7 +56,9 @@ public class StopsPicker extends VBox implements List<Stop> {
         stopProperties.addAll(initialStops.stream().map(SimpleObjectProperty::new).collect(Collectors.toList()));
 
         // CSS things
-        getStyleClass().add("stopProperties");
+        getStyleClass().add("stops-picker");
+        stopsView.getStyleClass().add("stops");
+        getStylesheets().add(Resources.NODES.getCss("stops-picker"));
 
         // Event handlers
         addStop.setOnAction(event -> stopProperties.add(new SimpleObjectProperty<>(new Stop(100, Color.WHITE))));
@@ -64,14 +68,15 @@ public class StopsPicker extends VBox implements List<Stop> {
     }
 
     private void moveStop(ObjectProperty<Stop> stop, int to) {
-        StopView view = stopMap.computeIfAbsent(stop, StopView::new); // Probably could be replaced with a get call.
+        StopView view = stopMap.computeIfAbsent(stop, this::createStopView); // Probably could be replaced with a get call.
         loadedStops.remove(stop);
         stopsView.getChildren().remove(view);
         loadedStops.add(to, stop);
-        getChildren().add(to, view);
+        stopsView.getChildren().remove(view);
+        stopsView.getChildren().add(to, view);
     }
     private void addStop(ObjectProperty<Stop> stop, int to) {
-        StopView view = stopMap.computeIfAbsent(stop, StopView::new);
+        StopView view = stopMap.computeIfAbsent(stop, this::createStopView);
         loadedStops.add(to, stop);
         stopsView.getChildren().add(to, view);
         ChangeListener<Stop> stopChanged = (observable, oldValue, newValue) -> {
@@ -92,6 +97,16 @@ public class StopsPicker extends VBox implements List<Stop> {
 
     public ObservableList<Stop> getStops() {
         return unmodifiableStops;
+    }
+
+    StopView createStopView(ObjectProperty<Stop> stop) {
+        StopView stopView = new StopView(stop);
+        stopView.setOnRemoved(event -> stopProperties.remove(stopView.stopProperty()));
+        return stopView;
+    }
+
+    public StopView getView(Stop stop) {
+        return stopMap.get(findMatching(stop).orElseThrow(() -> new IllegalArgumentException("Stop: " + stop + " isn't available.")));
     }
 
     /*

@@ -3,6 +3,7 @@ package com.me.tmw.nodes.control.paint;
 import com.me.tmw.nodes.control.FillWidthTextField;
 import com.me.tmw.nodes.util.NodeMisc;
 import com.me.tmw.resource.Resources;
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -26,11 +27,8 @@ public class LinearGradientPicker extends VBox {
     private final ComboBox<CycleMethod> cycleMethods = new ComboBox<>();
     private final HBox topHBox = new HBox(position, cycleMethods);
 
-    private final FlowPane stops = new FlowPane();
+    private final StopsPicker stops = new StopsPicker();
     private final Pane resultPreview = new StackPane();
-
-    private final List<ColorPickerMiniView> colorPickers = new ArrayList<>();
-    private final List<StringProperty> stopProperties = new ArrayList<>();
 
     private final ObjectProperty<LinearGradient> value = new SimpleObjectProperty<>(this, "value");
 
@@ -57,15 +55,13 @@ public class LinearGradientPicker extends VBox {
         position.textProperty().addListener(observable -> updateValue());
 
         resultPreview.getStyleClass().add("result-preview");
-        stops.getStyleClass().add("stops");
         topHBox.getStyleClass().add("top-layout-hbox");
 
         VBox.setVgrow(resultPreview, Priority.ALWAYS);
 
-        Button addStop = new Button("Add Stop");
-        addStop.setOnAction(event -> addStop());
+        stops.getStops().addListener((InvalidationListener) observable -> updateValue());
 
-        getChildren().addAll(topHBox, stops, addStop, resultPreview);
+        getChildren().addAll(topHBox, stops, resultPreview);
 
         loadGradient(originalValue);
     }
@@ -73,20 +69,20 @@ public class LinearGradientPicker extends VBox {
     private void loadGradient(LinearGradient gradient) {
         position.setText("from " + gradient.getStartX() + "% " + gradient.getStartY() + "% to " + gradient.getEndX() + "% " + gradient.getEndY() + "%");
         for (Stop stop : gradient.getStops()) {
-            addStop(stop.getColor(), (stop.getOffset() * 100) + "%");
+            stops.add(new Stop(StopView.ruleFromString((stop.getOffset() * 100) + "%"), stop.getColor()));
         }
         cycleMethods.getSelectionModel().select(gradient.getCycleMethod());
     }
 
     private void updateValue() {
-        List<String> stops = new ArrayList<>();
-        for (int i = 0; i < colorPickers.size(); i++) {
-            stops.add(
-                    NodeMisc.colorToCss(colorPickers.get(i).getColor()) + " " + stopProperties.get(i).get()
+        List<String> stopStrings = new ArrayList<>();
+        for (Stop stop : this.stops.getStops()) {
+            stopStrings.add(
+                    NodeMisc.colorToCss(stop.getColor()) + " " + stop.getOffset() + "%"
             );
         }
         CycleMethod cycleMethod = cycleMethods.getValue();
-        String text = "linear-gradient(" + (position.getText().isEmpty() ? "" : position.getText() + ", ") + (cycleMethod != null && cycleMethod != CycleMethod.NO_CYCLE ? cycleMethod.toString().toLowerCase() + ", " : "") + String.join(", ", stops) + ")";
+        String text = "linear-gradient(" + (position.getText().isEmpty() ? "" : position.getText() + ", ") + (cycleMethod != null && cycleMethod != CycleMethod.NO_CYCLE ? cycleMethod.toString().toLowerCase() + ", " : "") + String.join(", ", stopStrings) + ")";
         try {
             value.set(LinearGradient.valueOf(text));
             resultPreview.getChildren().clear();
@@ -94,47 +90,6 @@ public class LinearGradientPicker extends VBox {
             value.set(new LinearGradient(0, 0, 100, 100, true, CycleMethod.NO_CYCLE, new Stop(100, Color.WHITE)));
             resultPreview.getChildren().add(new Label("Error in generating linear gradient"));
         }
-    }
-
-    public void addStop() {
-        addStop(colorPickers.size(), Color.WHITE, "");
-    }
-
-    public void addStop(Color initialColor, String stopRule) {
-        addStop(colorPickers.size(), initialColor, stopRule);
-    }
-
-    public void addStop(int i, Color initialColor, String stopRule) {
-        ColorPickerMiniView colorPicker = new ColorPickerMiniView(initialColor);
-        colorPicker.setPrefSize(100, 100);
-        colorPicker.colorProperty().addListener(observable -> updateValue());
-        colorPickers.add(colorPicker);
-
-        TextField stopString = new TextField(stopRule);
-        stopString.textProperty().addListener(observable -> updateValue());
-        stopString.setPromptText("Stop point (10%, 20)");
-        stopProperties.add(stopString.textProperty());
-
-        Button removeStop = new Button("Remove");
-
-        HBox belowBox = new HBox(stopString, removeStop);
-        belowBox.getStyleClass().add("stop-line");
-        VBox stop = new VBox(colorPicker, belowBox);
-        stop.getStyleClass().add("stop-line");
-
-        removeStop.setOnAction(event -> {
-            stopProperties.remove(stopString.textProperty());
-            colorPickers.remove(colorPicker);
-            stops.getChildren().remove(stop);
-            updateValue();
-        });
-
-        updateValue();
-
-        stops.getChildren().add(stop);
-
-//        stops.add(colorPicker, 0, i + arrows);
-//        stops.add(stopString, 1, i + arrows);
     }
 
     public ObjectProperty<LinearGradient> valueProperty() {
