@@ -17,3 +17,8 @@
 .top-layout-hbox {
     -fx-spacing: 5;
 }
+
+.point-connector {
+    -fx-stroke-width: 4;
+    -fx-stroke: #282828;
+}

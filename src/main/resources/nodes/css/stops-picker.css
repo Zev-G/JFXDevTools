@@ -8,3 +8,8 @@
     -fx-vgap: 5;
     -fx-alignment: center;
 }
+
+.stop-picker-footer {
+    -fx-alignment: center;
+    -fx-spacing: 10;
+}

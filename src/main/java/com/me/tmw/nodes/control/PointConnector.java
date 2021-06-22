@@ -8,16 +8,19 @@ public class PointConnector extends Line {
     private final Point end;
 
     public PointConnector(Point beginning, Point end) {
+        getStyleClass().add("point-connector");
+
         this.beginning = beginning;
         this.end = end;
 
         beginning.getConnectors().add(this);
         end.getConnectors().add(this);
 
-        startXProperty().bind(beginning.layoutXProperty());
-        startYProperty().bind(beginning.layoutYProperty());
-        endXProperty().bind(end.layoutXProperty());
-        endYProperty().bind(end.layoutYProperty());
+        startXProperty().bind(beginning.layoutXProperty().add(beginning.contentWidthProperty().divide(2)));
+        startYProperty().bind(beginning.layoutYProperty().add(beginning.contentHeightProperty().divide(2)));
+
+        endXProperty().bind(end.layoutXProperty().add(end.contentWidthProperty().divide(2)));
+        endYProperty().bind(end.layoutYProperty().add(end.contentHeightProperty().divide(2)));
     }
 
     public void dispose() {

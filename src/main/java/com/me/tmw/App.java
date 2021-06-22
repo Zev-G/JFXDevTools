@@ -48,15 +48,7 @@ public class App extends Application {
 //        button.setOnAction(event -> label.setText("hi"));
 //        primaryStage.setScene(new DevScene(new VBox(button, label, editor.getNode(), heightEditor.getNode(), cursors.getNode(), colorEditor.getNode())));
 
-        Point a = new Point(0, 0);
-        a.setXLocked(true);
-        a.setCentered(false);
-        Point b = new Point(0, 0);
-        b.setYLocked(true);
-        b.setCentered(false);
-        PointsEditor editor = new PointsEditor(a, b);
-        editor.connectPoints(a, b);
-        primaryStage.setScene(new DevScene(editor));
+        primaryStage.setScene(new DevScene(new LinearGradientPicker()));
 
         primaryStage.show();
         primaryStage.setTitle("Test");

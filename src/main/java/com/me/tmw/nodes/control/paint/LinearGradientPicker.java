@@ -1,39 +1,42 @@
 package com.me.tmw.nodes.control.paint;
 
-import com.me.tmw.nodes.control.FillWidthTextField;
+import com.me.tmw.nodes.control.Point;
+import com.me.tmw.nodes.control.PointsEditor;
 import com.me.tmw.nodes.util.NodeMisc;
 import com.me.tmw.resource.Resources;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 public class LinearGradientPicker extends VBox {
 
     private static final String STYLE_SHEET = Resources.NODES.getCss("linear-gradient-picker");
 
-    private final TextField position = new FillWidthTextField("from 0% 0% to 100% 100%");
     private final ComboBox<CycleMethod> cycleMethods = new ComboBox<>();
-    private final HBox topHBox = new HBox(position, cycleMethods);
 
     private final StopsPicker stops = new StopsPicker();
-    private final Pane resultPreview = new StackPane();
+
+    private final PointsEditor resultPreview = new PointsEditor();
+    private final Point startY = new Point(0, 0, true, true, false, createPointDisplay(false, true));
+    private final Point startX = new Point(0, 0, true, false, true, createPointDisplay(true, true));
+    private final Point endY = new Point(1, 1, true, true, false, createPointDisplay(false, false));
+    private final Point endX = new Point(1, 1, true, false, true, createPointDisplay(true, false));
 
     private final ObjectProperty<LinearGradient> value = new SimpleObjectProperty<>(this, "value");
 
     public LinearGradientPicker() {
-        this(new LinearGradient(0, 0, 100, 100, true, CycleMethod.NO_CYCLE, new Stop(100, Color.WHITE)));
+        this(new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE, new Stop(100, Color.WHITE)));
     }
 
     public LinearGradientPicker(LinearGradient originalValue) {
@@ -51,44 +54,44 @@ public class LinearGradientPicker extends VBox {
                         value
                 )
         );
+        resultPreview.getPoints().addAll(startX, startY, endX, endY);
 
-        position.textProperty().addListener(observable -> updateValue());
+        resultPreview.connectPoints(startX, startY);
+        resultPreview.connectPoints(endX, endY);
+
+        stops.getStops().addListener((InvalidationListener) observable -> updateValue());
+        startX.xProperty().addListener(observable -> updateValue());
+        startY.yProperty().addListener(observable -> updateValue());
+        endX.xProperty().addListener(observable -> updateValue());
+        endY.yProperty().addListener(observable -> updateValue());
+
 
         resultPreview.getStyleClass().add("result-preview");
-        topHBox.getStyleClass().add("top-layout-hbox");
 
         VBox.setVgrow(resultPreview, Priority.ALWAYS);
 
-        stops.getStops().addListener((InvalidationListener) observable -> updateValue());
-
-        getChildren().addAll(topHBox, stops, resultPreview);
+        getChildren().addAll(stops, resultPreview);
+        stops.getFooter().getChildren().add(cycleMethods);
 
         loadGradient(originalValue);
     }
 
     private void loadGradient(LinearGradient gradient) {
-        position.setText("from " + gradient.getStartX() + "% " + gradient.getStartY() + "% to " + gradient.getEndX() + "% " + gradient.getEndY() + "%");
-        for (Stop stop : gradient.getStops()) {
-            stops.add(new Stop(StopView.ruleFromString((stop.getOffset() * 100) + "%"), stop.getColor()));
-        }
+        startX.setX(gradient.getStartX());
+        startY.setY(gradient.getStartY());
+        endX.setX(gradient.getEndX());
+        endY.setY(gradient.getEndY());
+        stops.getStopProperties().clear();
+        stops.addAll(gradient.getStops());
         cycleMethods.getSelectionModel().select(gradient.getCycleMethod());
     }
 
     private void updateValue() {
-        List<String> stopStrings = new ArrayList<>();
-        for (Stop stop : this.stops.getStops()) {
-            stopStrings.add(
-                    NodeMisc.colorToCss(stop.getColor()) + " " + stop.getOffset() + "%"
-            );
-        }
-        CycleMethod cycleMethod = cycleMethods.getValue();
-        String text = "linear-gradient(" + (position.getText().isEmpty() ? "" : position.getText() + ", ") + (cycleMethod != null && cycleMethod != CycleMethod.NO_CYCLE ? cycleMethod.toString().toLowerCase() + ", " : "") + String.join(", ", stopStrings) + ")";
         try {
-            value.set(LinearGradient.valueOf(text));
-            resultPreview.getChildren().clear();
+            value.set(new LinearGradient(startX.getClampedX(), startY.getClampedY(), endX.getClampedX(), endY.getClampedY(), true, cycleMethods.getValue(), this.stops.getStops()));
         } catch (Exception ignored) {
             value.set(new LinearGradient(0, 0, 100, 100, true, CycleMethod.NO_CYCLE, new Stop(100, Color.WHITE)));
-            resultPreview.getChildren().add(new Label("Error in generating linear gradient"));
+//            resultPreview.getChildren().add(new Label("Error in generating linear gradient"));
         }
     }
 
@@ -98,6 +101,17 @@ public class LinearGradientPicker extends VBox {
 
     public LinearGradient getValue() {
         return value.get();
+    }
+
+    private static Node createPointDisplay(boolean x, boolean start) {
+        Label text = new Label(x ? "X" : "Y");
+        text.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, 16));
+        double size = 10;
+        Shape shape = start ? new Rectangle(size, size) : new Circle(size / 2);
+        BorderPane pane = new BorderPane(text);
+        pane.setBackground(NodeMisc.simpleBackground(Color.DARKGRAY));
+        pane.setShape(shape);
+        return pane;
     }
 
 }

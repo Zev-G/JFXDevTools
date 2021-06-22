@@ -5,6 +5,7 @@ import com.me.tmw.nodes.util.NodeMisc;
 import com.me.tmw.properties.NodeProperty;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.*;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.layout.Region;
@@ -20,7 +21,7 @@ public class Point {
     private final BooleanProperty yLocked = new SimpleBooleanProperty(this, "yLocked");
     private final BooleanProperty movable = new SimpleBooleanProperty(this, "movable", true);
     private final BooleanProperty clamped = new SimpleBooleanProperty(this, "clamped", true);
-    private final BooleanProperty centered = new SimpleBooleanProperty(this, "centered");
+    private final BooleanProperty centered = new SimpleBooleanProperty(this, "centered", true);
     private final DoubleProperty x = new SimpleDoubleProperty(this, "x");
     private final DoubleProperty y = new SimpleDoubleProperty(this, "y");
 
@@ -60,6 +61,8 @@ public class Point {
             });
         }
     };
+    private final ReadOnlyDoubleWrapper contentWidth = new ReadOnlyDoubleWrapper(this, "contentWidth");
+    private final ReadOnlyDoubleWrapper contentHeight = new ReadOnlyDoubleWrapper(this, "contentHeight");
 
     public Point() {
         this(0, 0, true, false, false, defaultDisplay());
@@ -85,6 +88,9 @@ public class Point {
     public Point(double x, double y, boolean proportional, Node node) {
         this(x, y, proportional, false, false, node);
     }
+    public Point(double x, double y, boolean proportional, boolean xLocked, boolean yLocked) {
+        this(x, y, proportional, xLocked, yLocked, defaultDisplay());
+    }
     public Point(double x, double y, boolean proportional, boolean xLocked, boolean yLocked, Node node) {
         setX(x);
         setY(y);
@@ -102,6 +108,13 @@ public class Point {
         this.y.addListener(reloadLayout);
         this.clamped.addListener(reloadLayout);
         this.centered.addListener(reloadLayout);
+
+        NodeMisc.runAndAddListener(getContent().boundsInParentProperty(), observable -> {
+            Bounds boundsInParent = getContent().getBoundsInParent();
+            contentWidth.set(boundsInParent.getWidth());
+            contentHeight.set(boundsInParent.getHeight());
+        });
+        this.content.getStyleClass().add("point-content");
     }
 
     private static Node defaultDisplay() {
@@ -132,15 +145,16 @@ public class Point {
             x = getX();
             y = getY();
         }
-        if (isCentered()) {
-            x -= content.getWidth()  / 2;
-            y -= content.getHeight() / 2;
-        }
         if (isClamped() && getEditor() != null) {
             double[] clamped = clampInEditor(x, y);
             assert clamped != null; // Clamped will only be null if getEditor() == null.
             x = clamped[0];
             y = clamped[1];
+        }
+        if (isCentered()) {
+            Bounds contentSize = content.getBoundsInParent();
+            x -= contentSize.getWidth()  / 2;
+            y -= contentSize.getHeight() / 2;
         }
         content.relocate(x, y);
     }
@@ -161,6 +175,20 @@ public class Point {
      *  Public methods
      *
      * **********************************************/
+
+    public double getContentWidth() {
+        return contentWidth.get();
+    }
+    public ReadOnlyDoubleProperty contentWidthProperty() {
+        return contentWidth.getReadOnlyProperty();
+    }
+
+    public double getContentHeight() {
+        return contentHeight.get();
+    }
+    public ReadOnlyDoubleProperty contentHeightProperty() {
+        return contentHeight.getReadOnlyProperty();
+    }
 
     public DoubleProperty layoutXProperty() {
         return content.layoutXProperty();
@@ -277,6 +305,19 @@ public class Point {
         for (int i = connectors.size() - 1; i >= 0; i--) {
             connectors.get(i).dispose();
         }
+    }
+
+    public double getClampedX() {
+        if (isProportional()) {
+            return Math.min(1, Math.max(0, getX()));
+        }
+        return getX();
+    }
+    public double getClampedY() {
+        if (isProportional()) {
+            return Math.min(1, Math.max(0, getY()));
+        }
+        return getY();
     }
 
 }

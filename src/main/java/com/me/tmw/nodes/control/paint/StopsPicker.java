@@ -8,9 +8,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableObjectValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
@@ -29,7 +29,9 @@ public class StopsPicker extends VBox implements List<Stop> {
     private final Map<ObjectProperty<Stop>, ChangeListener<Stop>> toBeRemoved = new HashMap<>();
 
     private final FlowPane stopsView = new FlowPane();
+
     private final Button addStop = new Button("Add Stop");
+    private final HBox footer = new HBox(addStop);
 
     public StopsPicker(Stop... stops) {
         this(Arrays.asList(stops));
@@ -58,13 +60,14 @@ public class StopsPicker extends VBox implements List<Stop> {
         // CSS things
         getStyleClass().add("stops-picker");
         stopsView.getStyleClass().add("stops");
+        footer.getStyleClass().add("stop-picker-footer");
         getStylesheets().add(Resources.NODES.getCss("stops-picker"));
 
         // Event handlers
         addStop.setOnAction(event -> stopProperties.add(new SimpleObjectProperty<>(new Stop(100, Color.WHITE))));
 
         // Populate self
-        getChildren().addAll(stopsView, addStop);
+        getChildren().addAll(stopsView, footer);
     }
 
     private void moveStop(ObjectProperty<Stop> stop, int to) {
@@ -98,6 +101,9 @@ public class StopsPicker extends VBox implements List<Stop> {
     public ObservableList<Stop> getStops() {
         return unmodifiableStops;
     }
+    public ObservableList<ObjectProperty<Stop>> getStopProperties() {
+        return stopProperties;
+    }
 
     StopView createStopView(ObjectProperty<Stop> stop) {
         StopView stopView = new StopView(stop);
@@ -107,6 +113,10 @@ public class StopsPicker extends VBox implements List<Stop> {
 
     public StopView getView(Stop stop) {
         return stopMap.get(findMatching(stop).orElseThrow(() -> new IllegalArgumentException("Stop: " + stop + " isn't available.")));
+    }
+
+    public HBox getFooter() {
+        return footer;
     }
 
     /*
@@ -125,6 +135,11 @@ public class StopsPicker extends VBox implements List<Stop> {
                 .map(Optional::get)
                 .collect(Collectors.toList());
     }
+    private List<ObjectProperty<Stop>> translateToProperties(Collection<Stop> stops) {
+        return stops.stream()
+                .map(SimpleObjectProperty::new)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public boolean add(Stop stop) {
@@ -141,14 +156,16 @@ public class StopsPicker extends VBox implements List<Stop> {
         return stopProperties.containsAll(findMatching(c));
     }
 
+    @SuppressWarnings("unchecked") // Stop class is final
     @Override
     public boolean addAll(Collection<? extends Stop> c) {
-        return stopProperties.addAll(findMatching(c));
+        return stopProperties.addAll(translateToProperties((Collection<Stop>) c));
     }
 
+    @SuppressWarnings("unchecked") // Stop class is final
     @Override
     public boolean addAll(int index, Collection<? extends Stop> c) {
-        return stopProperties.addAll(index, findMatching(c));
+        return stopProperties.addAll(index, translateToProperties((Collection<Stop>) c));
     }
 
     @Override

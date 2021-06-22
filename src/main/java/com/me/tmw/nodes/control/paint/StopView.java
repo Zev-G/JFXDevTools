@@ -82,7 +82,7 @@ public class StopView extends VBox {
     }
 
     public static double ruleFromString(String stopRule) {
-        return Double.parseDouble(stopRule.strip().replace("%", ""));
+        return Double.parseDouble(stopRule.strip().replace("%", "")) / 100;
     }
 
     private Optional<Stop> tryAndGenerateStop() {
@@ -103,7 +103,7 @@ public class StopView extends VBox {
     }
     private void loadStop(Stop stop) {
         lastStop = stop;
-        stopPoint.setText(String.valueOf(stop.getOffset()));
+        stopPoint.setText(String.valueOf(stop.getOffset() * 100));
         colorPicker.setColor(stop.getColor());
     }
 
