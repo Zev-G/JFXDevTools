@@ -23,9 +23,6 @@ public abstract class TextBasedPropertyEditor<T> extends PropertyEditorBase<T> {
                 ignoreS = convertToString(newValue);
                 textField.setText(ignoreS);
                 ignoreS = null;
-
-//                Animations.animator().scale(1.1, 250).thenWait(250).scale(1, 250).play(textField);
-
             }
         });
 
