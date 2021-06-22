@@ -13,10 +13,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
+import javafx.scene.paint.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -138,6 +135,14 @@ public class LinearGradientPicker extends VBox {
 
 //        stops.add(colorPicker, 0, i + arrows);
 //        stops.add(stopString, 1, i + arrows);
+    }
+
+    public ObjectProperty<LinearGradient> valueProperty() {
+        return value;
+    }
+
+    public LinearGradient getValue() {
+        return value.get();
     }
 
 }
