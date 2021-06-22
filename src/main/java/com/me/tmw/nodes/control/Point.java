@@ -8,6 +8,7 @@ import javafx.beans.property.*;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -118,14 +119,14 @@ public class Point {
     }
 
     private static Node defaultDisplay() {
-        return new Circle(5, Color.DARKGRAY);
+        return new BorderPane(new Circle(5, Color.DARKGRAY));
     }
 
     private double[] clampInEditor(double calculateX, double calculateY) {
         if (!isClamped()) return new double[]{ calculateX, calculateY };
         if (getEditor() == null) return null;
-        calculateX = Math.min(Math.max(calculateX, 0), getEditor().getWidth());
-        calculateY = Math.min(Math.max(calculateY, 0), getEditor().getHeight());
+        calculateX = Math.min(Math.max(calculateX, 0), getEditor().getWidth() - getContentWidth());
+        calculateY = Math.min(Math.max(calculateY, 0), getEditor().getHeight() - getContentHeight());
         return new double[]{ calculateX, calculateY };
     }
 
@@ -145,16 +146,16 @@ public class Point {
             x = getX();
             y = getY();
         }
+        if (isCentered()) {
+            Bounds contentSize = content.getBoundsInParent();
+            x -= contentSize.getWidth()  / 2;
+            y -= contentSize.getHeight() / 2;
+        }
         if (isClamped() && getEditor() != null) {
             double[] clamped = clampInEditor(x, y);
             assert clamped != null; // Clamped will only be null if getEditor() == null.
             x = clamped[0];
             y = clamped[1];
-        }
-        if (isCentered()) {
-            Bounds contentSize = content.getBoundsInParent();
-            x -= contentSize.getWidth()  / 2;
-            y -= contentSize.getHeight() / 2;
         }
         content.relocate(x, y);
     }
