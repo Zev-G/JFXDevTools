@@ -65,7 +65,7 @@ public final class NodeIntrospector {
             String tempName = entry.getKey().getName().toLowerCase(Locale.ROOT);
             final String name = tempName.substring(0, tempName.length() - "property".length());
             List<Method> possibleMethods = methods.stream().filter(method -> method.getName().toLowerCase(Locale.ROOT).endsWith(name)).collect(Collectors.toList());
-            Optional<Method> getter = possibleMethods.stream().filter(method -> method.getName().startsWith("get")).findFirst();
+            Optional<Method> getter = possibleMethods.stream().filter(method -> method.getName().startsWith("get") || method.getName().startsWith("is")).findFirst();
             if (getter.isEmpty()) continue;
             Optional<Method> setter = possibleMethods.stream().filter(method -> method.getName().startsWith("set")).findFirst();
             detailedProperties.add(new DetailedProperty(setter.orElse(null), getter.get(), entry.getKey(), entry.getValue()));

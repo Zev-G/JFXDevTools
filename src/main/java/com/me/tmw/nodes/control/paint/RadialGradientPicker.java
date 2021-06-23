@@ -28,6 +28,8 @@ import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
+import static java.lang.Math.*;
+
 import java.util.Objects;
 
 public class RadialGradientPicker extends VBox {
@@ -46,13 +48,13 @@ public class RadialGradientPicker extends VBox {
     private final StopsPicker stops = new StopsPicker();
 
     private final Point center = new Point();
-    private final Point radius = new Point(0.2, 0);
-    private final PointsEditor pointsEditor = new PointsEditor(center, radius);
+    private final Point radius = new Point();
+    private final Point focusPoint = new Point(createPointDisplay("", false, 5));
+    private final PointsEditor pointsEditor = new PointsEditor(center, radius, focusPoint);
 
-    // double: focusAngle, focusDistance, centerX, centerY, radius TODO implement as many as possible with PointEditor
+    // TODO implement variables controls for the below variables.
+    // double: focusAngle, focusDistance
     // boolean: proportional
-    // CycleMethod: cycleMethod
-    // List<Stop>: stops
 
     public RadialGradientPicker() {
         this(new RadialGradient(0, 0, 0.5, 0.5, 0.2, true, CycleMethod.NO_CYCLE, new Stop(0, Color.WHITE), new Stop(1, Color.BLACK)));
@@ -73,10 +75,14 @@ public class RadialGradientPicker extends VBox {
         radius.setRelativeTo(center);
         radius.setYLocked(true);
 
+        focusPoint.setRelativeTo(center);
+
         InvalidationListener update = observable -> updateValue();
         center.xProperty().addListener(update);
         center.yProperty().addListener(update);
         radius.xProperty().addListener(update);
+        focusPoint.xProperty().addListener(update);
+        focusPoint.yProperty().addListener(update);
         proportional.selectedProperty().addListener(update);
         stops.getStops().addListener(update);
 
@@ -86,12 +92,28 @@ public class RadialGradientPicker extends VBox {
     }
 
     private void updateValue() {
+        double width = focusPoint.getX();
+        double height = focusPoint.getY();
+//        if (width < 0 !=)
+
+        // FIXME: 2021-06-23 The below code only works for the +,+ and -,- quadrants of the gradient.
+        double deg = atan(height / width) * (180 / PI);
+
+        // TODO cleanup this math. Those negative check-related-things shouldn't be necessary.
+        double widthSquared = pow(width, 2);
+        double heightSquared = pow(height, 2);
+        if (width < 0) widthSquared *= -1;
+        if (height < 0) heightSquared *= -1;
+        double combined = widthSquared + heightSquared;
+        double len = sqrt(abs(combined));
+        if (combined < 0) len *= -1;
+
         loaded = new RadialGradient(
-                0,
-                0,
-                Math.min(1, Math.max(center.getX(), 0)),
-                Math.min(1, Math.max(center.getY(), 0)),
-                Math.min(1, Math.max(radius.getX(), 0)),
+                deg,
+                len,
+                min(1, max(center.getX(), 0)),
+                min(1, max(center.getY(), 0)),
+                min(1, max(radius.getX(), 0)),
                 proportional.isSelected(),
                 cycleMethod.getValue(),
                 stops.getStops()
@@ -106,6 +128,9 @@ public class RadialGradientPicker extends VBox {
         center.setX(value.getCenterX());
         center.setY(value.getCenterY());
         radius.setX(value.getRadius());
+
+        // Calculate focus point
+
     }
 
     private static Node createPointDisplay(String text, boolean rectangle, double size) {
@@ -118,7 +143,7 @@ public class RadialGradientPicker extends VBox {
             pane.setMaxSize(size, size);
         }
         pane.setMinSize(size, size);
-        pane.setBackground(NodeMisc.simpleBackground(Color.DARKGRAY));
+        pane.setBackground(NodeMisc.simpleBackground(Color.BLACK));
         pane.setShape(shape);
         return pane;
     }

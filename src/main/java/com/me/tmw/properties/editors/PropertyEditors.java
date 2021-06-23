@@ -6,6 +6,9 @@ public final class PropertyEditors {
 
     @SuppressWarnings("unchecked")
     public static <T> PropertyEditor<T> getEditor(Property<T> property, Class<T> type) {
+        if (property == null) {
+            return null;
+        }
         if (type.isEnum()) {
             return OptionBasedPropertyEditor.fromArray(property, type.getEnumConstants());
         }
@@ -25,6 +28,9 @@ public final class PropertyEditors {
             } else {
                 return (PropertyEditor<T>) new DoublePropertyEditor((Property<Number>) property);
             }
+        }
+        if (Boolean.class == usedType) {
+            return (PropertyEditor<T>) new BooleanPropertyEditor((Property<Boolean>) property);
         }
         if (String.class == usedType) {
             return (PropertyEditor<T>) new StringPropertyEditor((Property<String>) property);
