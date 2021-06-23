@@ -6,6 +6,7 @@ import com.me.tmw.properties.NodeProperty;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.*;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
@@ -16,6 +17,7 @@ import javafx.scene.shape.Circle;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
+import java.util.function.Function;
 
 public class Point extends Region {
 
@@ -30,17 +32,17 @@ public class Point extends Region {
     private final BooleanProperty relativeToX = new SimpleBooleanProperty(this, "relativeToX", true);
     private final BooleanProperty relativeToY = new SimpleBooleanProperty(this, "relativeToX", true);
     private final ObjectProperty<Point> relativeTo = new SimpleObjectProperty<>(this, "relativeTo", null);
+    private final ObjectProperty<Function<Point2D, Point2D>> dragFilter = new SimpleObjectProperty<>(this, "dragFilter");
+
+    private final NodeProperty display = new NodeProperty(this, "display");
+    private final ReadOnlyObjectWrapper<PointsEditor> editor = new ReadOnlyObjectWrapper<>(this, "editor");
+    private final ReadOnlyDoubleWrapper contentWidth = new ReadOnlyDoubleWrapper(this, "contentWidth");
+    private final ReadOnlyDoubleWrapper contentHeight = new ReadOnlyDoubleWrapper(this, "contentHeight");
 
     private final Stack<PointConnector> connectors = new Stack<>();
     private final Set<Point> relativeToThis = new HashSet<>();
 
-    private final NodeProperty display = new NodeProperty(this, "display");
-    private final ReadOnlyObjectWrapper<PointsEditor> editor = new ReadOnlyObjectWrapper<>(this, "editor");
-
     private final DragData drag = new DragData();
-
-    private final ReadOnlyDoubleWrapper contentWidth = new ReadOnlyDoubleWrapper(this, "contentWidth");
-    private final ReadOnlyDoubleWrapper contentHeight = new ReadOnlyDoubleWrapper(this, "contentHeight");
 
     public Point() {
         this(0, 0, true, false, false, defaultDisplay());
@@ -118,8 +120,11 @@ public class Point extends Region {
 
         setOnMouseDragged(event -> {
             if (isMovable()) {
-                double newX = drag.calculateX(event.getScreenX());
-                double newY = drag.calculateY(event.getScreenY());
+                Point2D newPoint = new Point2D(drag.calculateX(event.getScreenX()), drag.calculateY(event.getScreenY()));
+                if (dragFilter.get() != null) newPoint = dragFilter.get().apply(newPoint);
+                if (newPoint == null) return;
+                double newX = newPoint.getX();
+                double newY = newPoint.getY();
                 if (getRelativeTo() != null) {
                     if (isRelativeToX()) newX -= getRelativeTo().getLayoutX();
                     if (isRelativeToY()) newY -= getRelativeTo().getLayoutY();
@@ -248,6 +253,31 @@ public class Point extends Region {
     }
     public void setRelativeToY(boolean relativeToY) {
         this.relativeToY.set(relativeToY);
+    }
+
+    /**
+     * This property lets you add an additional filter to the way this point is dragged around.
+     * <br/> Example:
+     * <pre>
+     *     <code>
+     *         point.setDragFilter(point2D -> new Point2D(point2D.getX() + 10, point2D.getY() - 10));
+     *     </code>
+     *     When the point in the above code is dragged it is laid out where it would otherwise be except its x position would have an additional value of 10 and its y
+     *     position would have 10 removed from it. It should be noted that this filter is applied first, so all other filters (centering, proportional, clamped, etc.)
+     *     will still be applied.
+     * </pre>
+     * If you are using this with a proportional point this filter may be more difficult to use since it requires an absolute position. If you want to make your value proportional just
+     * multiply the x by {@link #getContentWidth()} and the y by {@link #getContentHeight()}
+     * @return this point's drag filter property.
+     */
+    public ObjectProperty<Function<Point2D, Point2D>> dragFilterProperty() {
+        return dragFilter;
+    }
+    public Function<Point2D, Point2D> getDragFilter() {
+        return dragFilter.get();
+    }
+    public void setDragFilter(Function<Point2D, Point2D> dragFilter) {
+        this.dragFilter.set(dragFilter);
     }
 
     public PointsEditor getEditor() {

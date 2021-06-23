@@ -92,21 +92,15 @@ public class RadialGradientPicker extends VBox {
     }
 
     private void updateValue() {
-        double width = focusPoint.getX();
-        double height = focusPoint.getY();
-//        if (width < 0 !=)
+        double width = 0 - focusPoint.getX();
+        double height = 0 - focusPoint.getY();
 
-        // FIXME: 2021-06-23 The below code only works for the +,+ and -,- quadrants of the gradient.
-        double deg = atan(height / width) * (180 / PI);
+        double deg =
+                width == 0 ? 0
+                : (atan2(height, width) * (180 / PI)) + 180;
 
-        // TODO cleanup this math. Those negative check-related-things shouldn't be necessary.
-        double widthSquared = pow(width, 2);
-        double heightSquared = pow(height, 2);
-        if (width < 0) widthSquared *= -1;
-        if (height < 0) heightSquared *= -1;
-        double combined = widthSquared + heightSquared;
-        double len = sqrt(abs(combined));
-        if (combined < 0) len *= -1;
+        double len = sqrt(pow(width, 2) + pow(height, 2));
+        len /= radius.getX();
 
         loaded = new RadialGradient(
                 deg,
