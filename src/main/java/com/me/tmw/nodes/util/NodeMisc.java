@@ -122,8 +122,8 @@ public final class NodeMisc {
         return box;
     }
 
-    public static Background simpleBackground(Color red) {
-        return new Background(new BackgroundFill(red, CornerRadii.EMPTY, Insets.EMPTY));
+    public static Background simpleBackground(Paint color) {
+        return new Background(new BackgroundFill(color == null ? Color.TRANSPARENT: color, CornerRadii.EMPTY, Insets.EMPTY));
     }
 
     public static MenuItem makeMenuItem(String text, EventHandler<ActionEvent> eventHandler) {

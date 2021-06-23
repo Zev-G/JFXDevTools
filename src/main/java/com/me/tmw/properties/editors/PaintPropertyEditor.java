@@ -2,6 +2,7 @@ package com.me.tmw.properties.editors;
 
 import com.me.tmw.nodes.control.paint.ColorPicker;
 import com.me.tmw.nodes.control.paint.LinearGradientPicker;
+import com.me.tmw.nodes.control.paint.RadialGradientPicker;
 import com.me.tmw.nodes.util.NodeMisc;
 import com.me.tmw.resource.Resources;
 import javafx.beans.property.Property;
@@ -34,6 +35,7 @@ public class PaintPropertyEditor extends PaintEditorBase<Paint> {
 
     private final ColorPicker colorEditor = new ColorPicker();
     private final LinearGradientPicker linearGradientEditor = new LinearGradientPicker();
+    private final RadialGradientPicker radialGradientPicker = new RadialGradientPicker();
 
     public PaintPropertyEditor(Property<Paint> value) {
         this(value.getName(), value);
@@ -49,7 +51,7 @@ public class PaintPropertyEditor extends PaintEditorBase<Paint> {
 
         // Editor listeners
         colorEditor.customColorProperty().addListener(observable -> {
-            if (typeSelector.getSelectionModel().getSelectedItem() == PaintType.COLOR) {
+            if (typeSelector.getValue() == PaintType.COLOR) {
                 Color colorVal = colorEditor.getCustomColor();
                 if (!colorVal.equals(get())) {
                     set(colorVal);
@@ -57,8 +59,16 @@ public class PaintPropertyEditor extends PaintEditorBase<Paint> {
             }
         });
         linearGradientEditor.valueProperty().addListener(observable -> {
-            if (typeSelector.getSelectionModel().getSelectedItem() == PaintType.LINEAR_GRADIENT) {
+            if (typeSelector.getValue() == PaintType.LINEAR_GRADIENT) {
                 LinearGradient gradientVal = linearGradientEditor.getValue();
+                if (!gradientVal.equals(get())) {
+                    set(gradientVal);
+                }
+            }
+        });
+        radialGradientPicker.valueProperty().addListener(observable -> {
+            if (typeSelector.getValue() == PaintType.RADIAL_GRADIENT) {
+                RadialGradient gradientVal = radialGradientPicker.getValue();
                 if (!gradientVal.equals(get())) {
                     set(gradientVal);
                 }
@@ -70,6 +80,8 @@ public class PaintPropertyEditor extends PaintEditorBase<Paint> {
         editorProperties.put(PaintType.COLOR, colorEditor.customColorProperty());
         editors.put(PaintType.LINEAR_GRADIENT, linearGradientEditor);
         editorProperties.put(PaintType.LINEAR_GRADIENT, linearGradientEditor.valueProperty());
+        editors.put(PaintType.RADIAL_GRADIENT, radialGradientPicker);
+        editorProperties.put(PaintType.RADIAL_GRADIENT, radialGradientPicker.valueProperty());
 
         // Tab selection.
         NodeMisc.runAndAddListener(typeSelector.getSelectionModel().selectedItemProperty(),
@@ -97,13 +109,16 @@ public class PaintPropertyEditor extends PaintEditorBase<Paint> {
                     }
                     if (val instanceof Color) {
                         colorEditor.setCurrentColor((Color) val);
-                        typeSelector.getSelectionModel().select(PaintType.COLOR);
+                        typeSelector.setValue(PaintType.COLOR);
                     } else if (val instanceof LinearGradient) {
-                        // TODO Load onto linear gradient editor
+                        linearGradientEditor.setValue((LinearGradient) val);
+                        typeSelector.setValue(PaintType.LINEAR_GRADIENT);
                     } else if (val instanceof RadialGradient) {
-                        // TODO Load onto radial gradient editor
+                        radialGradientPicker.setValue((RadialGradient) val);
+                        typeSelector.setValue(PaintType.RADIAL_GRADIENT);
                     } else if (val instanceof ImagePattern) {
                         // TODO Load onto image patter editor.
+                        typeSelector.setValue(PaintType.IMAGE_PATTERN);
                     }
                     typeSelector.getSelectionModel().select(PaintType.fromClass(val.getClass()).orElseThrow());
                 }

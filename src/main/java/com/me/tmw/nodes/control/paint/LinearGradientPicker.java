@@ -19,6 +19,8 @@ import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
+import java.util.Objects;
+
 public class LinearGradientPicker extends VBox {
 
     private static final String STYLE_SHEET = Resources.NODES.getCss("linear-gradient-picker");
@@ -34,6 +36,7 @@ public class LinearGradientPicker extends VBox {
     private final Point endX = new Point(1, 1, true, false, true, createPointDisplay(true, false));
 
     private final ObjectProperty<LinearGradient> value = new SimpleObjectProperty<>(this, "value");
+    private LinearGradient loaded;
 
     public LinearGradientPicker() {
         this(new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE, new Stop(100, Color.WHITE)));
@@ -42,6 +45,13 @@ public class LinearGradientPicker extends VBox {
     public LinearGradientPicker(LinearGradient originalValue) {
         getStyleClass().add("linear-gradient-picker");
         getStylesheets().add(STYLE_SHEET);
+
+        value.addListener(observable -> {
+            LinearGradient newValue = getValue();
+            if (!Objects.equals(newValue, loaded)) {
+                loadGradient(newValue);
+            }
+        });
 
         value.set(originalValue);
 
@@ -77,6 +87,7 @@ public class LinearGradientPicker extends VBox {
     }
 
     private void loadGradient(LinearGradient gradient) {
+        loaded = gradient;
         startX.setX(gradient.getStartX());
         startY.setY(gradient.getStartY());
         endX.setX(gradient.getEndX());
@@ -87,12 +98,8 @@ public class LinearGradientPicker extends VBox {
     }
 
     private void updateValue() {
-        try {
-            value.set(new LinearGradient(startX.getClampedX(), startY.getClampedY(), endX.getClampedX(), endY.getClampedY(), true, cycleMethods.getValue(), this.stops.getStops()));
-        } catch (Exception ignored) {
-            value.set(new LinearGradient(0, 0, 100, 100, true, CycleMethod.NO_CYCLE, new Stop(100, Color.WHITE)));
-//            resultPreview.getChildren().add(new Label("Error in generating linear gradient"));
-        }
+        loaded = new LinearGradient(startX.getClampedX(), startY.getClampedY(), endX.getClampedX(), endY.getClampedY(), true, cycleMethods.getValue(), this.stops.getStops());
+        value.set(loaded);
     }
 
     public ObjectProperty<LinearGradient> valueProperty() {
@@ -101,6 +108,10 @@ public class LinearGradientPicker extends VBox {
 
     public LinearGradient getValue() {
         return value.get();
+    }
+
+    public void setValue(LinearGradient value) {
+        this.value.set(value);
     }
 
     private static Node createPointDisplay(boolean x, boolean start) {

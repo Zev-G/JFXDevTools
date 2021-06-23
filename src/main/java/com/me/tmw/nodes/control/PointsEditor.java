@@ -25,7 +25,7 @@ public class PointsEditor extends Region {
                 if (c.wasAdded()) {
                     List<Node> nodes = new ArrayList<>();
                     for (Point added : c.getAddedSubList()) {
-                        nodes.add(added.getContent());
+                        nodes.add(added);
                         if (added.getEditor() != null) {
                             added.getEditor().getPoints().remove(added);
                         }
@@ -36,7 +36,7 @@ public class PointsEditor extends Region {
                 if (c.wasRemoved()) {
                     List<Node> nodes = new ArrayList<>();
                     for (Point removed : c.getRemoved()) {
-                        nodes.add(removed.getContent());
+                        nodes.add(removed);
                         removed.clearConnectors();
                         if (removed.getEditor() == this) {
                             removed.setEditor(null);

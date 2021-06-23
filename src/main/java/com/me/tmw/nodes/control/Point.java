@@ -13,9 +13,11 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 
-public class Point {
+public class Point extends Region {
 
     private final BooleanProperty proportional = new SimpleBooleanProperty(this, "proportional");
     private final BooleanProperty xLocked = new SimpleBooleanProperty(this, "xLocked");
@@ -25,43 +27,18 @@ public class Point {
     private final BooleanProperty centered = new SimpleBooleanProperty(this, "centered", true);
     private final DoubleProperty x = new SimpleDoubleProperty(this, "x");
     private final DoubleProperty y = new SimpleDoubleProperty(this, "y");
+    private final BooleanProperty relativeToX = new SimpleBooleanProperty(this, "relativeToX", true);
+    private final BooleanProperty relativeToY = new SimpleBooleanProperty(this, "relativeToX", true);
+    private final ObjectProperty<Point> relativeTo = new SimpleObjectProperty<>(this, "relativeTo", null);
 
     private final Stack<PointConnector> connectors = new Stack<>();
+    private final Set<Point> relativeToThis = new HashSet<>();
 
     private final NodeProperty display = new NodeProperty(this, "display");
     private final ReadOnlyObjectWrapper<PointsEditor> editor = new ReadOnlyObjectWrapper<>(this, "editor");
 
     private final DragData drag = new DragData();
 
-    private final Region content = new Region() {
-        {
-            NodeMisc.runAndAddListener(display, observable -> {
-                if (display.get() == null) getChildren().clear();
-                else if (!getChildren().contains(display.get())) getChildren().setAll(display.get());
-            });
-
-            setOnMousePressed(event -> {
-                drag.setStartXPos(getLayoutX());
-                drag.setStartYPos(getLayoutY());
-                drag.setStartScreenX(event.getScreenX());
-                drag.setStartScreenY(event.getScreenY());
-            });
-
-            setOnMouseDragged(event -> {
-                if (isMovable()) {
-                    double x = drag.calculateX(event.getScreenX());
-                    double y = drag.calculateY(event.getScreenY());
-                    if (isProportional()) {
-                        if (!isXLocked()) setX(x / getEditor().getWidth());
-                        if (!isYLocked()) setY(y / getEditor().getHeight());
-                    } else {
-                        if (!isXLocked()) setX(x);
-                        if (!isYLocked()) setY(y);
-                    }
-                }
-            });
-        }
-    };
     private final ReadOnlyDoubleWrapper contentWidth = new ReadOnlyDoubleWrapper(this, "contentWidth");
     private final ReadOnlyDoubleWrapper contentHeight = new ReadOnlyDoubleWrapper(this, "contentHeight");
 
@@ -109,13 +86,53 @@ public class Point {
         this.y.addListener(reloadLayout);
         this.clamped.addListener(reloadLayout);
         this.centered.addListener(reloadLayout);
+        this.relativeTo.addListener(reloadLayout);
 
-        NodeMisc.runAndAddListener(getContent().boundsInParentProperty(), observable -> {
-            Bounds boundsInParent = getContent().getBoundsInParent();
+        this.relativeTo.addListener((observable, oldValue, newValue) -> {
+            if (oldValue != null) {
+                oldValue.relativeToThis.remove(this);
+            }
+            if (newValue != null) {
+                newValue.relativeToThis.add(this);
+            }
+        });
+
+        NodeMisc.runAndAddListener(boundsInParentProperty(), observable -> {
+            Bounds boundsInParent = getBoundsInParent();
             contentWidth.set(boundsInParent.getWidth());
             contentHeight.set(boundsInParent.getHeight());
         });
-        this.content.getStyleClass().add("point-content");
+        getStyleClass().add("point-content");
+
+        NodeMisc.runAndAddListener(display, observable -> {
+            if (display.get() == null) getChildren().clear();
+            else if (!getChildren().contains(display.get())) getChildren().setAll(display.get());
+        });
+
+        setOnMousePressed(event -> {
+            drag.setStartXPos(getLayoutX());
+            drag.setStartYPos(getLayoutY());
+            drag.setStartScreenX(event.getScreenX());
+            drag.setStartScreenY(event.getScreenY());
+        });
+
+        setOnMouseDragged(event -> {
+            if (isMovable()) {
+                double newX = drag.calculateX(event.getScreenX());
+                double newY = drag.calculateY(event.getScreenY());
+                if (getRelativeTo() != null) {
+                    if (isRelativeToX()) newX -= getRelativeTo().getLayoutX();
+                    if (isRelativeToY()) newY -= getRelativeTo().getLayoutY();
+                }
+                if (isProportional()) {
+                    if (!isXLocked() && !xProperty().isBound()) setX(newX / getEditor().getWidth());
+                    if (!isYLocked() && !yProperty().isBound()) setY(newY / getEditor().getHeight());
+                } else {
+                    if (!isXLocked() && !xProperty().isBound()) setX(newX);
+                    if (!isYLocked() && !yProperty().isBound()) setY(newY);
+                }
+            }
+        });
     }
 
     private static Node defaultDisplay() {
@@ -147,9 +164,13 @@ public class Point {
             y = getY();
         }
         if (isCentered()) {
-            Bounds contentSize = content.getBoundsInParent();
-            x -= contentSize.getWidth()  / 2;
-            y -= contentSize.getHeight() / 2;
+            Bounds contentSize = getBoundsInParent();
+            if (getRelativeTo() == null || !isRelativeToX()) x -= contentSize.getWidth()  / 2;
+            if (getRelativeTo() == null || !isRelativeToY()) y -= contentSize.getHeight() / 2;
+        }
+        if (getRelativeTo() != null) {
+            if (isRelativeToX()) x += getRelativeTo().getLayoutX();
+            if (isRelativeToY()) y += getRelativeTo().getLayoutY();
         }
         if (isClamped() && getEditor() != null) {
             double[] clamped = clampInEditor(x, y);
@@ -157,12 +178,10 @@ public class Point {
             x = clamped[0];
             y = clamped[1];
         }
-        content.relocate(x, y);
+        relativeToThis.forEach(point -> point.layout(width, height));
+        relocate(x, y);
     }
 
-    Parent getContent() {
-        return content;
-    }
     Stack<PointConnector> getConnectors() {
         return connectors;
     }
@@ -191,18 +210,44 @@ public class Point {
         return contentHeight.getReadOnlyProperty();
     }
 
-    public DoubleProperty layoutXProperty() {
-        return content.layoutXProperty();
+    public Point getRelativeTo() {
+        return relativeTo.get();
     }
-    public double getLayoutX() {
-        return content.getLayoutX();
+    /**
+     * Sets a point's location to be relative to another point. So if a point has an x value of 200 and isn't proportional it will stay 200px away from its relative node. This functionality can be disabled by setting
+     * relativeToProperty to null.
+     * Be careful when using this property since there is no check for a cyclic relationship between relative points. Should such a relationship exist a StackOverflowException would be produced.
+     * @return the relativeTo property
+     */
+    public ObjectProperty<Point> relativeToProperty() {
+        return relativeTo;
+    }
+    public void setRelativeTo(Point relativeTo) {
+        this.relativeTo.set(relativeTo);
     }
 
-    public DoubleProperty layoutYProperty() {
-        return content.layoutYProperty();
+    /** Controls whether or not to display this Point relative to this node's {@link #relativeToProperty()}'s x location.
+     * <p> If {@link #relativeToProperty()} is null this property is ignored </p>*/
+    public BooleanProperty relativeToXProperty() {
+        return relativeToX;
     }
-    public double getLayoutY() {
-        return content.getLayoutY();
+    public boolean isRelativeToX() {
+        return relativeToX.get();
+    }
+    public void setRelativeToX(boolean relativeToX) {
+        this.relativeToX.set(relativeToX);
+    }
+
+    /** Controls whether or not to display this Point relative to this node's {@link #relativeToProperty()}'s y location.
+     * <p> If {@link #relativeToProperty()} is null this property is ignored </p>*/
+    public BooleanProperty relativeToYProperty() {
+        return relativeToY;
+    }
+    public boolean isRelativeToY() {
+        return relativeToY.get();
+    }
+    public void setRelativeToY(boolean relativeToY) {
+        this.relativeToY.set(relativeToY);
     }
 
     public PointsEditor getEditor() {
