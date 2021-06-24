@@ -9,6 +9,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
@@ -104,13 +105,17 @@ public class Point extends Region {
             contentWidth.set(boundsInParent.getWidth());
             contentHeight.set(boundsInParent.getHeight());
         });
-        getStyleClass().add("point-content");
+        getStyleClass().add("point");
 
         NodeMisc.runAndAddListener(display, observable -> {
             if (display.get() == null) getChildren().clear();
             else if (!getChildren().contains(display.get())) getChildren().setAll(display.get());
         });
 
+        initDragging();
+    }
+
+    private void initDragging() {
         setOnMousePressed(event -> {
             drag.setStartXPos(getLayoutX());
             drag.setStartYPos(getLayoutY());
@@ -141,7 +146,11 @@ public class Point extends Region {
     }
 
     private static Node defaultDisplay() {
-        return new BorderPane(new Circle(5, Color.DARKGRAY));
+        BorderPane center = new BorderPane();
+        center.setShape(new Circle(5));
+        center.setBackground(NodeMisc.simpleBackground(Color.DARKGRAY));
+        center.setMinSize(10, 10);
+        return center;
     }
 
     private double[] clampInEditor(double calculateX, double calculateY) {

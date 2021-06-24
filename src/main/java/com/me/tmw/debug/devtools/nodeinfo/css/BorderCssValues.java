@@ -186,7 +186,7 @@ public class BorderCssValues extends CssValues<Border> {
                     )
             );
         }
-        return new Border(newBorderStrokes, Collections.emptyList()); // TODO
+        return new Border(newBorderStrokes, Collections.emptyList()); // TODO border iamges
     }
 
     @Override

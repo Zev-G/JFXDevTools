@@ -25,8 +25,6 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 
 import static java.lang.Math.*;
 
@@ -38,6 +36,7 @@ public class RadialGradientPicker extends VBox {
 
     private final ObjectProperty<RadialGradient> value = new SimpleObjectProperty<>(this, "value");
     private RadialGradient loaded;
+    private boolean pause;
 
     /* ********************************************************
     *          Radial Gradient Components
@@ -47,13 +46,12 @@ public class RadialGradientPicker extends VBox {
     private final ComboBox<CycleMethod> cycleMethod = new ComboBox<>(FXCollections.observableArrayList(CycleMethod.values()));
     private final StopsPicker stops = new StopsPicker();
 
-    private final Point center = new Point();
+    private final Point center = new Point(createPointDisplay(Color.DARKBLUE, false, 15));
     private final Point radius = new Point();
-    private final Point focusPoint = new Point(createPointDisplay("", false, 5));
+    private final Point focusPoint = new Point(createPointDisplay(Color.BLACK, false, 7.5));
     private final PointsEditor pointsEditor = new PointsEditor(center, radius, focusPoint);
 
     // TODO implement variables controls for the below variables.
-    // double: focusAngle, focusDistance
     // boolean: proportional
 
     public RadialGradientPicker() {
@@ -74,8 +72,8 @@ public class RadialGradientPicker extends VBox {
 
         radius.setRelativeTo(center);
         radius.setYLocked(true);
-
         focusPoint.setRelativeTo(center);
+        stops.getFooter().getChildren().add(cycleMethod);
 
         InvalidationListener update = observable -> updateValue();
         center.xProperty().addListener(update);
@@ -84,21 +82,22 @@ public class RadialGradientPicker extends VBox {
         focusPoint.xProperty().addListener(update);
         focusPoint.yProperty().addListener(update);
         proportional.selectedProperty().addListener(update);
+        cycleMethod.valueProperty().addListener(update);
         stops.getStops().addListener(update);
+
+        getStylesheets().addAll(STYLE_SHEET);
 
         VBox.setVgrow(pointsEditor, Priority.ALWAYS);
 
         getChildren().addAll(stops, pointsEditor);
     }
 
-    private void updateValue() {
+    private synchronized void updateValue() {
+        if (pause) return;
+
         double width = 0 - focusPoint.getX();
         double height = 0 - focusPoint.getY();
-
-        double deg =
-                width == 0 ? 0
-                : (atan2(height, width) * (180 / PI)) + 180;
-
+        double deg = atan2(height, width) * (180 / PI) + 180;
         double len = sqrt(pow(width, 2) + pow(height, 2));
         len /= radius.getX();
 
@@ -115,29 +114,31 @@ public class RadialGradientPicker extends VBox {
         setValue(loaded);
     }
 
-    private void load(RadialGradient value) {
+    private synchronized void load(RadialGradient value) {
         loaded = value;
+        pause = true;
         stops.clear();
         stops.addAll(value.getStops());
         center.setX(value.getCenterX());
         center.setY(value.getCenterY());
         radius.setX(value.getRadius());
+        cycleMethod.setValue(value.getCycleMethod());
 
-        // Calculate focus point
+        double angleRadians = (PI / 180) * value.getFocusAngle();
+        double focusX = value.getFocusDistance() * sin(angleRadians);
+        double focusY = value.getFocusDistance() * cos(angleRadians);
+        focusPoint.setX(focusX);
+        focusPoint.setY(focusY);
 
+        pause = false;
     }
 
-    private static Node createPointDisplay(String text, boolean rectangle, double size) {
-        Label label = new Label(text);
-        label.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, 16));
+    private static Node createPointDisplay(Color bg, boolean rectangle, double size) {
         Shape shape = rectangle ? new Rectangle(size, size) : new Circle(size / 2);
-        BorderPane pane = new BorderPane(label);
-        if (text.isEmpty()) {
-            pane.getChildren().remove(label);
-            pane.setMaxSize(size, size);
-        }
+        BorderPane pane = new BorderPane();
+        pane.setMaxSize(size, size);
         pane.setMinSize(size, size);
-        pane.setBackground(NodeMisc.simpleBackground(Color.BLACK));
+        pane.setBackground(NodeMisc.simpleBackground(bg));
         pane.setShape(shape);
         return pane;
     }

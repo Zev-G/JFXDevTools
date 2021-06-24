@@ -81,11 +81,5 @@ public class SimpleInspector extends InspectorBase {
 
         overlayPopupContent.minWidthProperty().bind(Bindings.createDoubleBinding(() -> node.getBoundsInParent().getWidth(), node.boundsInParentProperty()));
         overlayPopupContent.minHeightProperty().bind(Bindings.createDoubleBinding(() -> node.getBoundsInParent().getHeight(), node.boundsInParentProperty()));
-        // TODO test the below code to make sure it doesn't cause an error when actually copying the shape.
-//        if (node instanceof Region) {
-//            overlayPopupContent.shapeProperty().bind(((Region) node).shapeProperty());
-//        } else {
-//            overlayPopupContent.shapeProperty().unbind();
-//        }
     }
 }

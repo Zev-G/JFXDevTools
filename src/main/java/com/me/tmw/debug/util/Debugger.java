@@ -4,6 +4,7 @@ import com.me.tmw.debug.devtools.inspectors.InspectorBase;
 import com.me.tmw.debug.devtools.inspectors.SimpleInspector;
 import com.me.tmw.debug.devtools.nodeinfo.css.NodeCss;
 import com.me.tmw.nodes.util.Layout;
+import com.me.tmw.resource.Resources;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableValue;
@@ -31,7 +32,7 @@ public final class Debugger {
 
     public static void showProperty(ObservableValue<?> observable, Node showFor) {
         Popup popup = new Popup();
-        String styleSheet = Objects.requireNonNull(Debugger.class.getClassLoader().getResource("debugger/property.css")).toExternalForm();
+        String styleSheet = Resources.DEBUGGER.getCss("property");
 
         Label propertyViewer = new Label();
         propertyViewer.textProperty().bind(Bindings.convert(observable));
