@@ -1,6 +1,5 @@
 package com.me.tmw.nodes.control.paint;
 
-import com.me.tmw.nodes.control.LabeledNumberField;
 import com.me.tmw.nodes.control.Point;
 import com.me.tmw.nodes.control.PointsEditor;
 import com.me.tmw.nodes.util.NodeMisc;
@@ -10,14 +9,11 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
@@ -30,7 +26,7 @@ import static java.lang.Math.*;
 
 import java.util.Objects;
 
-public class RadialGradientPicker extends VBox {
+public class RadialGradientPicker extends HBox {
 
     private static final String STYLE_SHEET = Resources.NODES.getCss("radial-gradient-picker");
 
@@ -86,10 +82,13 @@ public class RadialGradientPicker extends VBox {
         stops.getStops().addListener(update);
 
         getStylesheets().addAll(STYLE_SHEET);
+        stops.setOrientation(Orientation.VERTICAL);
+        pointsEditor.setPrefSize(500, 500);
 
         VBox.setVgrow(pointsEditor, Priority.ALWAYS);
+        HBox.setHgrow(pointsEditor, Priority.ALWAYS);
 
-        getChildren().addAll(stops, pointsEditor);
+        getChildren().addAll(pointsEditor, stops);
     }
 
     private synchronized void updateValue() {

@@ -1,7 +1,9 @@
 package com.me.tmw.nodes.util;
 
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -9,10 +11,18 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Popup;
 
+import java.util.function.DoubleConsumer;
+import java.util.function.Predicate;
+
 public final class Dragging {
 
     public static DragManager draggable(Node node, DoubleProperty x, DoubleProperty y) {
         DragManager manager = new DragManager(node, x, y);
+        manager.attachListeners();
+        return manager;
+    }
+    public static DragManager draggable(Node node, ObservableValue<Number> x, DoubleConsumer writeX, ObservableValue<Number> y, DoubleConsumer writeY) {
+        DragManager manager = new DragManager(node, x, writeX, y, writeY);
         manager.attachListeners();
         return manager;
     }
@@ -53,8 +63,8 @@ public final class Dragging {
             if (!popup.isShowing() && node.getScene() != null && node.getScene().getWindow() != null) {
                 popup.show(node.getScene().getWindow());
             }
-            manager.x.set((manager.startX.get() + (event.getScreenX() - manager.startScreenX.get())));
-            manager.y.set(manager.startY.get() + (event.getScreenY() - manager.startScreenY.get()));
+            manager.writeX.accept((manager.startX.get() + (event.getScreenX() - manager.startScreenX.get())));
+            manager.writeY.accept(manager.startY.get() + (event.getScreenY() - manager.startScreenY.get()));
         };
 
         manager.attachListeners();
@@ -71,27 +81,39 @@ public final class Dragging {
 
         private final Node node;
 
-        private DoubleProperty x;
-        private DoubleProperty y;
+        private ObservableValue<Number> x;
+        private ObservableValue<Number> y;
+        private final DoubleConsumer writeX;
+        private final DoubleConsumer writeY;
 
         private EventHandler<MouseEvent> mousePressed;
         private EventHandler<MouseEvent> mouseDragged;
 
+        private Predicate<Node> nodeFilter = node -> true;
+
         public DragManager(Node node, DoubleProperty x, DoubleProperty y) {
+            this(node, x, x::set, y, y::set);
+        }
+        public DragManager(Node node, ObservableValue<Number> x, DoubleConsumer writeX, ObservableValue<Number> y, DoubleConsumer writeY) {
             this.node = node;
             this.x = x;
             this.y = y;
+            this.writeX = writeX;
+            this.writeY = writeY;
+
 
             mousePressed = event -> {
-                startX.set(x.get());
-                startY.set(y.get());
+                startX.set(x.getValue().doubleValue());
+                startY.set(y.getValue().doubleValue());
                 startScreenX.set(event.getScreenX());
                 startScreenY.set(event.getScreenY());
             };
 
             mouseDragged = event -> {
-                x.set(startX.get() + (event.getScreenX() - startScreenX.get()));
-                y.set(startY.get() + (event.getScreenY() - startScreenY.get()));
+                if (nodeFilter.test(event.getPickResult().getIntersectedNode())) {
+                    writeX.accept(startX.get() + (event.getScreenX() - startScreenX.get()));
+                    writeY.accept(startY.get() + (event.getScreenY() - startScreenY.get()));
+                }
             };
         }
 
@@ -103,6 +125,10 @@ public final class Dragging {
         public void detachListeners() {
             node.removeEventHandler(MouseEvent.MOUSE_PRESSED, mousePressed);
             node.removeEventHandler(MouseEvent.MOUSE_DRAGGED, mouseDragged);
+        }
+
+        public void setNodeFilter(Predicate<Node> filter) {
+            this.nodeFilter = filter;
         }
 
         public double getStartX() {
@@ -157,7 +183,7 @@ public final class Dragging {
             return node;
         }
 
-        public DoubleProperty getX() {
+        public ObservableValue<Number> getX() {
             return x;
         }
 
@@ -165,7 +191,7 @@ public final class Dragging {
             this.x = x;
         }
 
-        public DoubleProperty getY() {
+        public ObservableValue<Number> getY() {
             return y;
         }
 

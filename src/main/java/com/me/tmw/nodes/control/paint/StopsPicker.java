@@ -8,6 +8,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableObjectValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -95,7 +96,20 @@ public class StopsPicker extends VBox implements List<Stop> {
         loadedStops.remove(stop);
         stopsView.getChildren().remove(view);
         stop.removeListener(toBeRemoved.remove(stop));
-        stops.remove(view.getStop());
+        stopProperties.remove(stop);
+        if (stops.contains(stop.get())) {
+            stops.remove(view.getStop());
+        }
+    }
+
+    public ObjectProperty<Orientation> orientationProperty() {
+        return stopsView.orientationProperty();
+    }
+    public Orientation getOrientation() {
+        return stopsView.getOrientation();
+    }
+    public void setOrientation(Orientation orientation) {
+        stopsView.setOrientation(orientation);
     }
 
     public ObservableList<Stop> getStops() {

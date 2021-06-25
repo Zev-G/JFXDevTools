@@ -3,8 +3,10 @@ package com.me.tmw.properties.editors;
 import com.me.tmw.nodes.control.paint.ColorPicker;
 import com.me.tmw.nodes.control.paint.LinearGradientPicker;
 import com.me.tmw.nodes.control.paint.RadialGradientPicker;
+import com.me.tmw.nodes.util.Dragging;
 import com.me.tmw.nodes.util.NodeMisc;
 import com.me.tmw.resource.Resources;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.Property;
 import javafx.collections.FXCollections;
 import javafx.scene.Parent;
@@ -41,6 +43,7 @@ public class PaintPropertyEditor extends PaintEditorBase<Paint> {
         this(value.getName(), value);
     }
 
+    @SuppressWarnings("unchecked")
     public PaintPropertyEditor(String name, Property<Paint> value) {
         super(name, value);
 
@@ -49,9 +52,12 @@ public class PaintPropertyEditor extends PaintEditorBase<Paint> {
         editorRoot.getStylesheets().add(STYLE_SHEET);
         previewRoot.getStylesheets().add(STYLE_SHEET);
 
+        // Make draggable
+        Dragging.draggable(editorRoot, editorDisplay.xProperty(), editorDisplay::setX, editorDisplay.yProperty(), editorDisplay::setY).setNodeFilter(node -> node != null && (node.getParent() == editor.get()));
+
         // Editor listeners
         colorEditor.customColorProperty().addListener(observable -> {
-            if (typeSelector.getValue() == PaintType.COLOR) {
+            if (typeSelector.getValue() == PaintType.COLOR && editorDisplay.isShowing()) {
                 Color colorVal = colorEditor.getCustomColor();
                 if (!colorVal.equals(get())) {
                     set(colorVal);
@@ -59,7 +65,7 @@ public class PaintPropertyEditor extends PaintEditorBase<Paint> {
             }
         });
         linearGradientEditor.valueProperty().addListener(observable -> {
-            if (typeSelector.getValue() == PaintType.LINEAR_GRADIENT) {
+            if (typeSelector.getValue() == PaintType.LINEAR_GRADIENT && editorDisplay.isShowing()) {
                 LinearGradient gradientVal = linearGradientEditor.getValue();
                 if (!gradientVal.equals(get())) {
                     set(gradientVal);
@@ -67,7 +73,7 @@ public class PaintPropertyEditor extends PaintEditorBase<Paint> {
             }
         });
         radialGradientPicker.valueProperty().addListener(observable -> {
-            if (typeSelector.getValue() == PaintType.RADIAL_GRADIENT) {
+            if (typeSelector.getValue() == PaintType.RADIAL_GRADIENT && editorDisplay.isShowing()) {
                 RadialGradient gradientVal = radialGradientPicker.getValue();
                 if (!gradientVal.equals(get())) {
                     set(gradientVal);
@@ -84,22 +90,46 @@ public class PaintPropertyEditor extends PaintEditorBase<Paint> {
         editorProperties.put(PaintType.RADIAL_GRADIENT, radialGradientPicker.valueProperty());
 
         // Tab selection.
-        NodeMisc.runAndAddListener(typeSelector.getSelectionModel().selectedItemProperty(),
-                observable -> {
-                    PaintType selected = typeSelector.getSelectionModel().getSelectedItem();
-                    if (editors.containsKey(selected)) {
-                        content.getChildren().setAll(editors.get(selected));
-                        if (editorProperties.containsKey(selected)) {
-                            Property<? extends Paint> selectedProperty = editorProperties.get(selected);
-                            if (!selectedProperty.getValue().equals(get())) {
-                                set(selectedProperty.getValue());
-                            }
+        InvalidationListener update = observable -> {
+            PaintType selected = typeSelector.getSelectionModel().getSelectedItem();
+            if (editors.containsKey(selected)) {
+                content.getChildren().setAll(editors.get(selected));
+                if (editorProperties.containsKey(selected)) {
+                    Property<? extends Paint> selectedProperty = editorProperties.get(selected);
+                    Paint val = selectedProperty.getValue();
+                    if (val instanceof Color) {
+                        if (typeSelector.getValue() == PaintType.COLOR) {
+                            ((Property<Color>) selectedProperty).setValue((Color) val);
                         }
-                    } else {
-                        content.getChildren().clear();
+                    } else if (val instanceof LinearGradient) {
+                        if (typeSelector.getValue() == PaintType.LINEAR_GRADIENT) {
+                            ((Property<LinearGradient>) selectedProperty).setValue((LinearGradient) val);
+                        }
+                    } else if (val instanceof RadialGradient) {
+                        if (typeSelector.getValue() == PaintType.RADIAL_GRADIENT) {
+                            ((Property<RadialGradient>) selectedProperty).setValue((RadialGradient) val);
+                        }
+                    } else if (val instanceof ImagePattern) {
+                        if (typeSelector.getValue() == PaintType.IMAGE_PATTERN) {
+                            // TODO Load from image patter editor.
+                        }
+                    }
+                    if (!selectedProperty.getValue().equals(get())) {
+                        set(selectedProperty.getValue());
                     }
                 }
-        );
+            } else {
+                content.getChildren().clear();
+            }
+        };
+        NodeMisc.runAndAddListener(typeSelector.getSelectionModel().selectedItemProperty(), update);
+        editorDisplay.showingProperty().addListener(observable -> {
+            if (editorDisplay.isShowing()) {
+                update.invalidated(editorDisplay.showingProperty());
+            }
+        });
+
+
         // Property listener
         NodeMisc.runAndAddListener(value,
                 observable -> {
@@ -108,17 +138,25 @@ public class PaintPropertyEditor extends PaintEditorBase<Paint> {
                         val = Color.TRANSPARENT;
                     }
                     if (val instanceof Color) {
-                        colorEditor.setCurrentColor((Color) val);
-                        typeSelector.setValue(PaintType.COLOR);
+                        if (typeSelector.getValue() == PaintType.COLOR) {
+                            colorEditor.setCurrentColor((Color) val);
+                            typeSelector.setValue(PaintType.COLOR);
+                        }
                     } else if (val instanceof LinearGradient) {
-                        linearGradientEditor.setValue((LinearGradient) val);
-                        typeSelector.setValue(PaintType.LINEAR_GRADIENT);
+                        if (typeSelector.getValue() == PaintType.LINEAR_GRADIENT) {
+                            linearGradientEditor.setValue((LinearGradient) val);
+                            typeSelector.setValue(PaintType.LINEAR_GRADIENT);
+                        }
                     } else if (val instanceof RadialGradient) {
-                        radialGradientPicker.setValue((RadialGradient) val);
-                        typeSelector.setValue(PaintType.RADIAL_GRADIENT);
+                        if (typeSelector.getValue() == PaintType.RADIAL_GRADIENT) {
+                            radialGradientPicker.setValue((RadialGradient) val);
+                            typeSelector.setValue(PaintType.RADIAL_GRADIENT);
+                        }
                     } else if (val instanceof ImagePattern) {
-                        // TODO Load onto image patter editor.
-                        typeSelector.setValue(PaintType.IMAGE_PATTERN);
+                        if (typeSelector.getValue() == PaintType.IMAGE_PATTERN) {
+                            // TODO Load onto image patter editor.
+                            typeSelector.setValue(PaintType.IMAGE_PATTERN);
+                        }
                     }
                     typeSelector.getSelectionModel().select(PaintType.fromClass(val.getClass()).orElseThrow());
                 }

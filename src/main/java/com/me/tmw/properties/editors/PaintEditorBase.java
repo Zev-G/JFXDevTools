@@ -15,7 +15,7 @@ public abstract class PaintEditorBase<T extends Paint> extends PreviewBasedPrope
         super(name, value);
 
         Pane previewColor = new Pane();
-        previewColor.setMinSize(35, 35);
+        previewColor.setMinSize(35, 20);
         previewColor.backgroundProperty().bind(NodeMisc.backgroundFromProperty(value));
         setPreview(previewColor);
     }

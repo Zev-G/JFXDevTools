@@ -1,6 +1,8 @@
 package com.me.tmw.properties.editors;
 
 import javafx.beans.property.Property;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 public final class PropertyEditors {
 
@@ -34,6 +36,12 @@ public final class PropertyEditors {
         }
         if (String.class == usedType) {
             return (PropertyEditor<T>) new StringPropertyEditor((Property<String>) property);
+        }
+        if (Color.class == usedType) {
+            return (PropertyEditor<T>) new ColorPropertyEditor((Property<Color>) property);
+        }
+        if (Paint.class.isAssignableFrom(usedType)) {
+            return (PropertyEditor<T>) new PaintPropertyEditor((Property<Paint>) property);
         }
         return null;
     }
