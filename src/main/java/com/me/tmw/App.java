@@ -42,20 +42,20 @@ public class App extends Application {
 
 //        Magis.run(primaryStage);
 
-        Label label = new Label("Label");
-        StringPropertyEditor editor = new StringPropertyEditor(label.textProperty());
-        DoublePropertyEditor heightEditor = new DoublePropertyEditor(label.minHeightProperty());
-        OptionBasedPropertyEditor<Cursor> cursors = OptionBasedPropertyEditor.fromArray(label.cursorProperty(), Stream.concat(Arrays.stream(Cursor.class.getDeclaredFields()).filter(field -> Cursor.class.isAssignableFrom(field.getType())).map(field -> {
-            try {
-                return (Cursor) field.get(null);
-            } catch (IllegalAccessException e) {
-                return null;
-            }
-        }), Stream.of((Cursor) null)).toArray(Cursor[]::new));
-        PaintPropertyEditor colorEditor = new PaintPropertyEditor(label.textFillProperty());
-        Button button = new Button("Set to: \"hi\"");
-        button.setOnAction(event -> label.setText("hi"));
-        primaryStage.setScene(new DevScene(new VBox(button, label, editor.getNode(), heightEditor.getNode(), cursors.getNode(), colorEditor.getNode())));
+//        Label label = new Label("Label");
+//        StringPropertyEditor editor = new StringPropertyEditor(label.textProperty());
+//        DoublePropertyEditor heightEditor = new DoublePropertyEditor(label.minHeightProperty());
+//        OptionBasedPropertyEditor<Cursor> cursors = OptionBasedPropertyEditor.fromArray(label.cursorProperty(), Stream.concat(Arrays.stream(Cursor.class.getDeclaredFields()).filter(field -> Cursor.class.isAssignableFrom(field.getType())).map(field -> {
+//            try {
+//                return (Cursor) field.get(null);
+//            } catch (IllegalAccessException e) {
+//                return null;
+//            }
+//        }), Stream.of((Cursor) null)).toArray(Cursor[]::new));
+//        PaintPropertyEditor colorEditor = new PaintPropertyEditor(label.textFillProperty());
+//        Button button = new Button("Set to: \"hi\"");
+//        button.setOnAction(event -> label.setText("hi"));
+//        primaryStage.setScene(new DevScene(new VBox(button, label, editor.getNode(), heightEditor.getNode(), cursors.getNode(), colorEditor.getNode())));
 
 //        Point a = new Point(0.2, 0.2);
 //        Point b = new Point(0.2, 0.2);
@@ -63,7 +63,7 @@ public class App extends Application {
 //        editor.connectPoints(a, b);
 //        primaryStage.setScene(new DevScene(editor));
 
-//        primaryStage.setScene(new DevScene(new RadialGradientPicker()));
+        primaryStage.setScene(new DevScene(new LinearGradientPicker()));
 
         primaryStage.show();
         primaryStage.setTitle("Test");

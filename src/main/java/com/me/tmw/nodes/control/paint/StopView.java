@@ -37,6 +37,7 @@ public class StopView extends HBox {
     private final ObjectProperty<Stop> stop;
     private final BooleanProperty usingSlider = new SimpleBooleanProperty(this, "usingSlider", true);
     private Stop lastStop = null;
+    private boolean pause = false;
 
     private final ColorPickerMiniView colorPicker = new ColorPickerMiniView();
 
@@ -80,7 +81,11 @@ public class StopView extends HBox {
 
         // Event handlers and listeners
         removeStop.setOnAction(event -> fireEvent(new ActionEvent(this, this)));
-        InvalidationListener anyRelevantChanged = observable -> setStopSilently(tryAndGenerateStop().orElse(null));
+        InvalidationListener anyRelevantChanged = observable -> {
+            if (!pause) {
+                setStopSilently(tryAndGenerateStop().orElse(null));
+            }
+        };
         stopPoint.textProperty().addListener(anyRelevantChanged);
         colorPicker.colorProperty().addListener(anyRelevantChanged);
         rangePoint.valueProperty().addListener(anyRelevantChanged);
@@ -115,17 +120,19 @@ public class StopView extends HBox {
         }
     }
 
-    private void setStopSilently(Stop stop) {
+    private synchronized void setStopSilently(Stop stop) {
         if (!Objects.equals(stop, lastStop)) {
             lastStop = stop;
             setStop(stop);
         }
     }
-    private void loadStop(Stop stop) {
+    private synchronized void loadStop(Stop stop) {
+        pause = true;
         lastStop = stop;
         stopPoint.setText(String.valueOf(stop.getOffset() * 100));
         rangePoint.setValue(stop.getOffset() * 100);
         colorPicker.setColor(stop.getColor());
+        pause = false;
     }
 
     public ObjectProperty<EventHandler<ActionEvent>> onRemovedProperty() {

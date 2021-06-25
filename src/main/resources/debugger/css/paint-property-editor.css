@@ -13,8 +13,3 @@
     -fx-background-color: transparent !important;
     -fx-padding: 0 5 !important;
 }
-
-.linear-gradient-picker {
-    -fx-pref-width: 550;
-    -fx-pref-height: 700;
-}

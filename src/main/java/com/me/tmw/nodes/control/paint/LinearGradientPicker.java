@@ -21,7 +21,7 @@ import javafx.scene.text.FontWeight;
 
 import java.util.Objects;
 
-public class LinearGradientPicker extends VBox {
+public class LinearGradientPicker extends HBox {
 
     private static final String STYLE_SHEET = Resources.NODES.getCss("linear-gradient-picker");
 
@@ -34,6 +34,8 @@ public class LinearGradientPicker extends VBox {
     private final Point startX = new Point(0, 0, true, false, true, createPointDisplay(true, true));
     private final Point endY = new Point(1, 1, true, true, false, createPointDisplay(false, false));
     private final Point endX = new Point(1, 1, true, false, true, createPointDisplay(true, false));
+
+    private boolean pause;
 
     private final ObjectProperty<LinearGradient> value = new SimpleObjectProperty<>(this, "value");
     private LinearGradient loaded;
@@ -79,15 +81,18 @@ public class LinearGradientPicker extends VBox {
         resultPreview.getStyleClass().add("result-preview");
 
         VBox.setVgrow(resultPreview, Priority.ALWAYS);
+        HBox.setHgrow(resultPreview, Priority.ALWAYS);
+        resultPreview.setPrefSize(500, 500);
 
-        getChildren().addAll(stops, resultPreview);
+        getChildren().addAll(resultPreview, stops);
         stops.getFooter().getChildren().add(cycleMethods);
 
         loadGradient(originalValue);
     }
 
-    private void loadGradient(LinearGradient gradient) {
+    private synchronized void loadGradient(LinearGradient gradient) {
         loaded = gradient;
+        pause = true;
         startX.setX(gradient.getStartX());
         startY.setY(gradient.getStartY());
         endX.setX(gradient.getEndX());
@@ -95,11 +100,14 @@ public class LinearGradientPicker extends VBox {
         stops.getStopProperties().clear();
         stops.addAll(gradient.getStops());
         cycleMethods.getSelectionModel().select(gradient.getCycleMethod());
+        pause = false;
     }
 
-    private void updateValue() {
-        loaded = new LinearGradient(startX.getClampedX(), startY.getClampedY(), endX.getClampedX(), endY.getClampedY(), true, cycleMethods.getValue(), this.stops.getStops());
-        value.set(loaded);
+    private synchronized void updateValue() {
+        if (!pause) {
+            loaded = new LinearGradient(startX.getClampedX(), startY.getClampedY(), endX.getClampedX(), endY.getClampedY(), true, cycleMethods.getValue(), this.stops.getStops());
+            value.set(loaded);
+        }
     }
 
     public ObjectProperty<LinearGradient> valueProperty() {
