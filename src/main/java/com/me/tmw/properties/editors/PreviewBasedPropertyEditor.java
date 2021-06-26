@@ -48,10 +48,13 @@ public abstract class PreviewBasedPropertyEditor<T> extends PropertyEditorBase<T
 
         // Mouse Events
         previewRoot.setOnMouseReleased(event -> {
-            editorDisplay.show(previewRoot.getScene().getWindow());
-            editorDisplay.setX(event.getScreenX() - editorRoot.getWidth() / 2);
-            editorDisplay.setY(event.getScreenY() + 5);
+            if (!value.isBound()) {
+                editorDisplay.show(previewRoot.getScene().getWindow());
+                editorDisplay.setX(event.getScreenX() - editorRoot.getWidth() / 2);
+                editorDisplay.setY(event.getScreenY() + 5);
+            }
         });
+        previewRoot.setOnMouseEntered(event -> previewRoot.pseudoClassStateChanged(BOUND, value.isBound()));
 
         // Finalize initialization
         setNode(previewRoot);

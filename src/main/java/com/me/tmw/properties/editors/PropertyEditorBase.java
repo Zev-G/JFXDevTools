@@ -6,12 +6,15 @@ import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.css.PseudoClass;
 import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 
 import java.util.Optional;
 
 public abstract class PropertyEditorBase<T> implements PropertyEditor<T> {
+
+    protected static final PseudoClass BOUND = PseudoClass.getPseudoClass("bound");
 
     private final StringProperty name = new SimpleStringProperty(this, "name");
     private final NodeProperty node = new NodeProperty(this);

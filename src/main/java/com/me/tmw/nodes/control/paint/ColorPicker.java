@@ -120,7 +120,7 @@ public class ColorPicker extends VBox {
             opacityBar = new Pane();
 
             opacityBarSecondaryBG = new StackPane(opacityBar);
-            opacityBarSecondaryBG.setBackground(new Background(new BackgroundFill(new ImagePattern(new Image(Resources.DEBUGGER.getPng("opacity")), 0, 0, 10, 10, false), CornerRadii.EMPTY, Insets.EMPTY)));
+            opacityBarSecondaryBG.setBackground(new Background(new BackgroundFill(new ImagePattern(new Image(Resources.NODES.getPng("opacity")), 0, 0, 10, 10, false), CornerRadii.EMPTY, Insets.EMPTY)));
             opacityBarSecondaryBG.getStyleClass().add("color-bar");
 
             opacityBarIndicator = new Region();

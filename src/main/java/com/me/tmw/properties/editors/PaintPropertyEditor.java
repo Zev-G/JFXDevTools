@@ -57,26 +57,32 @@ public class PaintPropertyEditor extends PaintEditorBase<Paint> {
 
         // Editor listeners
         colorEditor.customColorProperty().addListener(observable -> {
-            if (typeSelector.getValue() == PaintType.COLOR && editorDisplay.isShowing()) {
-                Color colorVal = colorEditor.getCustomColor();
-                if (!colorVal.equals(get())) {
-                    set(colorVal);
+            if (!value.isBound()) {
+                if (typeSelector.getValue() == PaintType.COLOR && editorDisplay.isShowing()) {
+                    Color colorVal = colorEditor.getCustomColor();
+                    if (!colorVal.equals(get())) {
+                        set(colorVal);
+                    }
                 }
             }
         });
         linearGradientEditor.valueProperty().addListener(observable -> {
-            if (typeSelector.getValue() == PaintType.LINEAR_GRADIENT && editorDisplay.isShowing()) {
-                LinearGradient gradientVal = linearGradientEditor.getValue();
-                if (!gradientVal.equals(get())) {
-                    set(gradientVal);
+            if (!value.isBound()) {
+                if (typeSelector.getValue() == PaintType.LINEAR_GRADIENT && editorDisplay.isShowing()) {
+                    LinearGradient gradientVal = linearGradientEditor.getValue();
+                    if (!gradientVal.equals(get())) {
+                        set(gradientVal);
+                    }
                 }
             }
         });
         radialGradientPicker.valueProperty().addListener(observable -> {
-            if (typeSelector.getValue() == PaintType.RADIAL_GRADIENT && editorDisplay.isShowing()) {
-                RadialGradient gradientVal = radialGradientPicker.getValue();
-                if (!gradientVal.equals(get())) {
-                    set(gradientVal);
+            if (!value.isBound()) {
+                if (typeSelector.getValue() == PaintType.RADIAL_GRADIENT && editorDisplay.isShowing()) {
+                    RadialGradient gradientVal = radialGradientPicker.getValue();
+                    if (!gradientVal.equals(get())) {
+                        set(gradientVal);
+                    }
                 }
             }
         });
