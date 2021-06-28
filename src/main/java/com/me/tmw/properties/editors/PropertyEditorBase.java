@@ -51,9 +51,15 @@ public abstract class PropertyEditorBase<T> implements PropertyEditor<T> {
         return name;
     }
 
-    @Override
-    public NodeProperty nodeProperty() {
+    NodeProperty nodeProperty() {
         return node;
+    }
+    protected void setNode(Node node) {
+        this.node.set(node);
+    }
+    @Override
+    public Node getNode() {
+        return node.get();
     }
 
     @Override

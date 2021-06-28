@@ -4,10 +4,15 @@ import com.me.tmw.nodes.tooltips.SimpleTooltip;
 import javafx.beans.property.Property;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class OptionBasedPropertyEditor<T> extends PropertyEditorBase<T> {
 
@@ -55,10 +60,21 @@ public abstract class OptionBasedPropertyEditor<T> extends PropertyEditorBase<T>
     }
 
     public static <T> OptionBasedPropertyEditor<T> fromArray(Property<T> property, T[] array) {
-        return new OptionBasedPropertyEditor<T>(property, FXCollections.observableArrayList(array)) { };
+        return new OptionBasedPropertyEditor<>(property, FXCollections.observableArrayList(array)) { };
+    }
+    public static <T> OptionBasedPropertyEditor<T> fromArrayAndNull(Property<T> property, T[] array) {
+        List<T> constants = new ArrayList<>(Arrays.asList(array));
+        constants.add(null);
+        return new OptionBasedPropertyEditor<>(property, FXCollections.observableArrayList(constants)) { };
     }
 
     public ObservableList<T> getItems() {
         return items;
     }
+
+    @Override
+    public ComboBox<T> getNode() {
+        return selector;
+    }
+
 }

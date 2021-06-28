@@ -3,7 +3,11 @@ package com.me.tmw.properties.editors;
 import com.me.tmw.nodes.tooltips.SimpleTooltip;
 import com.me.tmw.nodes.util.NodeMisc;
 import com.me.tmw.resource.Resources;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ObjectPropertyBase;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -33,7 +37,7 @@ public class PropertyEditorsView extends GridPane {
         editors.sort(Comparator.comparing(PropertyEditor::getName));
         int i = 0;
         for (PropertyEditor<?> topEditor : editors) {
-            i = loadEditor(topEditor, i, 0);
+            i = loadEditor((PropertyEditorBase<?>) topEditor, i, 0);
         }
     }
 
@@ -45,7 +49,8 @@ public class PropertyEditorsView extends GridPane {
 
         StackPane nodeWrapper = new StackPane();
         nodeWrapper.setAlignment(Pos.CENTER_LEFT);
-        NodeMisc.runAndAddListener(editor.nodeProperty(), observable -> nodeWrapper.getChildren().setAll(editor.getNode()));
+        ObjectProperty<Node> nodeProperty = editor instanceof PropertyEditorBase<?> ? ((PropertyEditorBase<?>) editor).nodeProperty() : new SimpleObjectProperty<>(editor.getNode());
+        NodeMisc.runAndAddListener(nodeProperty, observable -> nodeWrapper.getChildren().setAll(editor.getNode()));
 
         if (editor.getPropertyType().isPresent()) {
             Label type = new Label();

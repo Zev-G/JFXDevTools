@@ -1,0 +1,14 @@
+#editor-root {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-width: 1.5;
+    -fx-border-color: derive(-fx-base, -25%);
+    -fx-effect: dropshadow(three-pass-box, derive(-fx-base, -60%), 35, 0.2, 0, 2);
+    -fx-padding: 10;
+    -fx-spacing: 10;
+}
+
+.font-editor, .font-editor .content {
+    -fx-background-color: white !important;
+}

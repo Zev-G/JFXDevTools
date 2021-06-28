@@ -31,13 +31,7 @@ public interface PropertyEditor<T> extends ObservableValue<T>, WritableValue<T> 
         graphicProperty().set(node);
     }
 
-    ObjectProperty<Node> nodeProperty();
-    default Node getNode() {
-        return nodeProperty().get();
-    }
-    default void setNode(Node node) {
-        nodeProperty().set(node);
-    }
+    Node getNode();
 
     ReadOnlyProperty<ContentDisplay> contentDisplayProperty();
     default ContentDisplay getContentDisplay() {

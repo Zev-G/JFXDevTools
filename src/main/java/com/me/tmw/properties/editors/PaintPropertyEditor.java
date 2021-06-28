@@ -144,25 +144,17 @@ public class PaintPropertyEditor extends PaintEditorBase<Paint> {
                         val = Color.TRANSPARENT;
                     }
                     if (val instanceof Color) {
-                        if (typeSelector.getValue() == PaintType.COLOR) {
-                            colorEditor.setCurrentColor((Color) val);
-                            typeSelector.setValue(PaintType.COLOR);
-                        }
+                        colorEditor.setCurrentColor((Color) val);
+                        typeSelector.setValue(PaintType.COLOR);
                     } else if (val instanceof LinearGradient) {
-                        if (typeSelector.getValue() == PaintType.LINEAR_GRADIENT) {
-                            linearGradientEditor.setValue((LinearGradient) val);
-                            typeSelector.setValue(PaintType.LINEAR_GRADIENT);
-                        }
+                        linearGradientEditor.setValue((LinearGradient) val);
+                        typeSelector.setValue(PaintType.LINEAR_GRADIENT);
                     } else if (val instanceof RadialGradient) {
-                        if (typeSelector.getValue() == PaintType.RADIAL_GRADIENT) {
-                            radialGradientPicker.setValue((RadialGradient) val);
-                            typeSelector.setValue(PaintType.RADIAL_GRADIENT);
-                        }
+                        radialGradientPicker.setValue((RadialGradient) val);
+                        typeSelector.setValue(PaintType.RADIAL_GRADIENT);
                     } else if (val instanceof ImagePattern) {
-                        if (typeSelector.getValue() == PaintType.IMAGE_PATTERN) {
-                            // TODO Load onto image patter editor.
-                            typeSelector.setValue(PaintType.IMAGE_PATTERN);
-                        }
+                        // TODO Load onto image patter editor.
+                        typeSelector.setValue(PaintType.IMAGE_PATTERN);
                     }
                     typeSelector.getSelectionModel().select(PaintType.fromClass(val.getClass()).orElseThrow());
                 }

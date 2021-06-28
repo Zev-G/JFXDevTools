@@ -3,6 +3,7 @@ package com.me.tmw.properties.editors;
 import javafx.beans.property.Property;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 
 public final class PropertyEditors {
 
@@ -12,7 +13,7 @@ public final class PropertyEditors {
             return null;
         }
         if (type.isEnum()) {
-            return OptionBasedPropertyEditor.fromArray(property, type.getEnumConstants());
+            return OptionBasedPropertyEditor.fromArrayAndNull(property, type.getEnumConstants());
         }
         Class<?> usedType = type;
         if (type.isPrimitive()) {
@@ -42,6 +43,9 @@ public final class PropertyEditors {
         }
         if (Paint.class.isAssignableFrom(usedType)) {
             return (PropertyEditor<T>) new PaintPropertyEditor((Property<Paint>) property);
+        }
+        if (Font.class == usedType) {
+            return (PropertyEditor<T>) new FontPropertyEditor((Property<Font>) property);
         }
         return null;
     }

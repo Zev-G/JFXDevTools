@@ -1,0 +1,16 @@
+.font-editor {
+    -fx-background-color: -fx-base;
+    -fx-pref-width: 400;
+    -fx-spacing: 10;
+    -fx-padding: 5;
+}
+
+.font-properties {
+    -fx-hgap: 15;
+    -fx-vgap: 10;
+}
+
+.font-preview {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
