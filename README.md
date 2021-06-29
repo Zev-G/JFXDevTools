@@ -39,6 +39,25 @@ Currently a WIP, introduces dev tools similiar to chrome dev tools for JavaFX.
 
 > section not made yet
 
+### Details / Properties Tab
+
+> section in development
+
+This tab provides a view for both viewing and editing various properties of the selected node in the SceneTree. This tab—unlike the Css Properties and Stylesheets tabs—works for ALL nodes. Currently there is support for editing the current types: 
+
+* Booleans
+* Strings
+* Longs
+* Integers
+* Floats
+* Doubles
+* Any Enum
+* Colors
+* Radiant Gradients
+* Linear Gradients
+* Paints (currently no support for ImagePatterns)
+* Fonts
+
 ## Console Tab
 
 > section not made yet
