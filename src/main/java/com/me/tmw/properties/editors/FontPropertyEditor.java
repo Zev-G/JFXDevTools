@@ -4,7 +4,6 @@ import com.me.tmw.nodes.control.FontEditor;
 import com.me.tmw.resource.Resources;
 import javafx.beans.property.Property;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 
 import java.util.Objects;

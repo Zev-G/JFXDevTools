@@ -1,0 +1,18 @@
+.color-property {
+    -fx-text-fill: black;
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-font-size: 14;
+}
+
+.color-property-editor {
+    -fx-border-width: 0 0 1.5 0;
+    -fx-border-color: black;
+}
+.color-property-editor:invalid {
+    -fx-border-color: red;
+}
+
+.color-values-editor {
+    -fx-spacing: 5;
+}

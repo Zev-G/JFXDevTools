@@ -1,7 +1,14 @@
 package com.me.tmw.nodes.control;
 
+import com.sun.javafx.scene.control.skin.Utils;
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.css.PseudoClass;
 import javafx.scene.control.TextField;
 
 import java.util.ArrayList;
@@ -11,29 +18,70 @@ import java.util.function.Function;
 
 public class NumberField extends TextField {
 
+    private static final PseudoClass INVALID = PseudoClass.getPseudoClass("invalid");
+
     private final DoubleProperty value = new SimpleDoubleProperty(this, "value");
+    private final BooleanProperty forceIntegers = new SimpleBooleanProperty(this, "forceIntegers");
+    private final BooleanProperty autoWidth = new SimpleBooleanProperty(this, "autoWidth");
 
     private double numPassKey;
     private String textPassKey;
 
-    private final List<Function<String, ConversionResult>> conversionFunctions = new ArrayList<>();
+    private final ObservableList<Function<String, ConversionResult>> conversionFunctions = FXCollections.observableArrayList();
 
     public NumberField() {
         this(0);
     }
-    public NumberField(double initialValue) {
+    public NumberField(Number initialValue) {
         getStyleClass().add("number-field");
 
-        value.set(initialValue);
-        numPassKey = initialValue;
+        value.set(initialValue.doubleValue());
+        numPassKey = initialValue.doubleValue();
         textPassKey = String.valueOf(initialValue);
         setText(textPassKey);
 
-        addConverter(text -> {
+        // Init conversion functions.
+        conversionFunctions.addListener((InvalidationListener) observable -> calculateText(getText()));
+        conversionFunctions.add(text -> {
             try {
-                return new ConversionResult(Double.parseDouble(text));
+                if (isForceIntegers()) {
+                    return new ConversionResult(Integer.parseInt(text));
+                } else {
+                    return new ConversionResult(Double.parseDouble(text));
+                }
             } catch (NumberFormatException exception) {
                 return ConversionResult.UNSUCCESSFUL;
+            }
+        });
+
+        forceIntegers.addListener(observable -> {
+            textPassKey = null;
+            calculateText(getText());
+        });
+
+        List<Runnable> removeAutoWidth = new ArrayList<>();
+        autoWidth.addListener(observable -> {
+            boolean autoWidth = isAutoWidth();
+            if (autoWidth) {
+                InvalidationListener textListener = changedProp -> {
+                    double calc = Utils.computeTextWidth(getFont(), getText() + " ", 0D);;
+                    setPrefWidth(calc);
+                    positionCaret(getCaretPosition()); // If you remove this line, it flashes a little bit
+                };
+                textListener.invalidated(null);
+                textProperty().addListener(textListener);
+                removeAutoWidth.add(() -> textProperty().removeListener(textListener));
+
+                InvalidationListener fontListener = changedProp -> {
+                    double calc = Utils.computeTextWidth(getFont(), getText() + " ", 0D);;
+                    setPrefWidth(calc);
+                };
+                fontProperty().addListener(fontListener);
+                removeAutoWidth.add(() -> fontProperty().removeListener(fontListener));
+            } else {
+                removeAutoWidth.forEach(Runnable::run);
+                removeAutoWidth.clear();
+                setPrefWidth(USE_COMPUTED_SIZE);
             }
         });
 
@@ -46,7 +94,7 @@ public class NumberField extends TextField {
         value.addListener(observable -> {
             double newValue = value.get();
             if (newValue != numPassKey) {
-                textPassKey = String.valueOf(newValue);
+                textPassKey = String.valueOf(value.getValue());
                 setText(textPassKey);
                 numPassKey = newValue;
             }
@@ -57,9 +105,29 @@ public class NumberField extends TextField {
             if (!newValue.equals(textPassKey)) {
                 calculateText(newValue);
             } else {
-                getStyleClass().remove("conversion-error");
+                pseudoClassStateChanged(INVALID, false);
             }
         });
+    }
+
+    public boolean isForceIntegers() {
+        return forceIntegers.get();
+    }
+    public BooleanProperty forceIntegersProperty() {
+        return forceIntegers;
+    }
+    public void setForceIntegers(boolean forceIntegers) {
+        this.forceIntegers.set(forceIntegers);
+    }
+
+    public boolean isAutoWidth() {
+        return autoWidth.get();
+    }
+    public BooleanProperty autoWidthProperty() {
+        return autoWidth;
+    }
+    public void setAutoWidth(boolean autoWidth) {
+        this.autoWidth.set(autoWidth);
     }
 
     private void calculateText(String newValue) {
@@ -76,20 +144,11 @@ public class NumberField extends TextField {
                 break;
             }
         }
-        if (success) {
-            getStyleClass().remove("conversion-error");
-        } else if (!getStyleClass().contains("conversion-error")) {
-            getStyleClass().add("conversion-error");
-        }
+        pseudoClassStateChanged(INVALID, !success);
     }
 
-    public void addConverter(Function<String, ConversionResult> converter) {
-        conversionFunctions.add(converter);
-        calculateText(getText());
-    }
-    public void removeConverter(Function<String, ConversionResult> converter) {
-        conversionFunctions.remove(converter);
-        calculateText(getText());
+    public ObservableList<Function<String, ConversionResult>> getConversionFunctions() {
+        return conversionFunctions;
     }
 
     public double getValue() {

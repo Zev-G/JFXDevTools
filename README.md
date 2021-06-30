@@ -23,7 +23,7 @@ There is currently support for easily creating animation. See release v0.0.0
 
 # DevTools
 
-Currently a WIP, introduces dev tools similiar to chrome dev tools for JavaFX.
+> section not made yet
 
 ## Structure Tab
 

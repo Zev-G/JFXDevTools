@@ -8,6 +8,7 @@ import com.me.tmw.debug.devtools.DevToolsContainer;
 import com.me.tmw.nodes.control.Point;
 import com.me.tmw.nodes.control.PointsEditor;
 import com.me.tmw.nodes.control.paint.LinearGradientPicker;
+import com.me.tmw.nodes.control.paint.RGBPicker;
 import com.me.tmw.nodes.control.paint.RadialGradientPicker;
 import com.me.tmw.nodes.util.Dragging;
 import com.me.tmw.nodes.util.Layout;
@@ -63,7 +64,7 @@ public class App extends Application {
 //        editor.connectPoints(a, b);
 //        primaryStage.setScene(new DevScene(editor));
 
-        primaryStage.setScene(new DevScene(new LinearGradientPicker()));
+        primaryStage.setScene(new DevScene(new RGBPicker()));
 
         primaryStage.show();
         primaryStage.setTitle("Test");
