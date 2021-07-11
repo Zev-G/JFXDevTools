@@ -1,14 +1,14 @@
 package com.me.tmw.animations;
 
-import com.me.tmw.animations.builder.AnimationBuilder;
-import com.me.tmw.animations.builder.grouping.AnimationGroupBuilder;
-import com.me.tmw.animations.builder.timeline.KeyFrameBuilder;
-import com.me.tmw.animations.builder.timeline.KeyValueBuilder;
-import com.me.tmw.animations.builder.timeline.TimelineBuilder;
-import com.me.tmw.animations.builder.transitions.FadeTransitionBuilder;
-import com.me.tmw.animations.builder.transitions.RotateTransitionBuilder;
-import com.me.tmw.animations.builder.transitions.ScaleTransitionBuilder;
-import com.me.tmw.animations.builder.transitions.TranslateTransitionBuilder;
+import com.me.tmw.animations.builders.AnimationBuilder;
+import com.me.tmw.animations.builders.AnimationGroupBuilder;
+import com.me.tmw.animations.builders.KeyFrameBuilder;
+import com.me.tmw.animations.builders.KeyValueBuilder;
+import com.me.tmw.animations.builders.TimelineBuilder;
+import com.me.tmw.animations.builders.FadeTransitionBuilder;
+import com.me.tmw.animations.builders.RotateTransitionBuilder;
+import com.me.tmw.animations.builders.ScaleTransitionBuilder;
+import com.me.tmw.animations.builders.TranslateTransitionBuilder;
 import javafx.animation.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableBooleanValue;

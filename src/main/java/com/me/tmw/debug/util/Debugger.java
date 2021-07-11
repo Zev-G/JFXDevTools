@@ -2,7 +2,7 @@ package com.me.tmw.debug.util;
 
 import com.me.tmw.debug.devtools.inspectors.InspectorBase;
 import com.me.tmw.debug.devtools.inspectors.SimpleInspector;
-import com.me.tmw.debug.devtools.nodeinfo.css.NodeCss;
+import com.me.tmw.debug.devtools.nodeinfo.NodeCss;
 import com.me.tmw.nodes.util.Layout;
 import com.me.tmw.resource.Resources;
 import javafx.application.Platform;
@@ -20,7 +20,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;

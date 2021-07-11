@@ -1,6 +1,5 @@
 package com.me.tmw.nodes.util;
 
-import com.me.tmw.debug.devtools.nodeinfo.css.sheets.SheetsInfo;
 import com.me.tmw.nodes.control.svg.SVG;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;

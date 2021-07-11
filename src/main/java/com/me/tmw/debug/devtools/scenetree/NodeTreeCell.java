@@ -2,8 +2,6 @@ package com.me.tmw.debug.devtools.scenetree;
 
 import com.me.tmw.debug.devtools.DevTools;
 import com.me.tmw.debug.devtools.DevUtils;
-import com.me.tmw.debug.devtools.nodeinfo.css.ColorCssValue;
-import com.me.tmw.nodes.control.paint.ColorPickerMiniView;
 import javafx.beans.binding.*;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ObservableNumberValue;
@@ -21,7 +19,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 
 import java.util.*;
 import java.util.function.Consumer;

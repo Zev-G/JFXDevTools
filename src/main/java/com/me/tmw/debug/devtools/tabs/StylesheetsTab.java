@@ -1,6 +1,6 @@
 package com.me.tmw.debug.devtools.tabs;
 
-import com.me.tmw.debug.devtools.nodeinfo.css.sheets.SheetsInfo;
+import com.me.tmw.debug.devtools.nodeinfo.SheetsInfo;
 import com.me.tmw.debug.devtools.tabs.FilesTab.Source;
 import com.me.tmw.nodes.richtextfx.languages.CSSLang;
 import javafx.beans.binding.Bindings;

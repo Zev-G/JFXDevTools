@@ -1,6 +1,6 @@
 package com.me.tmw.animations;
 
-import com.me.tmw.animations.builder.AnimationBuilder;
+import com.me.tmw.animations.builders.AnimationBuilder;
 import javafx.animation.Animation;
 import javafx.beans.property.*;
 import javafx.event.ActionEvent;

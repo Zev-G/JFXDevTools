@@ -1,15 +1,10 @@
 package com.me.tmw.nodes.cssanimations;
 
-import com.me.tmw.animations.Animations;
-import com.me.tmw.animations.builder.timeline.KeyFrameBuilder;
-import com.me.tmw.animations.builder.timeline.KeyValueBuilder;
 import javafx.animation.*;
-import javafx.beans.property.Property;
 import javafx.beans.value.WritableValue;
 import javafx.css.CssMetaData;
 import javafx.css.Styleable;
 import javafx.css.StyleableProperty;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.util.Duration;
 

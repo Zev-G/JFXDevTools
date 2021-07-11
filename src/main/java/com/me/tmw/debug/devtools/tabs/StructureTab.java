@@ -2,7 +2,7 @@ package com.me.tmw.debug.devtools.tabs;
 
 import com.me.tmw.debug.devtools.DevTools;
 import com.me.tmw.debug.devtools.DevUtils;
-import com.me.tmw.debug.devtools.nodeinfo.css.NodeCss;
+import com.me.tmw.debug.devtools.nodeinfo.NodeCss;
 import com.me.tmw.debug.devtools.scenetree.SceneTree;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
