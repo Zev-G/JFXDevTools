@@ -1,73 +1,26 @@
 # JFXPlus
-Lots of helpful classes to streamline JFX development. Mostly just made for my own use.
 
-# Main features
-
-## API
-
-### Animations
-
-There is currently support for easily creating animation. See release v0.0.0
-
-### UIActions
-
-> section not made yet
-
-### NodeMisc
-
-> section not made yet
-
-### Dragging
-
-> section not made yet
+Adds devtools to JavaFX, also adds lots of helpful classes to streamline JavFX development. Mostly just made for my own use.
 
 # DevTools
 
-> section not made yet
+The JavaFX devtools are made up of three separate tabs.
 
-## Structure Tab
+## Structure tab
 
-### Scene Tree
+![Structure tab](https://user-images.githubusercontent.com/59103153/161342067-fb2bea50-11c6-45f4-98be-9aaea8d23da3.png)
 
-> section not made yet
+On the left of the structure tab you have a treeview representing your scene, and on the write you have three tabs you can use to manipulate the selected node.
+The CSSProperties tab lets you alter certain CSS properties on the element. The Stylehsheets tab lets you view which stylesheets are applied to the node and how they effect it, and it lets you add new stylesheets to the node (these can be edited live via the Files tab). The Details tab shows you many properties on the selected node and lets you edit them live.
 
-### Stylesheets Tab
+## Console tab
 
-> section not made yet
+![image](https://user-images.githubusercontent.com/59103153/161342931-7f4c56e3-da66-4257-a3df-354339227979.png)
 
-### Css Properties Tab
+The console tab lets you execute javascript while your program is running to manipulate the scene programmatically. This can be very useful because it lets you perform powerful operations on the scene without needing to recompile and rerun the program. The console automatically has the variables `root` and `selected` set to be the root of the scene and the selected node in the Structure Tab respectively. The console also automatically imports many JavaFX related classes.
 
-> section not made yet
+## Files tab
 
-### Details / Properties Tab
+![image](https://user-images.githubusercontent.com/59103153/161343201-25f1e9a1-f48d-4456-9102-72e24a3bb27a.png)
 
-> section in development
-
-This tab provides a view for both viewing and editing various properties of the selected node in the SceneTree. This tab—unlike the Css Properties and Stylesheets tabs—works for ALL nodes. Currently there is support for editing the current types: 
-
-* Booleans
-* Strings
-* Longs
-* Integers
-* Floats
-* Doubles
-* Any Enum
-* Colors
-* Radiant Gradients
-* Linear Gradients
-* Paints (currently no support for ImagePatterns)
-* Fonts
-
-## Console Tab
-
-> section not made yet
-
-## Files Tab
-
-### Opening files
-
-> section not made yet
-
-### Editing files
-
-> section not made yet
+The files tab displays files related to your JavaFX scene and lets you edit them live. This is especially useful for CSS since you no longer need to repeatedly recompile and rerun to get your application looking right.
