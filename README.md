@@ -1,10 +1,10 @@
 # JFXPlus
 
-Adds devtools to JavaFX, also adds lots of helpful classes to streamline JavFX development. Mostly just made for my own use.
+Adds devtools to JavaFX, also adds lots of helpful classes to streamline JavFX development. 
 
 # DevTools
 
-The JavaFX devtools are made up of three separate tabs.
+The JavaFX devtools are similar to the devtools offered in browsers, but instead made to represent a reactive JavaFX UI. The devtools display the strucutre of the UI and allow you to edit elements of the UI live. The devtools are made up of three separate tabs.
 
 ## Structure tab
 
