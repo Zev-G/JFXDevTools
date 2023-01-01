@@ -1,6 +1,6 @@
-# JFXPlus
+# JFXDevTools
 
-Adds devtools to JavaFX, also adds lots of helpful classes to streamline JavFX development. 
+Adds devtools to JavaFX in addition to helpful classes to streamline JavFX development. 
 
 # DevTools
 
